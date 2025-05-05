@@ -99,6 +99,42 @@ const generateClients = (): Client[] => {
 // Create clients data once (would be persisted across requests in production)
 const clients = generateClients();
 
+/**
+ * @swagger
+ * /api/clients:
+ *   get:
+ *     tags:
+ *       - clients
+ *     summary: Get a list of clients
+ *     description: Retrieves a paginated list of clients with optional search functionality
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 25
+ *         description: Number of records per page
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search term to filter clients by company name, contact name, or email
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedResponse'
+ *       500:
+ *         description: Server error
+ */
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
