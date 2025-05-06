@@ -101,10 +101,10 @@ const clients = generateClients();
 
 /**
  * @swagger
- * /api/clients:
+ * /api/pdp/clients:
  *   get:
  *     tags:
- *       - clients
+ *       - pdp
  *     summary: Get a list of clients
  *     description: Retrieves a paginated list of clients with optional search functionality
  *     parameters:
