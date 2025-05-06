@@ -12,8 +12,12 @@ export const getApiDocs = () => {
             },
             servers: [
                 {
+                    url: '/',
+                    description: 'Current environment',
+                },
+                {
                     url: 'http://localhost:3000',
-                    description: 'Local server',
+                    description: 'Local development server',
                 },
                 {
                     url: 'https://pulse-one-iota.vercel.com',
