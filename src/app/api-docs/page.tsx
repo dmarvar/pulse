@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, Suspense, useState } from 'react';
 import dynamic from 'next/dynamic';
+import 'swagger-ui-dist/swagger-ui.css';
 
 // Type for OpenAPI/Swagger specification
 interface SwaggerSpec {
@@ -32,7 +33,6 @@ const SwaggerUI = dynamic(
     async () => {
         const SwaggerUIBundle = (await import('swagger-ui-dist/swagger-ui-bundle')).default;
         const SwaggerUIStandalonePreset = (await import('swagger-ui-dist/swagger-ui-standalone-preset')).default;
-        await import('swagger-ui-dist/swagger-ui.css');
 
         return function SwaggerUIComponent({ spec }: { spec: SwaggerSpec }) {
             const swaggerUIRef = useRef<HTMLDivElement>(null);
