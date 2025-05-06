@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 const invoiceSchema = {
     "description": "This schema describes the required and optional fields for creating an invoice. Use this structure to build a valid invoice payload.",
@@ -72,6 +72,6 @@ const invoiceSchema = {
  *             schema:
  *               $ref: '#/components/schemas/InvoiceSchema'
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
     return NextResponse.json(invoiceSchema);
 }

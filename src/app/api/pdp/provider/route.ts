@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 // Cegid company information
 const cegidCompanyInfo = {
@@ -47,6 +47,6 @@ const cegidCompanyInfo = {
  *             schema:
  *               $ref: '#/components/schemas/ProviderInfo'
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
     return NextResponse.json(cegidCompanyInfo);
 }
