@@ -2,6 +2,19 @@
 const scriptTag = document.currentScript;
 const defaultTitle = scriptTag?.dataset?.title || 'Assistant PulseOS';
 
+// Inline SVG assets
+const AVATAR_SVG = `<svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3 8.82031C3.46875 8.82031 3.82031 9.21094 3.82031 9.67969C3.82031 10.1094 3.46875 10.5 3 10.5C2.53125 10.5 2.17969 10.1094 2.17969 9.67969C2.17969 9.21094 2.53125 8.82031 3 8.82031ZM3 12.1797C3.46875 12.1797 3.82031 12.5312 3.82031 13C3.82031 13.4688 3.46875 13.8203 3 13.8203C2.53125 13.8203 2.17969 13.4688 2.17969 13C2.17969 12.5312 2.53125 12.1797 3 12.1797ZM3 5.5C3.46875 5.5 3.82031 5.89062 3.82031 6.32031C3.82031 6.78906 3.46875 7.17969 3 7.17969C2.53125 7.17969 2.17969 6.78906 2.17969 6.32031C2.17969 5.89062 2.53125 5.5 3 5.5ZM0.5 5.92969C0.734375 5.92969 0.929688 6.08594 0.929688 6.32031C0.929688 6.55469 0.734375 6.75 0.5 6.75C0.265625 6.75 0.0703125 6.55469 0.0703125 6.32031C0.0703125 6.08594 0.265625 5.92969 0.5 5.92969ZM3 2.17969C3.46875 2.17969 3.82031 2.53125 3.82031 3C3.82031 3.46875 3.46875 3.82031 3 3.82031C2.53125 3.82031 2.17969 3.46875 2.17969 3C2.17969 2.53125 2.53125 2.17969 3 2.17969ZM15.5 6.75C15.2656 6.75 15.0703 6.55469 15.0703 6.32031C15.0703 6.08594 15.2656 5.92969 15.5 5.92969C15.7344 5.92969 15.9297 6.08594 15.9297 6.32031C15.9297 6.55469 15.7344 6.75 15.5 6.75ZM9.67969 3.82031C9.21094 3.82031 8.82031 3.46875 8.82031 3C8.82031 2.53125 9.21094 2.17969 9.67969 2.17969C10.1094 2.17969 10.5 2.53125 10.5 3C10.5 3.46875 10.1094 3.82031 9.67969 3.82031ZM9.67969 0.929688C9.44531 0.929688 9.25 0.734375 9.25 0.5C9.25 0.265625 9.44531 0.0703125 9.67969 0.0703125C9.91406 0.0703125 10.0703 0.265625 10.0703 0.5C10.0703 0.734375 9.91406 0.929688 9.67969 0.929688ZM0.5 9.25C0.734375 9.25 0.929688 9.44531 0.929688 9.67969C0.929688 9.91406 0.734375 10.0703 0.5 10.0703C0.265625 10.0703 0.0703125 9.91406 0.0703125 9.67969C0.0703125 9.44531 0.265625 9.25 0.5 9.25ZM6.32031 15.0703C6.55469 15.0703 6.75 15.2656 6.75 15.5C6.75 15.7344 6.55469 15.9297 6.32031 15.9297C6.08594 15.9297 5.92969 15.7344 5.92969 15.5C5.92969 15.2656 6.08594 15.0703 6.32031 15.0703ZM6.32031 0.929688C6.08594 0.929688 5.92969 0.734375 5.92969 0.5C5.92969 0.265625 6.08594 0.0703125 6.32031 0.0703125C6.55469 0.0703125 6.75 0.265625 6.75 0.5C6.75 0.734375 6.55469 0.929688 6.32031 0.929688ZM6.32031 3.82031C5.89062 3.82031 5.5 3.46875 5.5 3C5.5 2.53125 5.89062 2.17969 6.32031 2.17969C6.78906 2.17969 7.17969 2.53125 7.17969 3C7.17969 3.46875 6.78906 3.82031 6.32031 3.82031ZM6.32031 8.42969C7.02344 8.42969 7.57031 8.97656 7.57031 9.67969C7.57031 10.3438 7.02344 10.9297 6.32031 10.9297C5.65625 10.9297 5.07031 10.3438 5.07031 9.67969C5.07031 8.97656 5.65625 8.42969 6.32031 8.42969ZM13 8.82031C13.4688 8.82031 13.8203 9.21094 13.8203 9.67969C13.8203 10.1094 13.4688 10.5 13 10.5C12.5312 10.5 12.1797 10.1094 12.1797 9.67969C12.1797 9.21094 12.5312 8.82031 13 8.82031ZM13 12.1797C13.4688 12.1797 13.8203 12.5312 13.8203 13C13.8203 13.4688 13.4688 13.8203 13 13.8203C12.5312 13.8203 12.1797 13.4688 12.1797 13C12.1797 12.5312 12.5312 12.1797 13 12.1797ZM13 5.5C13.4688 5.5 13.8203 5.89062 13.8203 6.32031C13.8203 6.78906 13.4688 7.17969 13 7.17969C12.5312 7.17969 12.1797 6.78906 12.1797 6.32031C12.1797 5.89062 12.5312 5.5 13 5.5ZM13 2.17969C13.4688 2.17969 13.8203 2.53125 13.8203 3C13.8203 3.46875 13.4688 3.82031 13 3.82031C12.5312 3.82031 12.1797 3.46875 12.1797 3C12.1797 2.53125 12.5312 2.17969 13 2.17969ZM15.5 9.25C15.7344 9.25 15.9297 9.44531 15.9297 9.67969C15.9297 9.91406 15.7344 10.0703 15.5 10.0703C15.2656 10.0703 15.0703 9.91406 15.0703 9.67969C15.0703 9.44531 15.2656 9.25 15.5 9.25ZM9.67969 12.1797C10.1094 12.1797 10.5 12.5312 10.5 13C10.5 13.4688 10.1094 13.8203 9.67969 13.8203C9.21094 13.8203 8.82031 13.4688 8.82031 13C8.82031 12.5312 9.21094 12.1797 9.67969 12.1797ZM9.67969 15.0703C9.91406 15.0703 10.0703 15.2656 10.0703 15.5C10.0703 15.7344 9.91406 15.9297 9.67969 15.9297C9.44531 15.9297 9.25 15.7344 9.25 15.5C9.25 15.2656 9.44531 15.0703 9.67969 15.0703ZM6.32031 5.07031C7.02344 5.07031 7.57031 5.65625 7.57031 6.32031C7.57031 7.02344 7.02344 7.57031 6.32031 7.57031C5.65625 7.57031 5.07031 7.02344 5.07031 6.32031C5.07031 5.65625 5.65625 5.07031 6.32031 5.07031ZM6.32031 12.1797C6.78906 12.1797 7.17969 12.5312 7.17969 13C7.17969 13.4688 6.78906 13.8203 6.32031 13.8203C5.89062 13.8203 5.5 13.4688 5.5 13C5.5 12.5312 5.89062 12.1797 6.32031 12.1797ZM9.67969 8.42969C10.3438 8.42969 10.9297 8.97656 10.9297 9.67969C10.9297 10.3438 10.3438 10.9297 9.67969 10.9297C8.97656 10.9297 8.42969 10.3438 8.42969 9.67969C8.42969 8.97656 8.97656 8.42969 9.67969 8.42969ZM9.67969 5.07031C10.3438 5.07031 10.9297 5.65625 10.9297 6.32031C10.9297 7.02344 10.3438 7.57031 9.67969 7.57031C8.97656 7.57031 8.42969 7.02344 8.42969 6.32031C8.42969 5.65625 8.97656 5.07031 9.67969 5.07031Z" fill="#0046FE"/>
+</svg>
+`;
+
+const BURGER_ICON_SVG = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M4 18L20 18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M4 12L20 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M4 6L20 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>`;
+
+
 class MyChatbot extends HTMLElement {
     constructor() {
       super();
@@ -70,11 +83,14 @@ class MyChatbot extends HTMLElement {
           background: #0052CC;
           color: white;
           border: none;
-          font-size: 20px;
           width: 32px;
           height: 32px;
           border-radius: 6px;
           cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
         }
 
         .sessions-list {
@@ -159,7 +175,7 @@ class MyChatbot extends HTMLElement {
           left: 0;
           width: 4px;
           height: 0;
-          background: #FF991F;
+          background: #FF5C35;
           transition: height 0.3s ease;
         }
 
@@ -183,13 +199,31 @@ class MyChatbot extends HTMLElement {
           font-size: 1.1em;
           line-height: 1.5;
         }
+        /* Custom subtle scrollbar styles for .chat-body (to match .sessions-list) */
+        .chat-body::-webkit-scrollbar {
+          width: 6px;
+        }
+        .chat-body::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .chat-body::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+        .chat-body:hover::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+        .chat-body {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
   
         .chat-input {
           border-top: 1px solid #333;
           padding: 15px 20px;
           display: flex;
           gap: 12px;
-          background: rgba(0, 0, 0, 0.2);
+          background: rgba(0, 0, 0, 0.2);#FF5C35
         }
   
         .chat-input input {
@@ -212,22 +246,39 @@ class MyChatbot extends HTMLElement {
           outline: none;
         }
   
-        .chat-input button {
+        .chat-input .send-icon {
           background: #0052CC;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 12px;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          padding: 10px;
           cursor: pointer;
-          font-weight: 500;
-          font-size: 1.1em;
-          transition: all 0.3s ease;
-          min-width: 100px;
+          opacity: 0.4;
+          pointer-events: none;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          transform: translateY(0);
+          box-shadow: 0 2px 8px rgba(0, 82, 204, 0.2);
         }
 
-        .chat-input button:hover {
+        .chat-input .send-icon:hover {
           background: #0065FF;
           transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);
+        }
+
+        .chat-input .send-icon:active {
+          transform: translateY(1px);
+          box-shadow: 0 2px 4px rgba(0, 82, 204, 0.2);
+        }
+
+        .chat-input .send-icon.active {
+          opacity: 1;
+          pointer-events: auto;
         }
   
         .chat-toggle {
@@ -334,10 +385,10 @@ class MyChatbot extends HTMLElement {
           border-radius: 0;
         }
 
-        .chat-input button {
-          min-width: auto;
-          padding: 12px;
-          font-size: 1em;
+        .chat-input .send-icon {
+          width: 40px;
+          height: 40px;
+          padding: 8px;
         }
 
         .chat-input {
@@ -370,7 +421,7 @@ class MyChatbot extends HTMLElement {
       wrapper.innerHTML = `
         <div class="chat-container">
           <div class="chat-header">
-            <button class="toggle-sessions">+</button>
+            <button class="toggle-sessions" aria-label="Toggle sessions">${BURGER_ICON_SVG}</button>
             <span class="header-title">${title}</span>
             <button class="close-chat" title="Fermer">×</button>
           </div>
@@ -392,10 +443,16 @@ class MyChatbot extends HTMLElement {
           </div>
           <div class="chat-input">
             <input type="text" id="chatInput" placeholder="Tapez un message..." />
-            <button id="sendBtn">Envoyer</button>
+            <button id="sendBtn" class="send-icon" aria-label="Send">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 19V5M12 5L19 12M12 5L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
         </div>
-        <button class="chat-toggle"><img src="Avatar.svg" alt="Chat" width="24" height="24"/></button>
+        <button class="chat-toggle">
+          ${AVATAR_SVG}
+        </button>
       `;
 
       this.shadowRoot.append(style, wrapper);
@@ -474,6 +531,7 @@ class MyChatbot extends HTMLElement {
         if (msg) {
           chatBody.innerHTML += `<div><strong>Vous:</strong> ${msg}</div>`;
           chatInput.value = '';
+          sendBtn.classList.remove('active');
           setTimeout(() => {
             chatBody.innerHTML += `<div><strong>Bot:</strong> Ceci est une réponse automatique.</div>`;
           }, 500);
@@ -483,6 +541,15 @@ class MyChatbot extends HTMLElement {
       chatInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
           sendBtn.click();
+        }
+      });
+
+      // Enable/disable send icon based on input content
+      chatInput.addEventListener('input', () => {
+        if (chatInput.value.trim()) {
+          sendBtn.classList.add('active');
+        } else {
+          sendBtn.classList.remove('active');
         }
       });
 
