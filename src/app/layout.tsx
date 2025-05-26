@@ -32,6 +32,7 @@ export default function RootLayout({
         <Script 
           src="/script.js"
           strategy="afterInteractive"
+          data-title="Hello world"
         />
       </body>
     </html>

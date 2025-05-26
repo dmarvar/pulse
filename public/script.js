@@ -1,11 +1,23 @@
+// Get the title from script tag before anything else
+const scriptTag = document.currentScript;
+const defaultTitle = scriptTag?.dataset?.title || 'Assistant PulseOS';
+
 class MyChatbot extends HTMLElement {
     constructor() {
       super();
+      const title = this.getAttribute('title') || defaultTitle;
       this.attachShadow({ mode: 'open' });
       this.sessions = [
-        { id: 'today', name: 'Today', messages: [] },
-        { id: 'intro', name: 'New Chatbot Introduction', messages: [] },
-        { id: 'greeting', name: 'Greeting', messages: [] }
+        { id: 'today', name: "Aujourd'hui", messages: [] },
+        { id: 'intro', name: 'Nouvelle Introduction', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'greeting', name: 'Accueil', messages: [] },
       ];
       this.currentSession = this.sessions[0];
   
@@ -55,7 +67,7 @@ class MyChatbot extends HTMLElement {
 
         .toggle-sessions {
           position: relative;
-          background: #0b8f89;
+          background: #0052CC;
           color: white;
           border: none;
           font-size: 20px;
@@ -83,8 +95,49 @@ class MyChatbot extends HTMLElement {
           gap: 10px;
         }
 
+        .sessions-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sessions-title {
+          font-size: 0.9em;
+          font-weight: 500;
+          color: rgba(255, 255, 255, 0.6);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin: 0;
+        }
+
         .sessions-list.active {
           transform: translateX(0);
+        }
+
+        /* Custom subtle scrollbar styles for .sessions-list */
+        .sessions-list::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .sessions-list::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .sessions-list::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+
+        .sessions-list:hover::-webkit-scrollbar-thumb {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .sessions-list {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
         }
 
         .session-item {
@@ -106,7 +159,7 @@ class MyChatbot extends HTMLElement {
           left: 0;
           width: 4px;
           height: 0;
-          background: #0b8f89;
+          background: #FF991F;
           transition: height 0.3s ease;
         }
 
@@ -160,7 +213,7 @@ class MyChatbot extends HTMLElement {
         }
   
         .chat-input button {
-          background: #0b8f89;
+          background: #0052CC;
           color: white;
           border: none;
           padding: 12px 24px;
@@ -173,16 +226,16 @@ class MyChatbot extends HTMLElement {
         }
 
         .chat-input button:hover {
-          background: #0aa199;
+          background: #0065FF;
           transform: translateY(-1px);
         }
   
         .chat-toggle {
           position: fixed;
-          bottom: 20px;
-          right: 20px;
-          background: #0b8f89;
-          color: white;
+          bottom: var(--md-sys-spacing-medium, 20px);
+          right: var(--md-sys-spacing-medium, 20px);
+          background: #E5EDFF;
+          color: var(--md-sys-color-on-primary, white);
           border: none;
           border-radius: 50%;
           width: 60px;
@@ -191,12 +244,22 @@ class MyChatbot extends HTMLElement {
           cursor: pointer;
           z-index: 1000;
           transition: all 0.3s ease;
-          box-shadow: 0 4px 12px rgba(11, 143, 137, 0.2);
+          box-shadow: 0 4px 12px rgba(0, 82, 204, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .chat-toggle:hover {
+          background: #E5EDFF;
           transform: scale(1.1);
-          box-shadow: 0 6px 16px rgba(11, 143, 137, 0.3);
+          box-shadow: 0 6px 16px rgba(0, 82, 204, 0.3);
+        }
+
+        .chat-toggle:focus {
+          outline: 2px solid #0052CC;
+          outline-offset: 2px;
+          box-shadow: none;
         }
 
         .end-history {
@@ -224,6 +287,83 @@ class MyChatbot extends HTMLElement {
           opacity: 1;
           pointer-events: auto;
         }
+
+        .close-chat {
+          position: absolute;
+          right: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: transparent;
+          color: white;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          line-height: 1;
+        }
+
+        .new-session-btn {
+          background: #0052CC;
+          color: white;
+          border: none;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          padding: 0;
+          line-height: 1;
+        }
+
+        .new-session-btn:hover {
+          background: #0065FF;
+          transform: translateY(-1px);
+        }
+      `;
+      // Mobile responsiveness
+      style.textContent += `
+      @media (max-width: 480px) {
+        .chat-container {
+          width: 100vw;
+          height: 100vh;
+          bottom: 0;
+          right: 0;
+          border-radius: 0;
+        }
+
+        .chat-input button {
+          min-width: auto;
+          padding: 12px;
+          font-size: 1em;
+        }
+
+        .chat-input {
+          padding: 10px;
+        }
+
+        .chat-input input {
+          padding: 12px;
+        }
+
+        .chat-toggle {
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+        }
+
+        .toggle-sessions {
+          width: 28px;
+          height: 28px;
+          font-size: 18px;
+        }
+
+        .header-title {
+          font-size: 1.2em;
+        }
+      }
       `;
   
       const wrapper = document.createElement('div');
@@ -231,28 +371,33 @@ class MyChatbot extends HTMLElement {
         <div class="chat-container">
           <div class="chat-header">
             <button class="toggle-sessions">+</button>
-            <span class="header-title">Chatbot</span>
+            <span class="header-title">${title}</span>
+            <button class="close-chat" title="Fermer">×</button>
           </div>
           <div class="sessions-list">
+            <div class="sessions-header">
+              <div class="sessions-title">Sessions</div>
+              <button class="new-session-btn">+</button>
+            </div>
             ${this.sessions.map(session => `
               <div class="session-item" data-session-id="${session.id}">
                 ${session.name}
               </div>
             `).join('')}
-            <div class="end-history">You have reached the end of your chat history.</div>
+            <div class="end-history">Vous avez atteint la fin de votre historique de chat.</div>
           </div>
           <div class="overlay"></div>
           <div class="chat-body" id="chatBody">
-            <div><strong>Bot:</strong> Hello! How can I help you?</div>
+            <div><strong>Bot:</strong> Bonjour! Comment puis-je vous aider?</div>
           </div>
           <div class="chat-input">
-            <input type="text" id="chatInput" placeholder="Type a message..." />
-            <button id="sendBtn">Send</button>
+            <input type="text" id="chatInput" placeholder="Tapez un message..." />
+            <button id="sendBtn">Envoyer</button>
           </div>
         </div>
-        <button class="chat-toggle">💬</button>
+        <button class="chat-toggle"><img src="Avatar.svg" alt="Chat" width="24" height="24"/></button>
       `;
-  
+
       this.shadowRoot.append(style, wrapper);
     }
   
@@ -266,9 +411,23 @@ class MyChatbot extends HTMLElement {
       const sessionsList = this.shadowRoot.querySelector('.sessions-list');
       const sessionItems = this.shadowRoot.querySelectorAll('.session-item');
       const overlay = this.shadowRoot.querySelector('.overlay');
+      const closeBtn = this.shadowRoot.querySelector('.close-chat');
+      const newSessionBtn = this.shadowRoot.querySelector('.new-session-btn');
 
       toggle.addEventListener('click', () => {
         chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        // Responsive toggle button behavior
+        if (window.innerWidth <= 480) {
+          toggle.style.display = 'none';
+        } else {
+          toggle.style.zIndex = '1';
+        }
+      });
+
+      closeBtn.addEventListener('click', () => {
+        chat.style.display = 'none';
+        toggle.style.display = 'flex';
+        toggle.style.zIndex = '1000';
       });
 
       toggleSessions.addEventListener('click', () => {
@@ -313,10 +472,10 @@ class MyChatbot extends HTMLElement {
       sendBtn.addEventListener('click', () => {
         const msg = chatInput.value.trim();
         if (msg) {
-          chatBody.innerHTML += `<div><strong>You:</strong> ${msg}</div>`;
+          chatBody.innerHTML += `<div><strong>Vous:</strong> ${msg}</div>`;
           chatInput.value = '';
           setTimeout(() => {
-            chatBody.innerHTML += `<div><strong>Bot:</strong> This is a mock reply.</div>`;
+            chatBody.innerHTML += `<div><strong>Bot:</strong> Ceci est une réponse automatique.</div>`;
           }, 500);
         }
       });
@@ -325,6 +484,52 @@ class MyChatbot extends HTMLElement {
         if (event.key === 'Enter') {
           sendBtn.click();
         }
+      });
+
+      // Add new session functionality
+      newSessionBtn.addEventListener('click', () => {
+        const sessionId = 'session-' + Date.now();
+        const newSession = {
+          id: sessionId,
+          name: 'Nouvelle Session ' + (this.sessions.length + 1),
+          messages: []
+        };
+        
+        this.sessions.unshift(newSession);
+        this.currentSession = newSession;
+
+        // Create and insert new session element
+        const sessionElement = document.createElement('div');
+        sessionElement.className = 'session-item';
+        sessionElement.dataset.sessionId = sessionId;
+        sessionElement.textContent = newSession.name;
+
+        // Insert after the new session button
+        const firstSession = sessionsList.querySelector('.session-item');
+        if (firstSession) {
+          sessionsList.insertBefore(sessionElement, firstSession);
+        } else {
+          sessionsList.insertBefore(sessionElement, sessionsList.querySelector('.end-history'));
+        }
+
+        // Add click handler to new session
+        sessionElement.addEventListener('click', () => {
+          this.currentSession = newSession;
+          sessionsList.classList.remove('active');
+          toggleSessions.classList.remove('active');
+          overlay.classList.remove('active');
+          
+          // Remove active class from all items
+          this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
+          // Add active class to clicked item
+          sessionElement.classList.add('active');
+        });
+
+        // Clear chat body and add welcome message
+        chatBody.innerHTML = '<div><strong>Bot:</strong> Bonjour! Comment puis-je vous aider?</div>';
+        
+        // Activate the new session
+        sessionElement.click();
       });
     }
   }
@@ -335,5 +540,6 @@ customElements.define('my-chat', MyChatbot);
 const existing = document.querySelector('my-chat');
 if (!existing) {
   const chatbot = document.createElement('my-chat');
+  chatbot.setAttribute('title', defaultTitle);
   document.body.appendChild(chatbot);
 }
