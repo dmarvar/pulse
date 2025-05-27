@@ -21,18 +21,20 @@ class MyChatbot extends HTMLElement {
       const title = this.getAttribute('title') || defaultTitle;
       this.attachShadow({ mode: 'open' });
       this.sessions = [
-        { id: 'today', name: "Aujourd'hui", messages: [] },
-        { id: 'intro', name: 'Nouvelle Introduction', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
-        { id: 'greeting', name: 'Accueil', messages: [] },
+        { id: 'today', name: "Aujourd'hui", messages: [], sessionId: null },
+        { id: 'intro', name: 'Nouvelle Introduction', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
+        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
       ];
       this.currentSession = this.sessions[0];
+      this.apiEndpoint = 'http://localhost:3000/api/pulse/chat';
+      this.isLoading = false;
   
       // Styles and template
       const style = document.createElement('style');
@@ -373,6 +375,21 @@ class MyChatbot extends HTMLElement {
           background: #0065FF;
           transform: translateY(-1px);
         }
+
+        .loading-indicator {
+          opacity: 0.7;
+        }
+
+        .typing-dots {
+          display: inline-block;
+          animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+          0%, 20% { opacity: 0; }
+          50% { opacity: 1; }
+          100% { opacity: 0; }
+        }
       `;
       // Mobile responsiveness
       style.textContent += `
@@ -439,7 +456,6 @@ class MyChatbot extends HTMLElement {
           </div>
           <div class="overlay"></div>
           <div class="chat-body" id="chatBody">
-            <div><strong>Bot:</strong> Bonjour! Comment puis-je vous aider?</div>
           </div>
           <div class="chat-input">
             <input type="text" id="chatInput" placeholder="Tapez un message..." />
@@ -456,6 +472,116 @@ class MyChatbot extends HTMLElement {
       `;
 
       this.shadowRoot.append(style, wrapper);
+    }
+
+    async sendMessage() {
+      const chatInput = this.shadowRoot.getElementById('chatInput');
+      const chatBody = this.shadowRoot.getElementById('chatBody');
+      const sendBtn = this.shadowRoot.getElementById('sendBtn');
+      
+      const msg = chatInput.value.trim();
+      if (!msg || this.isLoading) return;
+
+      // Clear input and disable send button
+      chatInput.value = '';
+      sendBtn.classList.remove('active');
+      this.isLoading = true;
+
+      // Add user message to UI and conversation history
+      const userMessage = { role: 'user', content: msg };
+      this.addMessageToUI('Vous', msg);
+      this.currentSession.messages.push(userMessage);
+
+      // Show loading indicator
+      this.showLoadingIndicator(chatBody);
+
+      try {
+        // Prepare request body
+        const requestBody = { message: msg };
+        
+        // Add session_id if this is not the first message
+        if (this.currentSession.sessionId) {
+          requestBody.session_id = this.currentSession.sessionId;
+        }
+
+        // Make API call
+        const response = await fetch(this.apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Store session_id if this was the first message
+        if (!this.currentSession.sessionId && data.session_id) {
+          this.currentSession.sessionId = data.session_id;
+        }
+
+        // Remove loading indicator and add bot response
+        this.removeLoadingIndicator(chatBody);
+        const botMessage = { role: 'assistant', content: data.response };
+        this.addMessageToUI('Bot', data.response);
+        this.currentSession.messages.push(botMessage);
+
+      } catch (error) {
+        console.error('Error sending message:', error);
+        this.removeLoadingIndicator(chatBody);
+        this.addMessageToUI('Bot', 'Désolé, une erreur s\'est produite. Veuillez réessayer.');
+      } finally {
+        this.isLoading = false;
+      }
+    }
+
+    addMessageToUI(sender, message) {
+      const chatBody = this.shadowRoot.getElementById('chatBody');
+      const messageDiv = document.createElement('div');
+      messageDiv.innerHTML = `<strong>${sender}:</strong> ${this.formatMessage(message)}`;
+      chatBody.appendChild(messageDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    formatMessage(message) {
+      // Convert markdown-style formatting to HTML
+      return message
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+    }
+
+    showLoadingIndicator(chatBody) {
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'loading-indicator';
+      loadingDiv.innerHTML = '<strong>Bot:</strong> <span class="typing-dots">●●●</span>';
+      chatBody.appendChild(loadingDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    removeLoadingIndicator(chatBody) {
+      const loadingIndicator = chatBody.querySelector('.loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+    }
+
+    loadSessionMessages() {
+      const chatBody = this.shadowRoot.getElementById('chatBody');
+      chatBody.innerHTML = '';
+      
+      if (this.currentSession.messages.length === 0) {
+        this.addMessageToUI('Bot', 'Bonjour! Comment puis-je vous aider?');
+      } else {
+        this.currentSession.messages.forEach(message => {
+          const sender = message.role === 'user' ? 'Vous' : 'Bot';
+          this.addMessageToUI(sender, message.content);
+        });
+      }
     }
   
     connectedCallback() {
@@ -513,6 +639,9 @@ class MyChatbot extends HTMLElement {
           sessionItems.forEach(si => si.classList.remove('active'));
           // Add active class to clicked item
           item.classList.add('active');
+          
+          // Load conversation history for this session
+          this.loadSessionMessages();
         });
       });
   
@@ -527,20 +656,12 @@ class MyChatbot extends HTMLElement {
       });
   
       sendBtn.addEventListener('click', () => {
-        const msg = chatInput.value.trim();
-        if (msg) {
-          chatBody.innerHTML += `<div><strong>Vous:</strong> ${msg}</div>`;
-          chatInput.value = '';
-          sendBtn.classList.remove('active');
-          setTimeout(() => {
-            chatBody.innerHTML += `<div><strong>Bot:</strong> Ceci est une réponse automatique.</div>`;
-          }, 500);
-        }
+        this.sendMessage();
       });
 
       chatInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
-          sendBtn.click();
+          this.sendMessage();
         }
       });
 
@@ -559,7 +680,8 @@ class MyChatbot extends HTMLElement {
         const newSession = {
           id: sessionId,
           name: 'Nouvelle Session ' + (this.sessions.length + 1),
-          messages: []
+          messages: [],
+          sessionId: null
         };
         
         this.sessions.unshift(newSession);
@@ -590,14 +712,17 @@ class MyChatbot extends HTMLElement {
           this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
           // Add active class to clicked item
           sessionElement.classList.add('active');
+          
+          // Load conversation history for this session
+          this.loadSessionMessages();
         });
 
-        // Clear chat body and add welcome message
-        chatBody.innerHTML = '<div><strong>Bot:</strong> Bonjour! Comment puis-je vous aider?</div>';
-        
         // Activate the new session
         sessionElement.click();
       });
+
+      // Initialize the first session with welcome message
+      this.loadSessionMessages();
     }
   }
   
