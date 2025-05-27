@@ -157,6 +157,18 @@ const CHAT_HEADER_STYLES = `
     gap: 15px;
   }
 
+  .chat-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 76px;
+    height: 100%;
+    background: #000;
+    border-top-left-radius: 16px;
+    z-index: 0;
+  }
+
   .header-title {
     font-size: 1.5em;
     font-weight: 400;
@@ -164,6 +176,9 @@ const CHAT_HEADER_STYLES = `
     align-items: center;
     gap: 15px;
     color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 1;
+    margin-left: 20px;
   }
 
   .close-chat {
@@ -177,6 +192,7 @@ const CHAT_HEADER_STYLES = `
     font-size: 24px;
     cursor: pointer;
     line-height: 1;
+    z-index: 1;
   }
 
   @media (max-width: 480px) {
@@ -190,17 +206,29 @@ const CHAT_HEADER_STYLES = `
 const SESSIONS_SIDEBAR_STYLES = `
   .toggle-sessions {
     position: relative;
-    background: #0052CC;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    transition: all 0.2s ease;
+    z-index: 1;
+  }
+
+  .toggle-sessions:hover {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .toggle-sessions:active {
+    background: rgba(0, 0, 0, 0.6);
+    transform: scale(0.95);
   }
 
   .sessions-list {
