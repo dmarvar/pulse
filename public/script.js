@@ -102,7 +102,10 @@ const CHAT_CONTAINER_STYLES = `
     right: 20px;
     width: 400px;
     height: 600px;
-    background: #1a1a1a;
+    background: #1a1a1a url('./texture.png');
+    background-size: 200px 200px;
+    background-repeat: repeat;
+    background-position: 0 0;
     border: 1px solid #333;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.2);
@@ -113,6 +116,19 @@ const CHAT_CONTAINER_STYLES = `
     overflow: hidden;
     margin-left: 0;
     transition: margin-left 0.4s ease;
+  }
+
+  /* Add overlay to ensure text readability over texture */
+  .chat-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.8);
+    pointer-events: none;
+    z-index: -1;
   }
 
   @media (max-width: 480px) {
