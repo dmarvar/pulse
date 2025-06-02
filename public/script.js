@@ -164,7 +164,7 @@ const CHAT_HEADER_STYLES = `
     left: 0;
     width: 76px;
     height: 100%;
-    background: #000;
+    background: rgba(0, 0, 0, 0.4);
     border-top-left-radius: 16px;
     z-index: 0;
   }
@@ -307,25 +307,31 @@ const SESSIONS_SIDEBAR_STYLES = `
   }
 
   .new-session-btn {
-    background: #0052CC;
+    background: rgba(255, 255, 255, 0.1);
     color: white;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 28px;
     height: 28px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     padding: 0;
     line-height: 1;
   }
 
   .new-session-btn:hover {
-    background: #0065FF;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
+  }
+
+  .new-session-btn:active {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0.95);
   }
 
   .end-history {
