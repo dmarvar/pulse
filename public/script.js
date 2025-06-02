@@ -384,6 +384,129 @@ const CHAT_BODY_STYLES = `
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1em;
     line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .message {
+    display: flex;
+    align-items: flex-start;
+    max-width: 85%;
+    animation: fadeInUp 0.3s ease;
+  }
+
+  .message.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .message.bot {
+    align-self: flex-start;
+  }
+
+  .message-avatar {
+    display: none;
+  }
+
+  .message-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: 18px;
+    position: relative;
+    word-wrap: break-word;
+    max-width: 100%;
+  }
+
+  .message.user .message-content {
+    background: linear-gradient(135deg, #0052CC, #0065FF);
+    color: white;
+    border-bottom-right-radius: 6px;
+  }
+
+  .message.bot .message-content {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom-left-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .message-content strong {
+    display: none;
+  }
+
+  .message-text {
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .message-time {
+    font-size: 0.75em;
+    opacity: 0.6;
+    margin-top: 4px;
+  }
+
+  .loading-indicator {
+    display: flex;
+    align-items: flex-start;
+    max-width: 85%;
+    align-self: flex-start;
+  }
+
+  .loading-indicator .message-avatar {
+    display: none;
+  }
+
+  .loading-indicator .message-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: 18px;
+    border-bottom-left-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .typing-dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+
+  .typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    animation: typing 1.4s infinite;
+  }
+
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes typing {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.5;
+    }
+    30% {
+      transform: translateY(-8px);
+      opacity: 1;
+    }
   }
 
   /* Custom scrollbar for chat body */
@@ -407,6 +530,17 @@ const CHAT_BODY_STYLES = `
   .chat-body {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  }
+
+  @media (max-width: 480px) {
+    .message {
+      max-width: 95%;
+    }
+
+    .message-content {
+      padding: 10px 12px;
+      font-size: 0.95em;
+    }
   }
 `;
 
@@ -509,21 +643,6 @@ const OVERLAY_LOADING_STYLES = `
   .overlay.active {
     opacity: 1;
     pointer-events: auto;
-  }
-
-  .loading-indicator {
-    opacity: 0.7;
-  }
-
-  .typing-dots {
-    display: inline-block;
-    animation: typing 1.5s infinite;
-  }
-
-  @keyframes typing {
-    0%, 20% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
   }
 `;
 
@@ -669,7 +788,20 @@ class MyChatbot extends HTMLElement {
     addMessageToUI(sender, message) {
       const chatBody = this.shadowRoot.getElementById('chatBody');
       const messageDiv = document.createElement('div');
-      messageDiv.innerHTML = `<strong>${sender}:</strong> ${this.formatMessage(message)}`;
+      const isUser = sender === 'Vous';
+      
+      messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+      
+      const content = document.createElement('div');
+      content.className = 'message-content';
+      
+      const text = document.createElement('div');
+      text.className = 'message-text';
+      text.innerHTML = this.formatMessage(message);
+      
+      content.appendChild(text);
+      messageDiv.appendChild(content);
+      
       chatBody.appendChild(messageDiv);
       chatBody.scrollTop = chatBody.scrollHeight;
     }
@@ -685,7 +817,17 @@ class MyChatbot extends HTMLElement {
     showLoadingIndicator(chatBody) {
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'loading-indicator';
-      loadingDiv.innerHTML = '<strong>Bot:</strong> <span class="typing-dots">●●●</span>';
+      
+      const content = document.createElement('div');
+      content.className = 'message-content';
+      
+      const typingDots = document.createElement('div');
+      typingDots.className = 'typing-dots';
+      typingDots.innerHTML = '<span></span><span></span><span></span>';
+      
+      content.appendChild(typingDots);
+      loadingDiv.appendChild(content);
+      
       chatBody.appendChild(loadingDiv);
       chatBody.scrollTop = chatBody.scrollHeight;
     }
@@ -702,7 +844,7 @@ class MyChatbot extends HTMLElement {
       chatBody.innerHTML = '';
       
       if (this.currentSession.messages.length === 0) {
-        this.addMessageToUI('Bot', 'Bonjour! Comment puis-je vous aider?');
+        this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
       } else {
         this.currentSession.messages.forEach(message => {
           const sender = message.role === 'user' ? 'Vous' : 'Bot';
