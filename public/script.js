@@ -667,6 +667,7 @@ class MyChatbot extends HTMLElement {
       this.currentSession = this.sessions[0];
       this.apiEndpoint = 'http://localhost:8990/api/pulse/chat';
       this.isLoading = false;
+      this.STORAGE_KEY = 'pulse-chat-modal-state';
   
       // Styles and template - All components combined
       const style = document.createElement('style');
@@ -718,6 +719,52 @@ class MyChatbot extends HTMLElement {
       `;
 
       this.shadowRoot.append(style, wrapper);
+    }
+
+    // Save modal state to session storage
+    saveModalState(isOpen) {
+      try {
+        sessionStorage.setItem(this.STORAGE_KEY, JSON.stringify({ isOpen }));
+      } catch (error) {
+        console.warn('Failed to save modal state to session storage:', error);
+      }
+    }
+
+    // Load modal state from session storage
+    loadModalState() {
+      try {
+        const saved = sessionStorage.getItem(this.STORAGE_KEY);
+        if (saved) {
+          const state = JSON.parse(saved);
+          return state.isOpen || false;
+        }
+      } catch (error) {
+        console.warn('Failed to load modal state from session storage:', error);
+      }
+      return false;
+    }
+
+    // Set modal visibility with state persistence
+    setModalVisibility(isOpen) {
+      const chat = this.shadowRoot.querySelector('.chat-container');
+      const toggle = this.shadowRoot.querySelector('.chat-toggle');
+      
+      if (isOpen) {
+        chat.style.display = 'flex';
+        // Responsive toggle button behavior
+        if (window.innerWidth <= 480) {
+          toggle.style.display = 'none';
+        } else {
+          toggle.style.zIndex = '1';
+        }
+      } else {
+        chat.style.display = 'none';
+        toggle.style.display = 'flex';
+        toggle.style.zIndex = '1000';
+      }
+      
+      // Save state to session storage
+      this.saveModalState(isOpen);
     }
 
     async sendMessage() {
@@ -866,20 +913,19 @@ class MyChatbot extends HTMLElement {
       const closeBtn = this.shadowRoot.querySelector('.close-chat');
       const newSessionBtn = this.shadowRoot.querySelector('.new-session-btn');
 
+      // Restore modal state from session storage
+      const savedState = this.loadModalState();
+      if (savedState) {
+        this.setModalVisibility(true);
+      }
+
       toggle.addEventListener('click', () => {
-        chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
-        // Responsive toggle button behavior
-        if (window.innerWidth <= 480) {
-          toggle.style.display = 'none';
-        } else {
-          toggle.style.zIndex = '1';
-        }
+        const isCurrentlyOpen = chat.style.display === 'flex';
+        this.setModalVisibility(!isCurrentlyOpen);
       });
 
       closeBtn.addEventListener('click', () => {
-        chat.style.display = 'none';
-        toggle.style.display = 'flex';
-        toggle.style.zIndex = '1000';
+        this.setModalVisibility(false);
       });
 
       toggleSessions.addEventListener('click', () => {
@@ -912,16 +958,6 @@ class MyChatbot extends HTMLElement {
           // Load conversation history for this session
           this.loadSessionMessages();
         });
-      });
-  
-      document.addEventListener('click', (event) => {
-        const clickedElement = event.composedPath()[0];
-        const isOutside = !this.contains(clickedElement) && 
-                         !this.shadowRoot.contains(clickedElement);
-        
-        if (isOutside && chat.style.display === 'flex') {
-          chat.style.display = 'none';
-        }
       });
   
       sendBtn.addEventListener('click', () => {

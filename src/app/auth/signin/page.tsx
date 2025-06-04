@@ -2,6 +2,7 @@ import { signIn } from "@/auth"
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import Image from "next/image"
+import AutoSignIn from "./AutoSignIn"
 
 export default async function SignInPage({
   searchParams,
@@ -16,6 +17,7 @@ export default async function SignInPage({
     redirect(params.callbackUrl || '/v0')
   }
 
+  // Only show the UI if there's an error
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white flex items-center justify-center p-6">
       <div className="max-w-md w-full">
@@ -31,7 +33,7 @@ export default async function SignInPage({
               priority
             />
           </div>
-          <h1 className="text-2xl font-bold mt-6 mb-2">Welcome to CEGID PULSE</h1>
+          <h1 className="text-2xl font-bold mt-6 mb-2">Authenticating CEGID PULSE</h1>
           <p className="text-gray-400">Sign in to access the platform</p>
         </div>
 
@@ -53,28 +55,35 @@ export default async function SignInPage({
           </div>
         )}
 
-        {/* Sign-in Options */}
-        <div className="space-y-4">
-          {/* Custom OAuth Provider */}
-          <form
-            action={async () => {
-              "use server"
-              await signIn("myoauth", {
-                redirectTo: params.callbackUrl || "/v0",
-              })
-            }}
-          >
-            <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium"
+        {/* Only show retry option if there's an error */}
+        {params.error && (
+          <div className="space-y-4">
+            {/* Custom OAuth Provider */}
+            <form
+              action={async () => {
+                "use server"
+                await signIn("myoauth", {
+                  redirectTo: params.callbackUrl || "/v0",
+                })
+              }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Continue with OAuth
-            </button>
-          </form>
-        </div>
+              <button
+                type="submit"
+                className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Try Again
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* Auto sign-in component when no error */}
+        {!params.error && (
+          <AutoSignIn callbackUrl={params.callbackUrl || "/v0"} />
+        )}
 
         {/* Footer */}
         <div className="mt-8 text-center">

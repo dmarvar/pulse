@@ -24,14 +24,14 @@ export default function Home() {
           
           <div className="flex flex-col gap-4 items-center mt-8">
             <p className="text-lg text-gray-700 dark:text-gray-200">
-              To continue reading documents, go to:
+              To continue reading documents, authenticate with Cegid account:
             </p>
             
             <Link
               href="/v0"
               className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-lg h-12 px-8"
             >
-              Documents
+              Cegid Sign in
             </Link>
           </div>
         </div>
