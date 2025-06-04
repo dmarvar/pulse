@@ -665,7 +665,7 @@ class MyChatbot extends HTMLElement {
         { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
       ];
       this.currentSession = this.sessions[0];
-      this.apiEndpoint = 'http://localhost:3000/api/pulse/chat';
+      this.apiEndpoint = 'http://localhost:8990/api/pulse/chat';
       this.isLoading = false;
   
       // Styles and template - All components combined

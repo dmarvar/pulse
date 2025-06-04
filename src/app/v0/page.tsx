@@ -1,8 +1,52 @@
 import Image from 'next/image';
+import { auth, signOut } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function CegidPulsePage() {
+export default async function CegidPulsePage() {
+  const session = await auth();
+  
+  // This should not happen due to middleware, but just in case
+  if (!session?.user) {
+    redirect('/auth/signin');
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+      {/* Auth Header */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="flex items-center gap-4 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg px-4 py-2">
+          {session.user.image && (
+            <Image
+              src={session.user.image}
+              alt={session.user.name || 'User'}
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+          )}
+          <div className="text-sm">
+            <p className="text-white font-medium">{session.user.name}</p>
+            <p className="text-gray-400 text-xs">{session.user.email}</p>
+          </div>
+          <form
+            action={async () => {
+              "use server"
+              await signOut({ redirectTo: "/" });
+            }}
+          >
+            <button
+              type="submit"
+              className="text-gray-400 hover:text-white transition-colors p-1"
+              title="Sign out"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
       {/* Main Container */}
       <div className="container mx-auto px-6 py-8">
         {/* Header Section with Logo */}
