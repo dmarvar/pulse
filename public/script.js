@@ -760,8 +760,17 @@ class MyChatbot extends HTMLElement {
         }
 
         const sessions = await response.json();
-        this.sessions = sessions;
-        return sessions;
+        console.log('Fetched sessions:', sessions); // Debug log
+        
+        // Normalize sessions to use 'id' field consistently
+        const normalizedSessions = sessions.map(session => ({
+          id: session.session_id || session.id,
+          name: session.name,
+          session_id: session.session_id || session.id // Keep original field for reference
+        }));
+        
+        this.sessions = normalizedSessions;
+        return normalizedSessions;
       } catch (error) {
         console.error('Error fetching sessions:', error);
         throw error;
@@ -770,7 +779,10 @@ class MyChatbot extends HTMLElement {
 
     async fetchSessionHistory(sessionId) {
       try {
-        const response = await fetch(`${this.sessionApiBase}/${sessionId}`, {
+        const url = `${this.sessionApiBase}/${sessionId}`;
+        console.log('Fetching session history from URL:', url); // Debug log
+        
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -816,18 +828,32 @@ class MyChatbot extends HTMLElement {
         }
 
         const newSession = await response.json();
+        console.log('Created new session:', newSession); // Debug log
+        
+        // Validate that we have a session ID
+        if (!newSession.session_id) {
+          console.error('New session created but no session_id returned:', newSession);
+          throw new Error('Session created but no session_id returned from API');
+        }
+        
+        // Normalize the session object to use 'id' internally for consistency
+        const normalizedSession = {
+          id: newSession.session_id,
+          name: newSession.name,
+          session_id: newSession.session_id // Keep original field for reference
+        };
         
         // Add to local sessions array
-        this.sessions.unshift(newSession);
+        this.sessions.unshift(normalizedSession);
         
         // Create empty history entry
         this.chatHistory.unshift({
-          id: newSession.id,
-          name: newSession.name,
+          id: normalizedSession.id,
+          name: normalizedSession.name,
           request: []
         });
         
-        return newSession;
+        return normalizedSession;
       } catch (error) {
         console.error('Error creating session:', error);
         throw error;
@@ -1012,6 +1038,16 @@ class MyChatbot extends HTMLElement {
         return;
       }
       
+      console.log('Loading session messages for session:', this.currentSession); // Debug log
+      
+      // Check if this is a newly created session with no ID or local history entry
+      const historyEntry = this.chatHistory.find(entry => entry.id === this.currentSession.id);
+      if (!this.currentSession.id || (historyEntry && historyEntry.request.length === 0)) {
+        console.log('New session or no history, showing welcome message'); // Debug log
+        this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
+        return;
+      }
+      
       // Show loading indicator while fetching session history
       this.showLoadingIndicator(chatBody);
       
@@ -1176,6 +1212,7 @@ class MyChatbot extends HTMLElement {
           
           // Create session via API
           const newSession = await this.createSession(sessionName);
+          console.log('New session created successfully:', newSession); // Debug log
           
           // Update UI with new session
           this.updateSessionsListUI();
@@ -1195,12 +1232,15 @@ class MyChatbot extends HTMLElement {
             newSessionElement.classList.add('active');
           }
           
-          // Load conversation history for new session
-          await this.loadSessionMessages();
+          // For a newly created session, just show welcome message instead of trying to fetch history
+          const chatBody = this.shadowRoot.getElementById('chatBody');
+          chatBody.innerHTML = '';
+          this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
           
         } catch (error) {
           console.error('Error creating new session:', error);
           // Show error message to user
+          const chatBody = this.shadowRoot.getElementById('chatBody');
           this.addMessageToUI('Bot', 'Erreur lors de la création d\'une nouvelle session.');
         }
       });
