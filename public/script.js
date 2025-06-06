@@ -2,6 +2,9 @@
 const scriptTag = document.currentScript;
 const defaultTitle = scriptTag?.dataset?.title || 'Assistant PulseOS';
 
+// API Configuration
+const API_BASE_URL = 'http://localhost:8990/api/pulse';
+
 // Inline SVG assets
 const AVATAR_SVG = `<svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M3 8.82031C3.46875 8.82031 3.82031 9.21094 3.82031 9.67969C3.82031 10.1094 3.46875 10.5 3 10.5C2.53125 10.5 2.17969 10.1094 2.17969 9.67969C2.17969 9.21094 2.53125 8.82031 3 8.82031ZM3 12.1797C3.46875 12.1797 3.82031 12.5312 3.82031 13C3.82031 13.4688 3.46875 13.8203 3 13.8203C2.53125 13.8203 2.17969 13.4688 2.17969 13C2.17969 12.5312 2.53125 12.1797 3 12.1797ZM3 5.5C3.46875 5.5 3.82031 5.89062 3.82031 6.32031C3.82031 6.78906 3.46875 7.17969 3 7.17969C2.53125 7.17969 2.17969 6.78906 2.17969 6.32031C2.17969 5.89062 2.53125 5.5 3 5.5ZM0.5 5.92969C0.734375 5.92969 0.929688 6.08594 0.929688 6.32031C0.929688 6.55469 0.734375 6.75 0.5 6.75C0.265625 6.75 0.0703125 6.55469 0.0703125 6.32031C0.0703125 6.08594 0.265625 5.92969 0.5 5.92969ZM3 2.17969C3.46875 2.17969 3.82031 2.53125 3.82031 3C3.82031 3.46875 3.46875 3.82031 3 3.82031C2.53125 3.82031 2.17969 3.46875 2.17969 3C2.17969 2.53125 2.53125 2.17969 3 2.17969ZM15.5 6.75C15.2656 6.75 15.0703 6.55469 15.0703 6.32031C15.0703 6.08594 15.2656 5.92969 15.5 5.92969C15.7344 5.92969 15.9297 6.08594 15.9297 6.32031C15.9297 6.55469 15.7344 6.75 15.5 6.75ZM9.67969 3.82031C9.21094 3.82031 8.82031 3.46875 8.82031 3C8.82031 2.53125 9.21094 2.17969 9.67969 2.17969C10.1094 2.17969 10.5 2.53125 10.5 3C10.5 3.46875 10.1094 3.82031 9.67969 3.82031ZM9.67969 0.929688C9.44531 0.929688 9.25 0.734375 9.25 0.5C9.25 0.265625 9.44531 0.0703125 9.67969 0.0703125C9.91406 0.0703125 10.0703 0.265625 10.0703 0.5C10.0703 0.734375 9.91406 0.929688 9.67969 0.929688ZM0.5 9.25C0.734375 9.25 0.929688 9.44531 0.929688 9.67969C0.929688 9.91406 0.734375 10.0703 0.5 10.0703C0.265625 10.0703 0.0703125 9.91406 0.0703125 9.67969C0.0703125 9.44531 0.265625 9.25 0.5 9.25ZM6.32031 15.0703C6.55469 15.0703 6.75 15.2656 6.75 15.5C6.75 15.7344 6.55469 15.9297 6.32031 15.9297C6.08594 15.9297 5.92969 15.7344 5.92969 15.5C5.92969 15.2656 6.08594 15.0703 6.32031 15.0703ZM6.32031 0.929688C6.08594 0.929688 5.92969 0.734375 5.92969 0.5C5.92969 0.265625 6.08594 0.0703125 6.32031 0.0703125C6.55469 0.0703125 6.75 0.265625 6.75 0.5C6.75 0.734375 6.55469 0.929688 6.32031 0.929688ZM6.32031 3.82031C5.89062 3.82031 5.5 3.46875 5.5 3C5.5 2.53125 5.89062 2.17969 6.32031 2.17969C6.78906 2.17969 7.17969 2.53125 7.17969 3C7.17969 3.46875 6.78906 3.82031 6.32031 3.82031ZM6.32031 8.42969C7.02344 8.42969 7.57031 8.97656 7.57031 9.67969C7.57031 10.3438 7.02344 10.9297 6.32031 10.9297C5.65625 10.9297 5.07031 10.3438 5.07031 9.67969C5.07031 8.97656 5.65625 8.42969 6.32031 8.42969ZM13 8.82031C13.4688 8.82031 13.8203 9.21094 13.8203 9.67969C13.8203 10.1094 13.4688 10.5 13 10.5C12.5312 10.5 12.1797 10.1094 12.1797 9.67969C12.1797 9.21094 12.5312 8.82031 13 8.82031ZM13 12.1797C13.4688 12.1797 13.8203 12.5312 13.8203 13C13.8203 13.4688 13.4688 13.8203 13 13.8203C12.5312 13.8203 12.1797 13.4688 12.1797 13C12.1797 12.5312 12.5312 12.1797 13 12.1797ZM13 5.5C13.4688 5.5 13.8203 5.89062 13.8203 6.32031C13.8203 6.78906 13.4688 7.17969 13 7.17969C12.5312 7.17969 12.1797 6.78906 12.1797 6.32031C12.1797 5.89062 12.5312 5.5 13 5.5ZM13 2.17969C13.4688 2.17969 13.8203 2.53125 13.8203 3C13.8203 3.46875 13.4688 3.82031 13 3.82031C12.5312 3.82031 12.1797 3.46875 12.1797 3C12.1797 2.53125 12.5312 2.17969 13 2.17969ZM15.5 9.25C15.7344 9.25 15.9297 9.44531 15.9297 9.67969C15.9297 9.91406 15.7344 10.0703 15.5 10.0703C15.2656 10.0703 15.0703 9.91406 15.0703 9.67969C15.0703 9.44531 15.2656 9.25 15.5 9.25ZM9.67969 12.1797C10.1094 12.1797 10.5 12.5312 10.5 13C10.5 13.4688 10.1094 13.8203 9.67969 13.8203C9.21094 13.8203 8.82031 13.4688 8.82031 13C8.82031 12.5312 9.21094 12.1797 9.67969 12.1797ZM9.67969 15.0703C9.91406 15.0703 10.0703 15.2656 10.0703 15.5C10.0703 15.7344 9.91406 15.9297 9.67969 15.9297C9.44531 15.9297 9.25 15.7344 9.25 15.5C9.25 15.2656 9.44531 15.0703 9.67969 15.0703ZM6.32031 5.07031C7.02344 5.07031 7.57031 5.65625 7.57031 6.32031C7.57031 7.02344 7.02344 7.57031 6.32031 7.57031C5.65625 7.57031 5.07031 7.02344 5.07031 6.32031C5.07031 5.65625 5.65625 5.07031 6.32031 5.07031ZM6.32031 12.1797C6.78906 12.1797 7.17969 12.5312 7.17969 13C7.17969 13.4688 6.78906 13.8203 6.32031 13.8203C5.89062 13.8203 5.5 13.4688 5.5 13C5.5 12.5312 5.89062 12.1797 6.32031 12.1797ZM9.67969 8.42969C10.3438 8.42969 10.9297 8.97656 10.9297 9.67969C10.9297 10.3438 10.3438 10.9297 9.67969 10.9297C8.97656 10.9297 8.42969 10.3438 8.42969 9.67969C8.42969 8.97656 8.97656 8.42969 9.67969 8.42969ZM9.67969 5.07031C10.3438 5.07031 10.9297 5.65625 10.9297 6.32031C10.9297 7.02344 10.3438 7.57031 9.67969 7.57031C8.97656 7.57031 8.42969 7.02344 8.42969 6.32031C8.42969 5.65625 8.97656 5.07031 9.67969 5.07031Z" fill="#0046FE"/>
@@ -652,20 +655,17 @@ class MyChatbot extends HTMLElement {
       super();
       const title = this.getAttribute('title') || defaultTitle;
       this.attachShadow({ mode: 'open' });
-      this.sessions = [
-        { id: 'today', name: "Aujourd'hui", messages: [], sessionId: null },
-        { id: 'intro', name: 'Nouvelle Introduction', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-        { id: 'greeting', name: 'Accueil', messages: [], sessionId: null },
-      ];
-      this.currentSession = this.sessions[0];
-      this.apiEndpoint = 'http://localhost:8990/api/pulse/chat';
+      
+      // API Configuration
+      this.apiEndpoint = `${API_BASE_URL}/chat`;
+      this.sessionApiBase = `${API_BASE_URL}/session`;
+      this.userId = '3A7F5D627D0F48CF3F52';
+      
+      // Data arrays - will be populated from API
+      this.sessions = [];
+      this.chatHistory = [];
+      
+      this.currentSession = null;
       this.isLoading = false;
       this.STORAGE_KEY = 'pulse-chat-modal-state';
   
@@ -694,11 +694,6 @@ class MyChatbot extends HTMLElement {
               <div class="sessions-title">Sessions</div>
               <button class="new-session-btn">+</button>
             </div>
-            ${this.sessions.map(session => `
-              <div class="session-item" data-session-id="${session.id}">
-                ${session.name}
-              </div>
-            `).join('')}
             <div class="end-history">Vous avez atteint la fin de votre historique de chat.</div>
           </div>
           <div class="overlay"></div>
@@ -744,6 +739,101 @@ class MyChatbot extends HTMLElement {
       return false;
     }
 
+    // New method to query session history
+    getSessionHistory(sessionId) {
+      const historyEntry = this.chatHistory.find(entry => entry.id === sessionId);
+      return historyEntry ? historyEntry.request : [];
+    }
+
+    // API Methods
+    async fetchSessions() {
+      try {
+        const response = await fetch(`${this.sessionApiBase}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch sessions: ${response.status}`);
+        }
+
+        const sessions = await response.json();
+        this.sessions = sessions;
+        return sessions;
+      } catch (error) {
+        console.error('Error fetching sessions:', error);
+        throw error;
+      }
+    }
+
+    async fetchSessionHistory(sessionId) {
+      try {
+        const response = await fetch(`${this.sessionApiBase}/${sessionId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch session history: ${response.status}`);
+        }
+
+        const sessionData = await response.json();
+        
+        // Store in local cache
+        const existingIndex = this.chatHistory.findIndex(entry => entry.id === sessionId);
+        if (existingIndex >= 0) {
+          this.chatHistory[existingIndex] = sessionData;
+        } else {
+          this.chatHistory.push(sessionData);
+        }
+        
+        return sessionData;
+      } catch (error) {
+        console.error('Error fetching session history:', error);
+        throw error;
+      }
+    }
+
+    async createSession(name) {
+      try {
+        const response = await fetch(`${this.sessionApiBase}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: this.userId,
+            name: name
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to create session: ${response.status}`);
+        }
+
+        const newSession = await response.json();
+        
+        // Add to local sessions array
+        this.sessions.unshift(newSession);
+        
+        // Create empty history entry
+        this.chatHistory.unshift({
+          id: newSession.id,
+          name: newSession.name,
+          request: []
+        });
+        
+        return newSession;
+      } catch (error) {
+        console.error('Error creating session:', error);
+        throw error;
+      }
+    }
+
     // Set modal visibility with state persistence
     setModalVisibility(isOpen) {
       const chat = this.shadowRoot.querySelector('.chat-container');
@@ -780,10 +870,29 @@ class MyChatbot extends HTMLElement {
       sendBtn.classList.remove('active');
       this.isLoading = true;
 
-      // Add user message to UI and conversation history
-      const userMessage = { role: 'user', content: msg };
+      // Add user message to UI
       this.addMessageToUI('Vous', msg);
-      this.currentSession.messages.push(userMessage);
+
+      // Create new message entry for chat history
+      const newMessageEntry = {
+        user_input: msg,
+        status: 'pending',
+        output: { data: { content: '' } }
+      };
+
+      // Find or create history entry for current session
+      let historyEntry = this.chatHistory.find(entry => entry.id === this.currentSession.id);
+      if (!historyEntry) {
+        historyEntry = { 
+          id: this.currentSession.id, 
+          name: this.currentSession.name, 
+          request: [] 
+        };
+        this.chatHistory.push(historyEntry);
+      }
+
+      // Add the new message to history
+      historyEntry.request.push(newMessageEntry);
 
       // Show loading indicator
       this.showLoadingIndicator(chatBody);
@@ -793,8 +902,9 @@ class MyChatbot extends HTMLElement {
         const requestBody = { message: msg };
         
         // Add session_id if this is not the first message
-        if (this.currentSession.sessionId) {
-          requestBody.session_id = this.currentSession.sessionId;
+        const sessionApiId = historyEntry.sessionApiId || null;
+        if (sessionApiId) {
+          requestBody.session_id = sessionApiId;
         }
 
         // Make API call
@@ -813,18 +923,25 @@ class MyChatbot extends HTMLElement {
         const data = await response.json();
         
         // Store session_id if this was the first message
-        if (!this.currentSession.sessionId && data.session_id) {
-          this.currentSession.sessionId = data.session_id;
+        if (!sessionApiId && data.session_id) {
+          historyEntry.sessionApiId = data.session_id;
         }
+
+        // Update the message entry with response
+        newMessageEntry.status = 'completed';
+        newMessageEntry.output.data.content = data.response;
 
         // Remove loading indicator and add bot response
         this.removeLoadingIndicator(chatBody);
-        const botMessage = { role: 'assistant', content: data.response };
         this.addMessageToUI('Bot', data.response);
-        this.currentSession.messages.push(botMessage);
 
       } catch (error) {
         console.error('Error sending message:', error);
+        
+        // Update message status to error
+        newMessageEntry.status = 'error';
+        newMessageEntry.output.data.content = 'Désolé, une erreur s\'est produite. Veuillez réessayer.';
+        
         this.removeLoadingIndicator(chatBody);
         this.addMessageToUI('Bot', 'Désolé, une erreur s\'est produite. Veuillez réessayer.');
       } finally {
@@ -886,17 +1003,108 @@ class MyChatbot extends HTMLElement {
       }
     }
 
-    loadSessionMessages() {
+    async loadSessionMessages() {
       const chatBody = this.shadowRoot.getElementById('chatBody');
       chatBody.innerHTML = '';
       
-      if (this.currentSession.messages.length === 0) {
+      if (!this.currentSession) {
         this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
-      } else {
-        this.currentSession.messages.forEach(message => {
-          const sender = message.role === 'user' ? 'Vous' : 'Bot';
-          this.addMessageToUI(sender, message.content);
+        return;
+      }
+      
+      // Show loading indicator while fetching session history
+      this.showLoadingIndicator(chatBody);
+      
+      try {
+        // Fetch session history from API
+        const sessionData = await this.fetchSessionHistory(this.currentSession.id);
+        
+        // Remove loading indicator
+        this.removeLoadingIndicator(chatBody);
+        
+        if (sessionData.request.length === 0) {
+          this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
+        } else {
+          // Load messages from fetched history
+          sessionData.request.forEach(entry => {
+            // Add user message
+            this.addMessageToUI('Vous', entry.user_input);
+            
+            // Add bot response if available and status is completed
+            if (entry.status === 'completed' && entry.output?.data?.content) {
+              this.addMessageToUI('Bot', entry.output.data.content);
+            } else if (entry.status === 'error' && entry.output?.data?.content) {
+              this.addMessageToUI('Bot', entry.output.data.content);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading session messages:', error);
+        this.removeLoadingIndicator(chatBody);
+        this.addMessageToUI('Bot', 'Erreur lors du chargement de l\'historique de la session.');
+      }
+    }
+
+    updateSessionsListUI() {
+      const sessionsList = this.shadowRoot.querySelector('.sessions-list');
+      const endHistory = sessionsList.querySelector('.end-history');
+      
+      // Remove existing session items
+      sessionsList.querySelectorAll('.session-item').forEach(item => item.remove());
+      
+      // Add sessions from API
+      this.sessions.forEach(session => {
+        const sessionElement = document.createElement('div');
+        sessionElement.className = 'session-item';
+        sessionElement.dataset.sessionId = session.id;
+        sessionElement.textContent = session.name;
+        
+        // Add click handler
+        sessionElement.addEventListener('click', async () => {
+          this.currentSession = session;
+          sessionsList.classList.remove('active');
+          this.shadowRoot.querySelector('.toggle-sessions').classList.remove('active');
+          this.shadowRoot.querySelector('.overlay').classList.remove('active');
+          
+          // Remove active class from all items
+          sessionsList.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
+          // Add active class to clicked item
+          sessionElement.classList.add('active');
+          
+          // Load conversation history from API
+          await this.loadSessionMessages();
         });
+        
+        // Insert before end history
+        sessionsList.insertBefore(sessionElement, endHistory);
+      });
+    }
+
+    async initializeSessions() {
+      try {
+        // Fetch sessions from API
+        await this.fetchSessions();
+        
+        // Update UI with fetched sessions
+        this.updateSessionsListUI();
+        
+        // Set first session as current if available
+        if (this.sessions.length > 0) {
+          this.currentSession = this.sessions[0];
+          // Mark first session as active
+          const firstSessionElement = this.shadowRoot.querySelector('.session-item');
+          if (firstSessionElement) {
+            firstSessionElement.classList.add('active');
+          }
+        }
+        
+        // Load initial session messages
+        await this.loadSessionMessages();
+        
+      } catch (error) {
+        console.error('Error initializing sessions:', error);
+        // Show fallback message if API fails
+        this.addMessageToUI('Bot', 'Erreur lors du chargement des sessions. Bonjour! 😊 Comment puis-je vous aider?');
       }
     }
   
@@ -908,7 +1116,6 @@ class MyChatbot extends HTMLElement {
       const chatBody = this.shadowRoot.getElementById('chatBody');
       const toggleSessions = this.shadowRoot.querySelector('.toggle-sessions');
       const sessionsList = this.shadowRoot.querySelector('.sessions-list');
-      const sessionItems = this.shadowRoot.querySelectorAll('.session-item');
       const overlay = this.shadowRoot.querySelector('.overlay');
       const closeBtn = this.shadowRoot.querySelector('.close-chat');
       const newSessionBtn = this.shadowRoot.querySelector('.new-session-btn');
@@ -932,34 +1139,14 @@ class MyChatbot extends HTMLElement {
         sessionsList.classList.toggle('active');
         toggleSessions.classList.toggle('active');
         overlay.classList.toggle('active');
-        // chat.classList.toggle('shifted');
       });
 
       overlay.addEventListener('click', () => {
         sessionsList.classList.remove('active');
         toggleSessions.classList.remove('active');
         overlay.classList.remove('active');
-        // chat.classList.remove('shifted');
       });
 
-      sessionItems.forEach(item => {
-        item.addEventListener('click', () => {
-          const sessionId = item.dataset.sessionId;
-          this.currentSession = this.sessions.find(s => s.id === sessionId);
-          sessionsList.classList.remove('active');
-          toggleSessions.classList.remove('active');
-          overlay.classList.remove('active');
-          
-          // Remove active class from all items
-          sessionItems.forEach(si => si.classList.remove('active'));
-          // Add active class to clicked item
-          item.classList.add('active');
-          
-          // Load conversation history for this session
-          this.loadSessionMessages();
-        });
-      });
-  
       sendBtn.addEventListener('click', () => {
         this.sendMessage();
       });
@@ -980,54 +1167,45 @@ class MyChatbot extends HTMLElement {
       });
 
       // Add new session functionality
-      newSessionBtn.addEventListener('click', () => {
-        const sessionId = 'session-' + Date.now();
-        const newSession = {
-          id: sessionId,
-          name: 'Nouvelle Session ' + (this.sessions.length + 1),
-          messages: [],
-          sessionId: null
-        };
-        
-        this.sessions.unshift(newSession);
-        this.currentSession = newSession;
-
-        // Create and insert new session element
-        const sessionElement = document.createElement('div');
-        sessionElement.className = 'session-item';
-        sessionElement.dataset.sessionId = sessionId;
-        sessionElement.textContent = newSession.name;
-
-        // Insert after the new session button
-        const firstSession = sessionsList.querySelector('.session-item');
-        if (firstSession) {
-          sessionsList.insertBefore(sessionElement, firstSession);
-        } else {
-          sessionsList.insertBefore(sessionElement, sessionsList.querySelector('.end-history'));
-        }
-
-        // Add click handler to new session
-        sessionElement.addEventListener('click', () => {
+      newSessionBtn.addEventListener('click', async () => {
+        try {
+          // Generate random session name
+          const randomNumber = Math.floor(Math.random() * 100000);
+          const sessionName = `Session ${randomNumber}`;
+          
+          // Create session via API
+          const newSession = await this.createSession(sessionName);
+          
+          // Update UI with new session
+          this.updateSessionsListUI();
+          
+          // Set as current session
           this.currentSession = newSession;
+          
+          // Close sidebar
           sessionsList.classList.remove('active');
           toggleSessions.classList.remove('active');
           overlay.classList.remove('active');
           
-          // Remove active class from all items
-          this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
-          // Add active class to clicked item
-          sessionElement.classList.add('active');
+          // Mark as active and load messages
+          const newSessionElement = this.shadowRoot.querySelector(`[data-session-id="${newSession.id}"]`);
+          if (newSessionElement) {
+            this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
+            newSessionElement.classList.add('active');
+          }
           
-          // Load conversation history for this session
-          this.loadSessionMessages();
-        });
-
-        // Activate the new session
-        sessionElement.click();
+          // Load conversation history for new session
+          await this.loadSessionMessages();
+          
+        } catch (error) {
+          console.error('Error creating new session:', error);
+          // Show error message to user
+          this.addMessageToUI('Bot', 'Erreur lors de la création d\'une nouvelle session.');
+        }
       });
 
-      // Initialize the first session with welcome message
-      this.loadSessionMessages();
+      // Initialize sessions from API
+      this.initializeSessions();
     }
   }
   
