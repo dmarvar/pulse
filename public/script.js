@@ -928,7 +928,7 @@ class MyChatbot extends HTMLElement {
         }
 
         // Update the message entry with response
-        newMessageEntry.status = 'completed';
+        newMessageEntry.status = 'success';
         newMessageEntry.output.data.content = data.response;
 
         // Remove loading indicator and add bot response
@@ -938,12 +938,12 @@ class MyChatbot extends HTMLElement {
       } catch (error) {
         console.error('Error sending message:', error);
         
-        // Update message status to error
-        newMessageEntry.status = 'error';
-        newMessageEntry.output.data.content = 'Désolé, une erreur s\'est produite. Veuillez réessayer.';
+        // Update message status to fail
+        newMessageEntry.status = 'fail';
+        newMessageEntry.output.data.content = '';
         
         this.removeLoadingIndicator(chatBody);
-        this.addMessageToUI('Bot', 'Désolé, une erreur s\'est produite. Veuillez réessayer.');
+        this.addMessageToUI('Bot', 'Désolé, quelque chose s\'est mal passé. Veuillez réessayer plus tard.');
       } finally {
         this.isLoading = false;
       }
@@ -1030,11 +1030,12 @@ class MyChatbot extends HTMLElement {
             // Add user message
             this.addMessageToUI('Vous', entry.user_input);
             
-            // Add bot response if available and status is completed
-            if (entry.status === 'completed' && entry.output?.data?.content) {
+            // Add bot response based on status
+            if ((entry.status === 'success' || entry.status === 'completed') && entry.output?.data?.content) {
               this.addMessageToUI('Bot', entry.output.data.content);
-            } else if (entry.status === 'error' && entry.output?.data?.content) {
-              this.addMessageToUI('Bot', entry.output.data.content);
+            } else if (entry.status === 'fail' || entry.status === 'error') {
+              // Show fallback message for failed requests
+              this.addMessageToUI('Bot', 'Désolé, quelque chose s\'est mal passé. Veuillez réessayer plus tard.');
             }
           });
         }
