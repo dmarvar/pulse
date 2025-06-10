@@ -307,6 +307,13 @@ const SESSIONS_SIDEBAR_STYLES = `
 
   .session-item.active {
     background: #2a2a2a;
+    color: #FF5C35;
+    font-weight: 500;
+  }
+
+  .session-item.active::before {
+    height: 100%;
+    background: #FF5C35;
   }
 
   .new-session-btn {
@@ -745,6 +752,45 @@ class MyChatbot extends HTMLElement {
       return historyEntry ? historyEntry.request : [];
     }
 
+    // Save current session ID to session storage
+    saveCurrentSessionId(sessionId) {
+      try {
+        sessionStorage.setItem('pulse-current-session-id', sessionId);
+      } catch (error) {
+        console.warn('Failed to save current session ID to session storage:', error);
+      }
+    }
+
+    // Load current session ID from session storage
+    loadCurrentSessionId() {
+      try {
+        return sessionStorage.getItem('pulse-current-session-id');
+      } catch (error) {
+        console.warn('Failed to load current session ID from session storage:', error);
+      }
+      return null;
+    }
+
+    // Clear current session ID from session storage
+    clearCurrentSessionId() {
+      try {
+        sessionStorage.removeItem('pulse-current-session-id');
+      } catch (error) {
+        console.warn('Failed to clear current session ID from session storage:', error);
+      }
+    }
+
+    // Set current session and persist to storage
+    setCurrentSession(session) {
+      this.currentSession = session;
+      if (session && session.id) {
+        this.saveCurrentSessionId(session.id);
+        console.log('Saved current session ID to storage:', session.id);
+      } else {
+        this.clearCurrentSessionId();
+      }
+    }
+
     // API Methods
     async fetchSessions() {
       try {
@@ -924,13 +970,13 @@ class MyChatbot extends HTMLElement {
       this.showLoadingIndicator(chatBody);
 
       try {
-        // Prepare request body
+        // Prepare request body with current session ID
         const requestBody = { message: msg };
         
-        // Add session_id if this is not the first message
-        const sessionApiId = historyEntry.sessionApiId || null;
-        if (sessionApiId) {
-          requestBody.session_id = sessionApiId;
+        // Always add the current session ID if we have one
+        if (this.currentSession && this.currentSession.id) {
+          requestBody.session_id = this.currentSession.id;
+          console.log('Adding session_id to chat request:', this.currentSession.id);
         }
 
         // Make API call
@@ -949,7 +995,7 @@ class MyChatbot extends HTMLElement {
         const data = await response.json();
         
         // Store session_id if this was the first message
-        if (!sessionApiId && data.session_id) {
+        if (!requestBody.session_id && data.session_id) {
           historyEntry.sessionApiId = data.session_id;
         }
 
@@ -1098,7 +1144,7 @@ class MyChatbot extends HTMLElement {
         
         // Add click handler
         sessionElement.addEventListener('click', async () => {
-          this.currentSession = session;
+          this.setCurrentSession(session);
           sessionsList.classList.remove('active');
           this.shadowRoot.querySelector('.toggle-sessions').classList.remove('active');
           this.shadowRoot.querySelector('.overlay').classList.remove('active');
@@ -1125,9 +1171,23 @@ class MyChatbot extends HTMLElement {
         // Update UI with fetched sessions
         this.updateSessionsListUI();
         
-        // Set first session as current if available
-        if (this.sessions.length > 0) {
-          this.currentSession = this.sessions[0];
+        // Try to restore saved session
+        const savedSessionId = this.loadCurrentSessionId();
+        if (savedSessionId) {
+          const savedSession = this.sessions.find(s => s.id === savedSessionId);
+          if (savedSession) {
+            this.setCurrentSession(savedSession);
+            // Mark as active in UI
+            const sessionElement = this.shadowRoot.querySelector(`[data-session-id="${savedSession.id}"]`);
+            if (sessionElement) {
+              sessionElement.classList.add('active');
+            }
+          }
+        }
+        
+        // Fallback to first session if no saved session
+        if (!this.currentSession && this.sessions.length > 0) {
+          this.setCurrentSession(this.sessions[0]);
           // Mark first session as active
           const firstSessionElement = this.shadowRoot.querySelector('.session-item');
           if (firstSessionElement) {
@@ -1218,7 +1278,7 @@ class MyChatbot extends HTMLElement {
           this.updateSessionsListUI();
           
           // Set as current session
-          this.currentSession = newSession;
+          this.setCurrentSession(newSession);
           
           // Close sidebar
           sessionsList.classList.remove('active');
