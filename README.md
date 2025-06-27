@@ -1,36 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PulseOS Demo & Experimentation Platform
+
+This application serves as a demonstration and experimentation platform designed to help clients visualize PulseOS workflow outputs in an interactive and playful way. It provides architectural examples and implementation patterns that clients can adopt when integrating their applications with PulseOS.
+
+## Purpose
+
+- **Demonstrations**: Showcase PulseOS capabilities and workflow outputs through interactive visualizations
+- **Experimentation**: Provide a sandbox environment for testing different integration patterns and features
+- **Client Visualization**: Help clients understand how their workflows will look and behave in real-world scenarios
+- **Architectural Guidance**: Expose implementation options and best practices for PulseOS integration
+
+## Architecture Overview
+
+This application follows modern web architecture patterns and demonstrates several integration approaches that clients can implement in their own applications.
+
+### Backend for Frontend (BFF) Pattern
+
+The application implements a Backend for Frontend (BFF) pattern to provide a tailored API layer between the client interface and PulseOS services. This approach offers several benefits:
+
+- **API Aggregation**: Combines multiple PulseOS service calls into optimized client-specific endpoints
+- **Authentication Handling**: Manages OAuth flows and token management transparently
+- **Request/Response Transformation**: Adapts PulseOS APIs to match client application needs
+- **Security Layer**: Adds an additional security boundary between public clients and internal services
+
+### Pulse Proxy Endpoint
+
+The `/pulse` endpoint serves as a critical proxy component in the architecture:
+
+**Functionality:**
+- Receives calls from the chatbot interface
+- Adds proper authorization headers for PulseOS authentication
+- Redirects requests to the appropriate PulseOS endpoints
+- Handles response transformation and error management
+
+**Benefits:**
+- **Transparent Authentication**: Clients don't need to manage PulseOS credentials directly
+- **Simplified Integration**: Single endpoint for chatbot communication
+- **Security**: Credentials and internal URLs are abstracted from client applications
+- **Flexibility**: Easy to modify routing and add middleware without client changes
+
+## Important Security Disclaimer
+
+⚠️ **For Demonstration Purposes Only**
+
+This application has been simplified for demonstration and experimentation purposes and **does not save any data to the database**. As a result, all authentication data, including tokens and session information, is stored directly in cookies.
+
+**This is NOT a recommended security pattern for production applications.**
+
+### Recommended Security Best Practices
+
+In production applications, you should implement proper session management:
+
+1. **Database Session Storage**: Store session data, tokens, and user information in a secure database
+2. **Minimal Cookie Data**: Cookies should only contain a session ID or similar identifier
+3. **Secure Session Lookup**: Use the session ID to retrieve full session data from the database
+4. **Token Security**: Never store sensitive tokens, secrets, or user data directly in cookies
+
+### Why This Matters
+
+- **Security**: Cookies can be intercepted, stolen, or manipulated by malicious actors
+- **Size Limitations**: Cookies have size restrictions that can limit the data you can store
+- **Performance**: Large cookies increase request size and network overhead
+- **Compliance**: Many security standards require proper session management practices
+- **Scalability**: Database-backed sessions allow for better session management across multiple servers
+
+### Implementation in Your Applications
+
+When implementing similar functionality in your production applications:
+
+```javascript
+// ❌ Avoid: Storing sensitive data in cookies
+document.cookie = "user_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+
+// ✅ Recommended: Store only session ID in cookies
+document.cookie = "session_id=abc123def456";
+// Then lookup full session data from database using session_id
+```
+
+This demonstration platform prioritizes simplicity and ease of setup over security best practices to facilitate learning and experimentation.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- PostgreSQL database
+- PulseOS access credentials
+
+### Environment Setup
+
+1. Copy the environment template:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env_token .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Update the environment variables with your specific configuration:
+```bash
+# Database
+DATABASE_URL="postgresql://postgres@localhost:5432/pulseos"
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# NextAuth.js Configuration
+NEXTAUTH_SECRET="your-secret-key-here-make-it-long-and-random"
+NEXTAUTH_URL="http://localhost:8990"
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Custom OAuth Provider
+CUSTOM_OAUTH_CLIENT_ID="your-client-id"
+CUSTOM_OAUTH_CLIENT_SECRET_ID="your-client-secret-id"
+CUSTOM_OAUTH_CLIENT_SECRET="your-client-secret"
+CUSTOM_OAUTH_ISSUER="https://your-oauth-provider.com"
+```
 
-## Learn More
+### Development
 
-To learn more about Next.js, take a look at the following resources:
+1. Install dependencies:
+```bash
+npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Run the development server:
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Open [http://localhost:8990](http://localhost:8990) to access the application
 
-## Deploy on Vercel
+## API Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Interactive API documentation is available at `/api-docs` when running the application. This includes detailed information about:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Authentication endpoints
+- Pulse proxy endpoints
+- Client management APIs
+- Invoice and provider services
+
+## Integration Examples
+
+The application demonstrates several integration patterns that clients can implement:
+
+1. **OAuth Integration**: Complete OAuth flow implementation with PulseOS
+2. **Proxy Pattern**: How to create secure proxy endpoints for internal service communication
+3. **Session Management**: Best practices for handling user sessions and authentication state
+4. **API Composition**: Combining multiple service calls into cohesive client experiences
+
+## Deployment
+
+The application is configured for deployment on Vercel with the included `vercel.json` configuration. For other platforms, ensure environment variables are properly configured in your deployment environment.
+
+## Contributing
+
+When contributing to this demonstration platform, please ensure that:
+- New features serve as clear examples for client implementation
+- Code is well-documented to serve as reference material
+- Security best practices are maintained throughout
+- Integration patterns are clearly explained and documented
