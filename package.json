@@ -14,7 +14,6 @@
     "db:reset": "prisma migrate reset"
   },
   "dependencies": {
-    "@prisma/client": "^6.8.2",
     "jspdf": "^3.0.1",
     "next": "15.3.1",
     "next-swagger-doc": "^0.4.1",
@@ -33,7 +32,6 @@
     "@types/xml2js": "^0.4.14",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "prisma": "^6.8.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

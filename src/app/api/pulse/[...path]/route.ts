@@ -196,6 +196,12 @@ export async function HEAD(request: NextRequest, context: { params: Promise<{ pa
 export async function OPTIONS(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   // Handle preflight CORS requests - these don't require authentication
   // but should include user authentication headers in allowed headers
+  
+  // Log the OPTIONS request for debugging
+  const resolvedParams = await context.params;
+  const subPath = resolvedParams.path ? resolvedParams.path.join('/') : '';
+  console.log('CORS preflight request for path:', subPath, 'from:', request.headers.get('origin'));
+  
   return new NextResponse(null, {
     status: 200,
     headers: {

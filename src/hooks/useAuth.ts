@@ -2,10 +2,15 @@
 
 import { useState, useEffect } from 'react';
 
+interface User {
+  id: string;
+  [key: string]: unknown;
+}
+
 interface AuthState {
   authenticated: boolean;
   loading: boolean;
-  user?: any;
+  user?: User;
 }
 
 export function useAuth() {
@@ -29,6 +34,7 @@ export function useAuth() {
         user: data.user
       });
     } catch (error) {
+      console.error('Authentication check failed:', error);
       setAuthState({
         authenticated: false,
         loading: false

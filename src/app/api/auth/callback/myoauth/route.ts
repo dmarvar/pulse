@@ -60,7 +60,12 @@ const getSigninAccessToken = async (code: string) => {
 };
 
 // Helper function to create session token (implement with JWT)
-async function createSessionToken(sessionData: any) {
+async function createSessionToken(sessionData: {
+  userId: string;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+}) {
   // For now, return a simple encoded string
   // You should use JWT here for production
   return Buffer.from(JSON.stringify(sessionData)).toString('base64');
@@ -71,7 +76,6 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const code = formData.get('code') as string;
     const state = formData.get('state') as string;
-    const id_token = formData.get('id_token') as string;
     const error = formData.get('error') as string;
     const error_description = formData.get('error_description') as string;
     

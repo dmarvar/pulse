@@ -19,7 +19,7 @@ export default function Home() {
           </h1>
           
           <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl">
-            The future is agentic je suis en train de coder. It's time for you to use our platform.
+            The future is agentic je suis en train de coder. It&apos;s time for you to use our platform.
           </p>
           
           <div className="flex flex-col gap-4 items-center mt-8">

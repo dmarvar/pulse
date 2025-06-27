@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Invalid session token:', error);
+    console.error('Request URL:', request.url);
     cookieStore.delete('session_token');
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }

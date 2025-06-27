@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     maxAge: 600 // 10 minutes
   });
 
+  console.log('Sign-in request from:', request.url);
   console.log({ state });
   
   // Build authorization URL
