@@ -19,7 +19,7 @@ export default function Home() {
           </h1>
           
           <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl">
-            The future is agentic. It's time for you to use our platform.
+            The future is agentic je suis en train de coder. It's time for you to use our platform.
           </p>
           
           <div className="flex flex-col gap-4 items-center mt-8">
@@ -28,7 +28,7 @@ export default function Home() {
             </p>
             
             <Link
-              href="/v0"
+              href="/api/auth/signin"
               className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-lg h-12 px-8"
             >
               Cegid Sign in

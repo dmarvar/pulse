@@ -70,7 +70,7 @@ export default async function AuthErrorPage({
         {/* Actions */}
         <div className="space-y-4">
           <Link
-            href="/auth/signin"
+            href="/api/auth/signin"
             className="inline-block w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-medium"
           >
             Try Again

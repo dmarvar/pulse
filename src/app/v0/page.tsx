@@ -1,13 +1,17 @@
 import Image from 'next/image';
-import { auth, signOut } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function CegidPulsePage() {
-  const session = await auth();
+  const session = await getSession();
+  
+  // Debug logging
+  console.log('Session check in /v0:', session ? 'Found session' : 'No session found');
   
   // This should not happen due to middleware, but just in case
-  if (!session?.user) {
-    redirect('/auth/signin');
+  if (!session) {
+    console.log('Redirecting to signin - no session found');
+    redirect('/api/auth/signin');
   }
 
   return (
@@ -15,25 +19,11 @@ export default async function CegidPulsePage() {
       {/* Auth Header */}
       <div className="absolute top-4 right-4 z-10">
         <div className="flex items-center gap-4 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg px-4 py-2">
-          {session.user.image && (
-            <Image
-              src={session.user.image}
-              alt={session.user.name || 'User'}
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
-          )}
           <div className="text-sm">
-            <p className="text-white font-medium">{session.user.name}</p>
-            <p className="text-gray-400 text-xs">{session.user.email}</p>
+            <p className="text-white font-medium">User {session.userId}</p>
+            <p className="text-gray-400 text-xs">Authenticated</p>
           </div>
-          <form
-            action={async () => {
-              "use server"
-              await signOut({ redirectTo: "/" });
-            }}
-          >
+          <form action="/api/auth/logout" method="POST">
             <button
               type="submit"
               className="text-gray-400 hover:text-white transition-colors p-1"

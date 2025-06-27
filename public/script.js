@@ -783,9 +783,12 @@ class MyChatbot extends HTMLElement {
     // Set current session and persist to storage
     setCurrentSession(session) {
       this.currentSession = session;
-      if (session && session.id) {
+      if (session && session.id && !session.virtual) {
         this.saveCurrentSessionId(session.id);
         console.log('Saved current session ID to storage:', session.id);
+      } else if (session && session.virtual) {
+        this.clearCurrentSessionId();
+        console.log('Virtual session set, no storage persistence');
       } else {
         this.clearCurrentSessionId();
       }
@@ -945,36 +948,40 @@ class MyChatbot extends HTMLElement {
       // Add user message to UI
       this.addMessageToUI('Vous', msg);
 
-      // Create new message entry for chat history
-      const newMessageEntry = {
-        user_input: msg,
-        status: 'pending',
-        output: { data: { content: '' } }
-      };
-
-      // Find or create history entry for current session
-      let historyEntry = this.chatHistory.find(entry => entry.id === this.currentSession.id);
-      if (!historyEntry) {
-        historyEntry = { 
-          id: this.currentSession.id, 
-          name: this.currentSession.name, 
-          request: [] 
-        };
-        this.chatHistory.push(historyEntry);
-      }
-
-      // Add the new message to history
-      historyEntry.request.push(newMessageEntry);
-
       // Show loading indicator
       this.showLoadingIndicator(chatBody);
 
       try {
+        // Check if this is a virtual session (needs to be created)
+        if (this.currentSession?.virtual) {
+          console.log('Creating session for first message...');
+          
+          // Generate session name from first 32 characters of message
+          const sessionName = msg.length > 32 ? msg.substring(0, 32).trim() + '...' : msg.trim();
+          
+          // Create real session
+          const realSession = await this.createSession(sessionName);
+          console.log('Created real session:', realSession);
+          
+          // Update current session to real session
+          this.setCurrentSession(realSession);
+          
+          // Update UI with new session
+          this.updateSessionsListUI();
+          
+          // Mark new session as active in UI
+          const newSessionElement = this.shadowRoot.querySelector(`[data-session-id="${realSession.id}"]`);
+          if (newSessionElement) {
+            this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
+            newSessionElement.classList.add('active');
+          }
+        }
+
         // Prepare request body with current session ID
         const requestBody = { message: msg };
         
-        // Always add the current session ID if we have one
-        if (this.currentSession && this.currentSession.id) {
+        // Add the current session ID if we have one
+        if (this.currentSession && this.currentSession.id && !this.currentSession.virtual) {
           requestBody.session_id = this.currentSession.id;
           console.log('Adding session_id to chat request:', this.currentSession.id);
         }
@@ -993,15 +1000,27 @@ class MyChatbot extends HTMLElement {
         }
 
         const data = await response.json();
-        
-        // Store session_id if this was the first message
-        if (!requestBody.session_id && data.session_id) {
-          historyEntry.sessionApiId = data.session_id;
+
+        // Create new message entry for chat history
+        const newMessageEntry = {
+          user_input: msg,
+          status: 'success',
+          output: { data: { content: data.response } }
+        };
+
+        // Find or create history entry for current session
+        let historyEntry = this.chatHistory.find(entry => entry.id === this.currentSession.id);
+        if (!historyEntry) {
+          historyEntry = { 
+            id: this.currentSession.id, 
+            name: this.currentSession.name, 
+            request: [] 
+          };
+          this.chatHistory.push(historyEntry);
         }
 
-        // Update the message entry with response
-        newMessageEntry.status = 'success';
-        newMessageEntry.output.data.content = data.response;
+        // Add the new message to history
+        historyEntry.request.push(newMessageEntry);
 
         // Remove loading indicator and add bot response
         this.removeLoadingIndicator(chatBody);
@@ -1009,10 +1028,6 @@ class MyChatbot extends HTMLElement {
 
       } catch (error) {
         console.error('Error sending message:', error);
-        
-        // Update message status to fail
-        newMessageEntry.status = 'fail';
-        newMessageEntry.output.data.content = '';
         
         this.removeLoadingIndicator(chatBody);
         this.addMessageToUI('Bot', 'Désolé, quelque chose s\'est mal passé. Veuillez réessayer plus tard.');
@@ -1085,6 +1100,13 @@ class MyChatbot extends HTMLElement {
       }
       
       console.log('Loading session messages for session:', this.currentSession); // Debug log
+      
+      // Check if this is a virtual session
+      if (this.currentSession.virtual) {
+        console.log('Virtual session, showing welcome message'); // Debug log
+        this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
+        return;
+      }
       
       // Check if this is a newly created session with no ID or local history entry
       const historyEntry = this.chatHistory.find(entry => entry.id === this.currentSession.id);
@@ -1193,6 +1215,15 @@ class MyChatbot extends HTMLElement {
           if (firstSessionElement) {
             firstSessionElement.classList.add('active');
           }
+        } else if (!this.currentSession && this.sessions.length === 0) {
+          // No sessions exist, create a virtual session
+          console.log('No sessions found, creating virtual session');
+          const virtualSession = {
+            virtual: true,
+            name: 'Nouvelle conversation',
+            id: `virtual_${Date.now()}`
+          };
+          this.setCurrentSession(virtualSession);
         }
         
         // Load initial session messages
@@ -1266,39 +1297,33 @@ class MyChatbot extends HTMLElement {
       // Add new session functionality
       newSessionBtn.addEventListener('click', async () => {
         try {
-          // Generate random session name
-          const randomNumber = Math.floor(Math.random() * 100000);
-          const sessionName = `Session ${randomNumber}`;
+          console.log('Creating virtual session...');
           
-          // Create session via API
-          const newSession = await this.createSession(sessionName);
-          console.log('New session created successfully:', newSession); // Debug log
-          
-          // Update UI with new session
-          this.updateSessionsListUI();
+          // Create virtual session (no API call yet)
+          const virtualSession = {
+            virtual: true,
+            name: 'Nouvelle conversation',
+            id: `virtual_${Date.now()}` // Temporary ID for UI purposes
+          };
           
           // Set as current session
-          this.setCurrentSession(newSession);
+          this.setCurrentSession(virtualSession);
           
           // Close sidebar
           sessionsList.classList.remove('active');
           toggleSessions.classList.remove('active');
           overlay.classList.remove('active');
           
-          // Mark as active and load messages
-          const newSessionElement = this.shadowRoot.querySelector(`[data-session-id="${newSession.id}"]`);
-          if (newSessionElement) {
-            this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
-            newSessionElement.classList.add('active');
-          }
+          // Remove active class from all real sessions
+          this.shadowRoot.querySelectorAll('.session-item').forEach(si => si.classList.remove('active'));
           
-          // For a newly created session, just show welcome message instead of trying to fetch history
+          // Show empty conversation with welcome message
           const chatBody = this.shadowRoot.getElementById('chatBody');
           chatBody.innerHTML = '';
           this.addMessageToUI('Bot', 'Bonjour! 😊 Comment puis-je vous aider aujourd\'hui?');
           
         } catch (error) {
-          console.error('Error creating new session:', error);
+          console.error('Error creating virtual session:', error);
           // Show error message to user
           const chatBody = this.shadowRoot.getElementById('chatBody');
           this.addMessageToUI('Bot', 'Erreur lors de la création d\'une nouvelle session.');
