@@ -77,17 +77,120 @@ export default function ApiDocs() {
     }, []);
 
     return (
-        <div className="container mx-auto py-10 px-4">
-            <h1 className="text-3xl font-bold mb-6">API Documentation</h1>
-            <Suspense fallback={<div className="flex justify-center items-center h-96">
-                <p className="text-xl">Loading API documentation...</p>
-            </div>}>
-                {spec ? <SwaggerUI spec={spec} /> :
-                    <div className="flex justify-center items-center h-96">
-                        <p className="text-xl">Loading API documentation...</p>
-                    </div>
+        <>
+            {/* Custom CSS to force light mode */}
+            <style jsx global>{`
+                /* Force light mode for Swagger UI */
+                .swagger-ui {
+                    color: #3b4151 !important;
+                    background-color: #ffffff !important;
                 }
-            </Suspense>
-        </div>
+                
+                .swagger-ui .info {
+                    background-color: #ffffff !important;
+                }
+                
+                .swagger-ui .scheme-container {
+                    background-color: #ffffff !important;
+                    border: 1px solid #d3d3d3 !important;
+                }
+                
+                .swagger-ui .opblock-tag {
+                    background-color: rgba(0, 0, 0, 0.02) !important;
+                    border-bottom: 1px solid rgba(59, 65, 81, 0.1) !important;
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .opblock {
+                    background-color: #ffffff !important;
+                    border: 1px solid #d3d3d3 !important;
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .opblock .opblock-summary {
+                    border-bottom: 1px solid #d3d3d3 !important;
+                }
+                
+                .swagger-ui .opblock-description-wrapper,
+                .swagger-ui .opblock-description-wrapper p {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .parameter__name {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .parameter__type {
+                    color: #999999 !important;
+                }
+                
+                .swagger-ui .response-col_status {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .model-box {
+                    background-color: #ffffff !important;
+                    border: 1px solid #d3d3d3 !important;
+                }
+                
+                .swagger-ui .model .property {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui textarea {
+                    background-color: #ffffff !important;
+                    color: #3b4151 !important;
+                    border: 1px solid #d3d3d3 !important;
+                }
+                
+                .swagger-ui .body-param-options {
+                    background-color: #ffffff !important;
+                }
+                
+                .swagger-ui .parameters-col_description {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .tab {
+                    background-color: #ffffff !important;
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .tab.active {
+                    background-color: #f7f7f7 !important;
+                }
+                
+                .swagger-ui .highlight-code {
+                    background-color: #f7f7f7 !important;
+                }
+                
+                .swagger-ui .microlight {
+                    color: #3b4151 !important;
+                    background-color: #f7f7f7 !important;
+                }
+                
+                /* Fix any dark backgrounds */
+                .swagger-ui .topbar {
+                    background-color: #89bf04 !important;
+                }
+                
+                .swagger-ui .information-container {
+                    background-color: #ffffff !important;
+                }
+            `}</style>
+            
+            <div className="container mx-auto py-10 px-4 bg-white min-h-screen">
+                <h1 className="text-3xl font-bold mb-6 text-gray-900">API Documentation</h1>
+                <Suspense fallback={<div className="flex justify-center items-center h-96">
+                    <p className="text-xl text-gray-900">Loading API documentation...</p>
+                </div>}>
+                    {spec ? <SwaggerUI spec={spec} /> :
+                        <div className="flex justify-center items-center h-96">
+                            <p className="text-xl text-gray-900">Loading API documentation...</p>
+                        </div>
+                    }
+                </Suspense>
+            </div>
+        </>
     );
 } 
