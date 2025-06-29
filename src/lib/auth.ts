@@ -14,7 +14,6 @@ export async function getSession() {
     // Decode session token (use JWT verification in production)
     console.log('Attempting to decode session token...');
     const sessionData = JSON.parse(Buffer.from(sessionToken, 'base64').toString());
-    console.log('Decoded session data:', sessionData);
     
     // Check if token is expired
     const now = Date.now();
@@ -35,7 +34,6 @@ export async function getSession() {
     };
   } catch (error) {
     console.error('Invalid session token:', error);
-    console.error('Token that failed to parse:', sessionToken);
     return null;
   }
 }

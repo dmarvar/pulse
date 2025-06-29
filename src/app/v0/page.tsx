@@ -15,18 +15,18 @@ export default async function CegidPulsePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="min-h-screen bg-slate-900 text-white font-[family-name:var(--font-poppins)]">
       {/* Auth Header */}
       <div className="absolute top-4 right-4 z-10">
-        <div className="flex items-center gap-4 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-lg px-4 py-2">
+        <div className="flex items-center gap-4 bg-slate-800/80 backdrop-blur-sm border border-slate-600/30 rounded-lg px-4 py-2">
           <div className="text-sm">
             <p className="text-white font-medium">User {session.userId}</p>
-            <p className="text-gray-400 text-xs">Authenticated</p>
+            <p className="text-slate-400 text-xs">Authenticated</p>
           </div>
           <form action="/api/auth/logout" method="POST">
             <button
               type="submit"
-              className="text-gray-400 hover:text-white transition-colors p-1"
+              className="text-slate-400 hover:text-white transition-colors p-1"
               title="Sign out"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -42,19 +42,19 @@ export default async function CegidPulsePage() {
         {/* Header Section with Logo */}
         <div className="flex flex-col items-center justify-center min-h-[60vh]">
           {/* Logo Container */}
-          <div className="mb-8 p-8 rounded-2xl bg-gradient-to-r from-gray-800/50 to-gray-700/50 backdrop-blur-sm border border-gray-600/30 shadow-2xl">
+          <div className="mb-8 p-8 rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-600/30 shadow-2xl">
             <Image
               src="/Brand 1.svg"
               alt="CEGID PULSE"
-              width={300}
-              height={80}
+              width={364}
+              height={78}
               className="filter drop-shadow-lg"
               priority
             />
           </div>
           
           {/* Subtitle */}
-          <p className="text-xl text-gray-300 text-center max-w-2xl leading-relaxed">
+          <p className="text-xl text-slate-300 text-center max-w-2xl leading-relaxed">
             Empowering the future of enterprise solutions with cutting-edge AI technology
           </p>
         </div>
@@ -63,7 +63,7 @@ export default async function CegidPulsePage() {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {/* Agentic Platform Framework Card */}
           <div className="group">
-            <div className="h-full p-8 rounded-xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-blue-500/50">
+            <div className="h-full p-8 rounded-xl bg-slate-800/80 border border-slate-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-blue-500/50">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@ export default async function CegidPulsePage() {
                   Agentic Platform Framework
                 </h3>
               </div>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 Revolutionary autonomous agent architecture that adapts and learns from enterprise workflows, 
                 enabling intelligent decision-making and seamless process automation.
               </p>
@@ -89,7 +89,7 @@ export default async function CegidPulsePage() {
 
           {/* AI UI Integration Card */}
           <div className="group">
-            <div className="h-full p-8 rounded-xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-purple-500/50">
+            <div className="h-full p-8 rounded-xl bg-slate-800/80 border border-slate-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-purple-500/50">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@ export default async function CegidPulsePage() {
                   AI UI Integration
                 </h3>
               </div>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 Intelligent user interfaces that understand context and user intent, 
                 providing personalized experiences with natural language processing and adaptive design patterns.
               </p>
@@ -115,7 +115,7 @@ export default async function CegidPulsePage() {
 
           {/* Tools Card */}
           <div className="group">
-            <div className="h-full p-8 rounded-xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-orange-500/50">
+            <div className="h-full p-8 rounded-xl bg-slate-800/80 border border-slate-600/30 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:border-orange-500/50">
               <div className="flex items-center mb-6">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@ export default async function CegidPulsePage() {
                   Tools
                 </h3>
               </div>
-              <p className="text-gray-300 leading-relaxed">
+              <p className="text-slate-300 leading-relaxed">
                 Comprehensive suite of development and deployment tools designed for enterprise-grade applications, 
                 featuring automated testing, monitoring, and scalable infrastructure management.
               </p>
@@ -143,8 +143,8 @@ export default async function CegidPulsePage() {
 
         {/* Footer */}
         <div className="mt-16 text-center">
-          <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-gray-600 to-transparent mx-auto mb-6"></div>
-          <p className="text-gray-500 text-sm">
+          <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-600 to-transparent mx-auto mb-6"></div>
+          <p className="text-slate-500 text-sm">
             © 2024 CEGID PULSE. Transforming enterprise solutions through intelligent automation.
           </p>
         </div>

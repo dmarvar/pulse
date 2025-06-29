@@ -102,7 +102,6 @@ export async function POST(request: NextRequest) {
       
       // Exchange the Sign In access token for a Token Service access token
       const tokenServiceResponse = await getTokenServiceAccessToken(access_token);
-      console.log('Token Service response:', JSON.stringify(tokenServiceResponse, null, 2));
       
       // Create session token (you could use JWT here)
       const sessionData = {
@@ -111,10 +110,9 @@ export async function POST(request: NextRequest) {
         refreshToken: tokenServiceResponse.refresh_token,
         expiresAt: Date.now() + (tokenServiceResponse.expires_in * 1000)
       };
-      console.log('Creating session with data:', sessionData);
+      console.log('Creating session with userId:', sessionData.userId);
       
       const sessionToken = await createSessionToken(sessionData);
-      console.log('Generated session token:', sessionToken);
       
       // Clear the state cookie first
       cookieStore.delete('auth_state');
@@ -129,8 +127,8 @@ export async function POST(request: NextRequest) {
           <title>Authentication Successful</title>
           <style>
             body { 
-              font-family: Arial, sans-serif; 
-              background: linear-gradient(135deg, #1f2937, #111827);
+              font-family: var(--font-poppins), var(--font-roboto), sans-serif; 
+              background: #0f172a;
               color: white;
               display: flex;
               justify-content: center;
@@ -141,18 +139,26 @@ export async function POST(request: NextRequest) {
             .container {
               text-align: center;
               padding: 2rem;
-              background: rgba(255,255,255,0.1);
+              background: rgba(30, 41, 59, 0.6);
               border-radius: 1rem;
               backdrop-filter: blur(10px);
+              border: 1px solid rgba(148, 163, 184, 0.2);
             }
             .spinner {
-              border: 3px solid rgba(255,255,255,0.3);
-              border-top: 3px solid #3b82f6;
+              border: 3px solid rgba(148, 163, 184, 0.3);
+              border-top: 3px solid #2563eb;
               border-radius: 50%;
               width: 40px;
               height: 40px;
               animation: spin 1s linear infinite;
               margin: 0 auto 1rem;
+            }
+            h2 {
+              color: white;
+              margin-bottom: 0.5rem;
+            }
+            p {
+              color: #cbd5e1;
             }
             @keyframes spin {
               0% { transform: rotate(0deg); }
