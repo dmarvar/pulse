@@ -79,8 +79,6 @@ export async function POST(request: NextRequest) {
     const error = formData.get('error') as string;
     const error_description = formData.get('error_description') as string;
     
-    console.log('OAuth callback received:', Object.fromEntries(formData));
-    
     const cookieStore = await cookies();
     
     // Check for errors from the authorization server
@@ -110,14 +108,11 @@ export async function POST(request: NextRequest) {
         refreshToken: tokenServiceResponse.refresh_token,
         expiresAt: Date.now() + (tokenServiceResponse.expires_in * 1000)
       };
-      console.log('Creating session with userId:', sessionData.userId);
       
       const sessionToken = await createSessionToken(sessionData);
       
       // Clear the state cookie first
       cookieStore.delete('auth_state');
-      
-      console.log('Authentication successful with code - setting session token');
       
       // Create HTML response that redirects (cookie set via headers)
       const htmlContent = `
@@ -125,9 +120,12 @@ export async function POST(request: NextRequest) {
         <html>
         <head>
           <title>Authentication Successful</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
           <style>
             body { 
-              font-family: var(--font-poppins), var(--font-roboto), sans-serif; 
+              font-family: 'Poppins', 'Roboto', sans-serif; 
               background: #0f172a;
               color: white;
               display: flex;
@@ -181,8 +179,6 @@ export async function POST(request: NextRequest) {
         </body>
         </html>
       `;
-      
-      console.log('Returning HTML page with secure cookie and redirect');
       
       // Create response with secure cookie settings
       const response = new Response(htmlContent, {

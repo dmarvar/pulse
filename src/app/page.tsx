@@ -1,9 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-poppins)] bg-slate-900 text-white">
+    <div className={`grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-slate-900 text-white ${poppins.className}`}>
       <main className="flex flex-col gap-[32px] row-start-2 items-center text-center">
         <Image
           src="/Brand 1.svg"

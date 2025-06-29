@@ -1,21 +1,23 @@
 import Image from 'next/image';
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 export default async function CegidPulsePage() {
   const session = await getSession();
   
-  // Debug logging
-  console.log('Session check in /v0:', session ? 'Found session' : 'No session found');
-  
   // This should not happen due to middleware, but just in case
   if (!session) {
-    console.log('Redirecting to signin - no session found');
     redirect('/api/auth/signin');
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white font-[family-name:var(--font-poppins)]">
+    <div className={`min-h-screen bg-slate-900 text-white ${poppins.className}`}>
       {/* Auth Header */}
       <div className="absolute top-4 right-4 z-10">
         <div className="flex items-center gap-4 bg-slate-800/80 backdrop-blur-sm border border-slate-600/30 rounded-lg px-4 py-2">
@@ -38,9 +40,9 @@ export default async function CegidPulsePage() {
       </div>
 
       {/* Main Container */}
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6">
         {/* Header Section with Logo */}
-        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center justify-center min-h-[45vh]">
           {/* Logo Container */}
           <div className="mb-8 p-8 rounded-2xl bg-slate-800/50 backdrop-blur-sm border border-slate-600/30 shadow-2xl">
             <Image
