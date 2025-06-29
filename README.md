@@ -42,7 +42,7 @@ The `/pulse` endpoint serves as a critical proxy component in the architecture:
 
 ⚠️ **For Demonstration Purposes Only**
 
-This application has been simplified for demonstration and experimentation purposes and **does not save any data to the database**. As a result, all authentication data, including tokens and session information, is stored directly in cookies.
+This application has been simplified for demonstration and experimentation purposes and **does not persist any data**. As a result, all authentication data, including tokens and session information, is stored directly in cookies.
 
 **This is NOT a recommended security pattern for production applications.**
 
@@ -50,9 +50,9 @@ This application has been simplified for demonstration and experimentation purpo
 
 In production applications, you should implement proper session management:
 
-1. **Database Session Storage**: Store session data, tokens, and user information in a secure database
+1. **Secure Session Storage**: Store session data, tokens, and user information in a secure storage system
 2. **Minimal Cookie Data**: Cookies should only contain a session ID or similar identifier
-3. **Secure Session Lookup**: Use the session ID to retrieve full session data from the database
+3. **Secure Session Lookup**: Use the session ID to retrieve full session data from your storage system
 4. **Token Security**: Never store sensitive tokens, secrets, or user data directly in cookies
 
 ### Why This Matters
@@ -61,7 +61,7 @@ In production applications, you should implement proper session management:
 - **Size Limitations**: Cookies have size restrictions that can limit the data you can store
 - **Performance**: Large cookies increase request size and network overhead
 - **Compliance**: Many security standards require proper session management practices
-- **Scalability**: Database-backed sessions allow for better session management across multiple servers
+- **Scalability**: Proper session management allows for better handling across multiple servers
 
 ### Implementation in Your Applications
 
@@ -73,7 +73,7 @@ document.cookie = "user_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
 // ✅ Recommended: Store only session ID in cookies
 document.cookie = "session_id=abc123def456";
-// Then lookup full session data from database using session_id
+// Then lookup full session data from your storage system using session_id
 ```
 
 This demonstration platform prioritizes simplicity and ease of setup over security best practices to facilitate learning and experimentation.
@@ -83,7 +83,6 @@ This demonstration platform prioritizes simplicity and ease of setup over securi
 ### Prerequisites
 
 - Node.js 18+ 
-- PostgreSQL database
 - PulseOS access credentials
 
 ### Environment Setup
@@ -95,12 +94,6 @@ cp .env_token .env.local
 
 2. Update the environment variables with your specific configuration:
 ```bash
-# Database
-DATABASE_URL="postgresql://postgres@localhost:5432/pulseos"
-
-# NextAuth.js Configuration
-NEXTAUTH_SECRET="your-secret-key-here-make-it-long-and-random"
-NEXTAUTH_URL="http://localhost:8990"
 
 # Custom OAuth Provider
 CUSTOM_OAUTH_CLIENT_ID="your-client-id"

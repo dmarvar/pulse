@@ -169,6 +169,101 @@ export default function ApiDocs() {
                     background-color: #f7f7f7 !important;
                 }
                 
+                /* Fix syntax highlighting colors for better contrast */
+                .swagger-ui .highlight-code .microlight {
+                    color: #3b4151 !important;
+                }
+                
+                /* String values in JSON - make green darker */
+                .swagger-ui .highlight-code .microlight .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                /* JSON syntax highlighting improvements */
+                .swagger-ui .highlight-code pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                .swagger-ui .highlight-code pre .hljs-number {
+                    color: #d73a49 !important;
+                }
+                
+                .swagger-ui .highlight-code pre .hljs-literal {
+                    color: #005cc5 !important;
+                }
+                
+                /* Additional JSON response styling */
+                .swagger-ui .responses-inner pre {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .responses-inner pre .hljs-string,
+                .swagger-ui .response-col_description pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                /* Response body syntax highlighting */
+                .swagger-ui .response-content-type pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                /* Fix light green text in server response section */
+                .swagger-ui .live-responses-table .response-col_description pre,
+                .swagger-ui .live-responses-table .response-col_description code {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .live-responses-table .response-col_description pre .token.string,
+                .swagger-ui .live-responses-table .response-col_description pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                .swagger-ui .live-responses-table .response-col_description pre .token.boolean,
+                .swagger-ui .live-responses-table .response-col_description pre .hljs-literal {
+                    color: #005cc5 !important;
+                }
+                
+                .swagger-ui .live-responses-table .response-col_description pre .token.number,
+                .swagger-ui .live-responses-table .response-col_description pre .hljs-number {
+                    color: #d73a49 !important;
+                }
+                
+                /* Target the specific response body area */
+                .swagger-ui .responses-wrapper .response .response-col_description pre {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .responses-wrapper .response .response-col_description pre * {
+                    color: inherit !important;
+                }
+                
+                .swagger-ui .responses-wrapper .response .response-col_description pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                /* Force override all syntax highlighting in response bodies */
+                .swagger-ui .response-content-type code,
+                .swagger-ui .response-content-type pre,
+                .swagger-ui .live-responses-table pre {
+                    color: #3b4151 !important;
+                }
+                
+                .swagger-ui .response-content-type code .hljs-string,
+                .swagger-ui .response-content-type pre .hljs-string,
+                .swagger-ui .live-responses-table pre .hljs-string {
+                    color: #067d17 !important;
+                }
+                
+                /* Override any remaining light green text */
+                .swagger-ui * {
+                    --swagger-ui-string-color: #067d17 !important;
+                }
+                
+                .swagger-ui pre[class*="language-"] .token.string,
+                .swagger-ui code[class*="language-"] .token.string {
+                    color: #067d17 !important;
+                }
+                
                 /* Fix any dark backgrounds */
                 .swagger-ui .topbar {
                     background-color: #89bf04 !important;
@@ -179,7 +274,7 @@ export default function ApiDocs() {
                 }
             `}</style>
             
-            <div className="container mx-auto py-10 px-4 bg-white min-h-screen">
+            <div className="w-full py-10 px-6 bg-white min-h-screen">
                 <h1 className="text-3xl font-bold mb-6 text-gray-900">API Documentation</h1>
                 <Suspense fallback={<div className="flex justify-center items-center h-96">
                     <p className="text-xl text-gray-900">Loading API documentation...</p>

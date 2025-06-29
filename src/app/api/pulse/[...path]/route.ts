@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-// import { auth } from '@/auth';
-// import { prisma } from '@/lib/prisma';
 
 // Configuration for the proxy
 const PROXY_CONFIG = {
@@ -31,37 +29,6 @@ const PROXY_CONFIG = {
 // Generic handler function for all HTTP methods
 async function handleProxyRequest(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
-    // Check authentication first
-    // const session = await auth();
-    
-    // if (!session?.user?.id) {
-    //   return NextResponse.json(
-    //     { 
-    //       error: 'Authentication required',
-    //       message: 'You must be signed in to access this endpoint',
-    //       timestamp: new Date().toISOString()
-    //     },
-    //     { status: 401 }
-    //   );
-    // }
-
-    // Get the user's access token from the database
-    // const account = await prisma.account.findFirst({
-    //   where: {
-    //     userId: session.user.id,
-    //     provider: 'myoauth', // Match the provider ID from auth.ts
-    //   },
-    //   select: {
-    //     access_token: true,
-    //   },
-    // });
-
-    // let accessToken = account?.access_token;
-    // if (!accessToken) {
-    //   console.warn(`No access token found for user ${session.user.id}, using fake token`);
-    //   accessToken = 'fake-access-token-for-development';
-    // }
-
     const { method, url } = request;
     const requestUrl = new URL(url);
     
@@ -77,8 +44,6 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
     // Construct the target URL
     const targetUrl = `${PROXY_CONFIG.targetUrl}/${subPath}${queryString}`;
     
-    // console.log(`Proxying ${method} ${requestUrl.pathname} -> ${targetUrl} for user ${session.user.id}`);
-    
     // Prepare headers for the proxied request
     const proxyHeaders = new Headers();
     
@@ -88,11 +53,6 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
         proxyHeaders.set(key, value);
       }
     });
-
-    // console.log(accessToken);
-
-    // Add the user's access token as Authorization header
-    // proxyHeaders.set('Authorization', `Bearer ${accessToken}`);
     
     // Add custom headers
     Object.entries(PROXY_CONFIG.customHeaders).forEach(([key, value]) => {
@@ -106,7 +66,6 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
     proxyHeaders.set('X-Forwarded-For', forwardedFor);
     proxyHeaders.set('X-Forwarded-Host', requestUrl.host);
     proxyHeaders.set('X-Forwarded-Proto', requestUrl.protocol.slice(0, -1));
-    // proxyHeaders.set('X-Forwarded-User', session.user.id);
     
     // Prepare the request body for methods that support it
     let body: BodyInit | null = null;
@@ -194,8 +153,7 @@ export async function HEAD(request: NextRequest, context: { params: Promise<{ pa
 }
 
 export async function OPTIONS(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
-  // Handle preflight CORS requests - these don't require authentication
-  // but should include user authentication headers in allowed headers
+  // Handle preflight CORS requests
   
   // Log the OPTIONS request for debugging
   const resolvedParams = await context.params;
