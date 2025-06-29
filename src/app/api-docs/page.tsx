@@ -176,12 +176,12 @@ export default function ApiDocs() {
                 
                 /* String values in JSON - make green darker */
                 .swagger-ui .highlight-code .microlight .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 /* JSON syntax highlighting improvements */
                 .swagger-ui .highlight-code pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 .swagger-ui .highlight-code pre .hljs-number {
@@ -199,12 +199,12 @@ export default function ApiDocs() {
                 
                 .swagger-ui .responses-inner pre .hljs-string,
                 .swagger-ui .response-col_description pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 /* Response body syntax highlighting */
                 .swagger-ui .response-content-type pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 /* Fix light green text in server response section */
@@ -215,7 +215,7 @@ export default function ApiDocs() {
                 
                 .swagger-ui .live-responses-table .response-col_description pre .token.string,
                 .swagger-ui .live-responses-table .response-col_description pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 .swagger-ui .live-responses-table .response-col_description pre .token.boolean,
@@ -238,7 +238,7 @@ export default function ApiDocs() {
                 }
                 
                 .swagger-ui .responses-wrapper .response .response-col_description pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 /* Force override all syntax highlighting in response bodies */
@@ -251,17 +251,45 @@ export default function ApiDocs() {
                 .swagger-ui .response-content-type code .hljs-string,
                 .swagger-ui .response-content-type pre .hljs-string,
                 .swagger-ui .live-responses-table pre .hljs-string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
                 }
                 
                 /* Override any remaining light green text */
                 .swagger-ui * {
-                    --swagger-ui-string-color: #067d17 !important;
+                    --swagger-ui-string-color: #2d8f47 !important;
                 }
                 
                 .swagger-ui pre[class*="language-"] .token.string,
                 .swagger-ui code[class*="language-"] .token.string {
-                    color: #067d17 !important;
+                    color: #2d8f47 !important;
+                }
+                
+                /* Override the specific rgb(162, 252, 162) color with a much darker green */
+                .swagger-ui *[style*="color: rgb(162, 252, 162)"],
+                .swagger-ui *[style*="color:rgb(162,252,162)"] {
+                    color: #1a5a2e !important;
+                }
+                
+                .swagger-ui *[style*="background-color: rgb(162, 252, 162)"],
+                .swagger-ui *[style*="background-color:rgb(162,252,162)"] {
+                    background-color: #1a5a2e !important;
+                }
+                
+                .swagger-ui *[style*="border-color: rgb(162, 252, 162)"],
+                .swagger-ui *[style*="border-color:rgb(162,252,162)"] {
+                    border-color: #1a5a2e !important;
+                }
+                
+                /* Force override any light green colors that might be similar */
+                .swagger-ui [style*="rgb(162, 252, 162)"] {
+                    color: #1a5a2e !important;
+                    background-color: transparent !important;
+                }
+                
+                /* Override hex equivalent of rgb(162, 252, 162) which is #A2FCA2 */
+                .swagger-ui *[style*="#A2FCA2"],
+                .swagger-ui *[style*="#a2fca2"] {
+                    color: #1a5a2e !important;
                 }
                 
                 /* Fix any dark backgrounds */
