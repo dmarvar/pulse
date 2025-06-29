@@ -3,7 +3,7 @@ const scriptTag = document.currentScript;
 const defaultTitle = scriptTag?.dataset?.title || 'Assistant PulseOS';
 
 // API Configuration
-const API_BASE_URL = 'http://localhost:8990/api/pulse';
+const API_BASE_URL = '/api/pulse';
 
 // Inline SVG assets
 const AVATAR_SVG = `<svg width="32" height="32" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -442,7 +442,103 @@ const CHAT_BODY_STYLES = `
   }
 
   .message-content strong {
-    display: none;
+    color: #FF5C35;
+    font-weight: bold;
+  }
+
+  /* Markdown Elements Styling */
+  .md-h1, .md-h2, .md-h3 {
+    color: #FF5C35;
+    margin: 8px 0 4px 0;
+    font-weight: bold;
+    line-height: 1.3;
+  }
+
+  .md-h1 { 
+    font-size: 1.4em;
+    border-bottom: 2px solid rgba(255, 92, 53, 0.3);
+    padding-bottom: 8px;
+  }
+  
+  .md-h2 { 
+    font-size: 1.25em;
+    border-bottom: 1px solid rgba(255, 92, 53, 0.2);
+    padding-bottom: 4px;
+  }
+  
+  .md-h3 { 
+    font-size: 1.1em; 
+  }
+
+  .md-hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 92, 53, 0.5), transparent);
+    margin: 16px 0;
+  }
+
+  .md-code-block {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin: 8px 0;
+    overflow-x: auto;
+    font-family: 'Courier New', 'Monaco', monospace;
+    font-size: 0.9em;
+    line-height: 1.4;
+  }
+
+  .md-code-block code {
+    color: #e2e8f0;
+    background: none;
+    padding: 0;
+  }
+
+  .md-inline-code {
+    background: rgba(255, 92, 53, 0.15);
+    color: #FF5C35;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', 'Monaco', monospace;
+    font-size: 0.9em;
+    border: 1px solid rgba(255, 92, 53, 0.2);
+  }
+
+  .md-link {
+    color: #60a5fa;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .md-link:hover {
+    color: #93c5fd;
+  }
+
+  .md-list-item, .md-numbered-item {
+    margin: 4px 0;
+    padding-left: 8px;
+    position: relative;
+  }
+
+  .md-list-item::before {
+    content: '•';
+    color: #FF5C35;
+    font-weight: bold;
+    position: absolute;
+    left: -12px;
+  }
+
+  .md-numbered-item {
+    counter-increment: list-counter;
+  }
+
+  .md-numbered-item::before {
+    content: counter(list-counter) '.';
+    color: #FF5C35;
+    font-weight: bold;
+    position: absolute;
+    left: -20px;
   }
 
   .message-text {
@@ -1058,10 +1154,43 @@ class MyChatbot extends HTMLElement {
     }
 
     formatMessage(message) {
-      // Convert markdown-style formatting to HTML
+      // Enhanced markdown-to-HTML conversion with security
       return message
+        // Escape HTML first for security (but preserve emojis and special chars)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        
+        // Horizontal rules
+        .replace(/^---+$/gm, '<hr class="md-hr">')
+        
+        // Headers (support emojis)
+        .replace(/^### (.*$)/gm, '<h3 class="md-h3">$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2 class="md-h2">$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1 class="md-h1">$1</h1>')
+        
+        // Code blocks (multi-line)
+        .replace(/```([\s\S]*?)```/g, '<pre class="md-code-block"><code>$1</code></pre>')
+        
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>')
+        
+        // Bold and italic (nested support)
+        .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        
+        // Links
+        .replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank" class="md-link">$1</a>')
+        
+        // Lists (unordered) - handle both - and *
+        .replace(/^[\s]*[-*] (.*$)/gm, '<li class="md-list-item">$1</li>')
+        
+        // Numbered lists
+        .replace(/^[\s]*\d+\. (.*$)/gm, '<li class="md-numbered-item">$1</li>')
+        
+        // Line breaks (preserve double breaks for paragraphs)
+        .replace(/\n\n/g, '<br><br>')
         .replace(/\n/g, '<br>');
     }
 
