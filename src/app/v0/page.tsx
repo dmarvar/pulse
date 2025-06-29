@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Poppins } from "next/font/google";
+import Script from 'next/script';
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,18 +21,43 @@ export default async function CegidPulsePage() {
     <div className={`min-h-screen bg-slate-900 text-white ${poppins.className}`}>
       {/* Auth Header */}
       <div className="absolute top-4 right-4 z-10">
-        <div className="flex items-center gap-4 bg-slate-800/80 backdrop-blur-sm border border-slate-600/30 rounded-lg px-4 py-2">
-          <div className="text-sm">
-            <p className="text-white font-medium">User {session.userId}</p>
-            <p className="text-slate-400 text-xs">Authenticated</p>
+        <div className="flex items-center gap-4">
+          {/* Theme Toggle Button */}
+          <button
+            className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800/50 rounded-lg"
+            title="Dark theme"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          </button>
+          
+          {/* User Info */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+              {session.userInfo?.name ? 
+                session.userInfo.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 
+                session.userId.substring(0, 2).toUpperCase()
+              }
+            </div>
+            <div className="text-sm">
+              <p className="text-white font-medium leading-tight">
+                {session.userInfo?.name || `User ${session.userId}`}
+              </p>
+              <p className="text-slate-400 text-xs leading-tight">
+                {session.userInfo?.email || 'Authenticated'}
+              </p>
+            </div>
           </div>
+          
+          {/* Logout Button */}
           <form action="/api/auth/logout" method="POST">
             <button
               type="submit"
-              className="text-slate-400 hover:text-white transition-colors p-1"
+              className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800/50 rounded-lg"
               title="Sign out"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
             </button>
@@ -151,6 +177,11 @@ export default async function CegidPulsePage() {
           </p>
         </div>
       </div>
+      <Script
+          src="/script.js"
+          strategy="afterInteractive"
+          data-title="Hello world"
+        />
     </div>
   );
 }

@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
       authenticated: true,
       user: {
         id: sessionData.userId,
+        ...sessionData.userInfo,
         // Add other user properties as needed
       }
     });

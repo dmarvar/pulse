@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -31,11 +30,6 @@ export default function RootLayout({
         className={`${poppins.variable} ${roboto.variable} antialiased`}
       >
         {children}
-        <Script 
-          src="/script.js"
-          strategy="afterInteractive"
-          data-title="Hello world"
-        />
       </body>
     </html>
   );

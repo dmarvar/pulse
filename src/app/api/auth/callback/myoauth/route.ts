@@ -59,9 +59,26 @@ const getSigninAccessToken = async (code: string) => {
   return response.json();
 };
 
+// Helper function to decode JWT token to extract user information
+const decodeJWT = (token: string) => {
+  try {
+    const payload = token.split('.')[1];
+    const decodedPayload = Buffer.from(payload, 'base64url').toString();
+    return JSON.parse(decodedPayload);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return null;
+  }
+};
+
 // Helper function to create session token (implement with JWT)
 async function createSessionToken(sessionData: {
   userId: string;
+  userInfo: {
+    id: string;
+    name: string;
+    email: string | null;
+  };
   accessToken: string;
   refreshToken: string;
   expiresAt: number;
@@ -96,14 +113,29 @@ export async function POST(request: NextRequest) {
     
     // If we have an authorization code, exchange it for tokens
     if (code) {
-      const { access_token } = await getSigninAccessToken(code);
+      const tokenResponse = await getSigninAccessToken(code);
+      const { access_token, id_token } = tokenResponse;
+      
+      // Extract user information from id_token
+      let userInfo = { id: 'user-id', name: 'User', email: null };
+      if (id_token) {
+        const decodedIdToken = decodeJWT(id_token);
+        if (decodedIdToken) {
+          userInfo = {
+            id: decodedIdToken.sub || decodedIdToken.oid || 'user-id',
+            name: decodedIdToken.name || decodedIdToken.given_name || 'User',
+            email: decodedIdToken.email || decodedIdToken.emails?.[0] || null
+          };
+        }
+      }
       
       // Exchange the Sign In access token for a Token Service access token
       const tokenServiceResponse = await getTokenServiceAccessToken(access_token);
       
       // Create session token (you could use JWT here)
       const sessionData = {
-        userId: 'user-id', // Extract from tokens
+        userId: userInfo.id,
+        userInfo: userInfo,
         accessToken: tokenServiceResponse.access_token,
         refreshToken: tokenServiceResponse.refresh_token,
         expiresAt: Date.now() + (tokenServiceResponse.expires_in * 1000)

@@ -22,6 +22,7 @@ export async function getSession() {
     
     return {
       userId: sessionData.userId,
+      userInfo: sessionData.userInfo,
       accessToken: sessionData.accessToken,
       refreshToken: sessionData.refreshToken,
       expiresAt: sessionData.expiresAt
