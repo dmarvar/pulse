@@ -1,0 +1,1155 @@
+[
+  {
+    "BU": "Accounting",
+    "Applicacion": "Cegid Business",
+    "Name of Client (Solution)": [
+      "Authentication",
+      "Find an invoice and display it",
+      "Follow up on the late payment clients by email",
+      "Modify an amount, due date if an invoice"
+    ],
+    "Owner": [
+      "cavena@cegid.com",
+      "lvanhee@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Retrieve analysis of invoices"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "4.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 1"
+    ],
+    "Unnamed: 13": [
+      "Very ready"
+    ]
+  },
+  {
+    "BU": "Accounting",
+    "Applicacion": "Loop",
+    "Name of Client (Solution)": [
+      "Authentication",
+      "List up clients who haven't paid (debtors)",
+      "Find an invoice through an account entry for clients",
+      "To have detailed info of a client",
+      "List up late payment clients with associated invoices",
+      "Display the financial indicators"
+    ],
+    "Owner": [
+      "fmenot@cegid.com",
+      "cjouanneau@cegid.com",
+      "rbeloued@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Accounting firm management"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "Accounting",
+    "Applicacion": "Quadra+",
+    "Name of Client (Solution)": [
+      "Authentication",
+      "List up clients who haven't paid (debtors)",
+      "Find an invoice through an account entry for clients",
+      "To have detailed info of a client",
+      "List up late payment clients with associated invoices",
+      "Retrieve contact info of clients for a colleague from the accounting firm",
+      "List up properties"
+    ],
+    "Owner": [
+      "fsauzet@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Vivian"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Accounting firm management"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "Accounting",
+    "Applicacion": "Support Clients Loop",
+    "Name of Client (Solution)": [
+      "Help with external RAG",
+      "Tickets search & creation"
+    ],
+    "Owner": [
+      "mzanguropol@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Client support dedicated to Loop"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "10.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "External",
+    "Applicacion": "Avalor",
+    "Name of Client (Solution)": [
+      "Authentication",
+      "Evaluate a company from Siren"
+    ],
+    "Owner": [
+      "fal@avalor.fr"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Value estimation of a company"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "No Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "External",
+    "Applicacion": "Regate",
+    "Name of Client (Solution)": [
+      "Authentication",
+      "Retrieve sales invoices"
+    ],
+    "Owner": [
+      "Aurélien Vecchiato <aurelien.vecchiato.ext@qonto.com>"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Invoice analysis"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "No Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "TPE",
+    "Applicacion": "Boby",
+    "Name of Client (Solution)": [
+      "API definition"
+    ],
+    "Owner": [
+      "gharari@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Proxy agent to exploit Boby"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available",
+      "No Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "10.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance XRPU",
+    "Name of Client (Solution)": [
+      "Onboading",
+      "Analysis of Balances Vs Elsa Poc"
+    ],
+    "Owner": [
+      "ccostel@cegid.com",
+      "atunca@cegid.com",
+      "pfraysse@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Diego"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Invoice management",
+      "ERP Exploitation"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "4.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 1"
+    ],
+    "Unnamed: 13": [
+      "Very ready"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance CTU",
+    "Name of Client (Solution)": [
+      "Onboading",
+      "Modify the balance of company X",
+      "Modify the detailed account of company X",
+      "API definition",
+      "Creation of an IS declaration of company X"
+    ],
+    "Owner": [
+      "mdumur@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Documentation (RAG)"
+    ],
+    "Unnamed: 6": [
+      "3"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "7.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 2"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance Notilus",
+    "Name of Client (Solution)": [
+      "Onboading",
+      "Creation of en expenses clain from a scanned PDF file",
+      "Verification the possibility of service, vis-à-vis of the politics, current state of the group/ company/employee budget",
+      "Help to onboard a client with respect to his current context"
+    ],
+    "Owner": [
+      "jcmartin@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Expenses claim management"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available",
+      "Cegid Account?"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "10.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance Exalog",
+    "Name of Client (Solution)": [
+      "Onboarding",
+      "API definition",
+      "Use Case Definition"
+    ],
+    "Owner": [
+      "fabien.penot@exalog.com",
+      "sheng@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Cash flow management"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Team moderately involved"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "5.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 1"
+    ],
+    "Unnamed: 13": [
+      "Very ready"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance XRP Flex",
+    "Name of Client (Solution)": [
+      "Onboarding",
+      "Use Case Definition"
+    ],
+    "Owner": [
+      "gpancin@cegid.com",
+      "ccostel@cegid.com"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Documentation (RAG)"
+    ],
+    "Unnamed: 6": [
+      "3"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Team moderately involved",
+      "No resources"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "Finance",
+    "Applicacion": "BU Finance ISIE",
+    "Name of Client (Solution)": [
+      "Onboarding",
+      "Use Case Definition"
+    ],
+    "Owner": [
+      "vwong@cegid.com",
+      "PO: Patrick Levine",
+      "Head of PM: Nicolas"
+    ]
+  },
+  {
+    "BU": "HCM Talent",
+    "Applicacion": "RH Core Performance",
+    "Name of Client (Solution)": [
+      "Navigation",
+      "Data exploitation",
+      "Data Analyze"
+    ],
+    "Owner": [
+      "David JANUEL",
+      "Sankar Julien GRIMM"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "RAS"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Follow up needed"
+    ],
+    "Unnamed: 6": [
+      "3"
+    ],
+    "Unnamed: 7": [
+      "Follow up needed"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "13.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "HCM Talent",
+    "Applicacion": "RH Assistant My HR Cockpit (MHC)",
+    "Name of Client (Solution)": [
+      "Information research with precision",
+      "Analysis",
+      "Comparison"
+    ],
+    "Owner": [
+      "Yann KAHLOUN (R&D), Baptiste DHUVETTERE"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Performance report analysis",
+      "Personnel data analysis"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API not available",
+      "Cegid Account?"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team not involved"
+    ],
+    "Unnamed: 10": [
+      "3"
+    ],
+    "Unnamed: 11": [
+      "10.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "HUBIX",
+    "Applicacion": "Hubbix",
+    "Owner": [
+      "Kasindi SONGE (Dev, gestion comptable)",
+      "Stephanie Massoni (PO)",
+      "Aziz (Chef de projet),  Romain SEMETEYS (PM), Jonathan CONEGGO (R&D), Bogdan POSEA (Dev)"
+    ],
+    "Intergration Owner": [
+      "Vivian"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Invoice management"
+    ],
+    "Unnamed: 6": [
+      "2"
+    ],
+    "Unnamed: 7": [
+      "API available (to be confirmed)"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team moderately involved"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "11"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "EBP",
+    "Applicacion": "Openline",
+    "Owner": [
+      "Anthony BOURDIN abourdin@cegid.com",
+      "Bernard MULLER"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Pay slip explanation"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "No Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Very active"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "6.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 2"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "Retail",
+    "Applicacion": "Livestore",
+    "Name of Client (Solution)": [
+      "Onboarding",
+      "Use Case Definition",
+      "Voice"
+    ],
+    "Owner": [
+      "Jihane Sonier Magne : PM sur le domaine Retail Platform",
+      "Samuel Guillaume : PM sur le domaine Retail Back",
+      "Yves Alain Ligault (PM Domaine Retail Store)",
+      "Yan Peuillon (mon monsieur plateforme qui fera en sorte que PulseOS soit disponible dans nos environnements Retail)",
+      "Damien Beurton (Manager R&D qui aura en charge de l'implémentation des Agents sur le back Y2)",
+      "Franck Cavallaro (Manager R&D qui aura en charge l'intégration des agents dans les front clients)"
+    ],
+    "Intergration Owner": [
+      "Vivian"
+    ],
+    "Agent Implementation Level": [
+      "Advanced"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Agent to manage client's shopping basket (apply discount)",
+      "Agent to verify stock availability in shop",
+      "Voice command"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "No Cegid Account",
+      "(Auth Server)"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team moderately involved"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "7.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 2"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "ILA RH",
+    "Applicacion": "PeopleNet",
+    "Owner": [
+      "Fabrice COUTADEUR"
+    ],
+    "Agent Implementation Level": [
+      "Basic"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Not clear yet"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "No Cegid Account"
+    ]
+  },
+  {
+    "BU": "ILA Vendus",
+    "Applicacion": "Invoice Management SB",
+    "Name of Client (Solution)": [
+      "Voice",
+      "Integration with What's app"
+    ],
+    "Owner": [
+      "Daniel AZEVEDO"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Advanced"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Invoice management"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API available",
+      "No Cegid Account",
+      "(but they use Cegid ID)"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "6.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 2"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "Cegid Primavera ERP V10 ",
+    "Applicacion": "ERP V10",
+    "Name of Client (Solution)": [
+      "sevdesk"
+    ],
+    "Owner": [
+      "Vasco LOUREIRO (Dev)"
+    ],
+    "Intergration Owner": [
+      "Ronaldo"
+    ],
+    "Agent Implementation Level": [
+      "Follow Up needed"
+    ]
+  },
+  {
+    "BU": "Technology office",
+    "Applicacion": "Data finance",
+    "Name of Client (Solution)": [
+      "Authentication (Using custom sessions for now)",
+      "Audit TVA declaration"
+    ],
+    "Owner": [
+      "Patrick Lavine (PM)",
+      "Guillaume RIVIERE (Dev)",
+      "Guillaume Montagar (Directeur R&D)"
+    ],
+    "Intergration Owner": [
+      "Diego"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "VAT review"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "Cegid Account",
+      "API in progress"
+    ],
+    "Unnamed: 8": [
+      "2"
+    ],
+    "Unnamed: 9": [
+      "Very active"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "7.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 2"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "Technology office",
+    "Applicacion": "CopilotPayroll",
+    "Name of Client (Solution)": [
+      "Authentication (Using custom token to authenticate calls)",
+      "List employees, select employee, get payroll, calculate payroll, send payroll"
+    ],
+    "Owner": [
+      "Jean Michel Col (Responsable R&D)",
+      "Florian Durance (Lead Dev)",
+      "Vincent Bonnefoi (PM Payroll)",
+      "Guillaume Montagar (Directeur R&D)"
+    ],
+    "Intergration Owner": [
+      "Diego"
+    ],
+    "Agent Implementation Level": [
+      "Advanced"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Retrieve payroll by employee.",
+      "Include an update in the payroll record for a bonus or time off."
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API ready but complex",
+      "The use case is already in production without pulseOS",
+      "Cegid Account"
+    ],
+    "Unnamed: 8": [
+      "1"
+    ],
+    "Unnamed: 9": [
+      "Management involced, team less involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "4.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 1"
+    ],
+    "Unnamed: 13": [
+      "Very ready"
+    ]
+  },
+  {
+    "BU": "Cegid PDP",
+    "Applicacion": "E-invoice portail Cegid",
+    "Name of Client (Solution)": [
+      "Authentication (Not yet. just prototyping)",
+      "create invoice"
+    ],
+    "Owner": [
+      "Nicolas MALTESE (PM)",
+      "Come Hardy (Dev)",
+      "Ricardo Campos (Lead dev PDP)",
+      "Julian Lopez (Testeur)",
+      "Caroline Boutte (PO)"
+    ],
+    "Intergration Owner": [
+      "Diego"
+    ],
+    "Agent Implementation Level": [
+      "Intermediate"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Create an invoice from a prompt and include in the PDP"
+    ],
+    "Unnamed: 6": [
+      "2"
+    ],
+    "Unnamed: 7": [
+      "Cegid Account",
+      "No api for use case"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "No team. No especial time assigned"
+    ],
+    "Unnamed: 10": [
+      "2"
+    ],
+    "Unnamed: 11": [
+      "11"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Low readiness"
+    ]
+  },
+  {
+    "BU": "VSB",
+    "Applicacion": "Agentic finance CashPilot",
+    "Name of Client (Solution)": [
+      "BIM"
+    ],
+    "Owner": [
+      "PM: Marek ZANGUROPOL",
+      "Romain SEMETEYS (PM), Jonathan CONEGGO (R&D), Bogdan POSEA (Dev)"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Advanced"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Company's financial data analysis"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "No API"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Moderately ready"
+    ]
+  },
+  {
+    "BU": "Accounting",
+    "Applicacion": "CPA",
+    "Name of Client (Solution)": [
+      "Agentic CPA"
+    ],
+    "Owner": [
+      "Louis, Léon"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "Advanced"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Assistance in TVA declaration"
+    ],
+    "Unnamed: 6": [
+      "1"
+    ],
+    "Unnamed: 7": [
+      "API?"
+    ],
+    "Unnamed: 8": [
+      "3"
+    ],
+    "Unnamed: 9": [
+      "Team very involved"
+    ],
+    "Unnamed: 10": [
+      "1"
+    ],
+    "Unnamed: 11": [
+      "8.5"
+    ],
+    "Unnamed: 12": [
+      "Grade 3"
+    ],
+    "Unnamed: 13": [
+      "Very readlness"
+    ]
+  },
+  {
+    "BU": "CB",
+    "Applicacion": "Twin Labs",
+    "Name of Client (Solution)": [
+      "Billabex"
+    ],
+    "Owner": [
+      "Cedric Avena (Cegid)",
+      "Cedric Avena (Cegid), Quentin Georget, Yassine Chabli (Billabex)"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "external agent"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Retrieve invoices from source",
+      "Recovery invoices paiement"
+    ],
+    "Unnamed: 7": [
+      "#"
+    ]
+  },
+  {
+    "BU": "Talent",
+    "Applicacion": "Beam",
+    "Owner": [
+      "Tian Jiang (Beam), Floriann, Yann (Cegid)"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "external agent"
+    ],
+    "Pulse OS INT Team client classification criteria": [
+      "Employee performance/Learning"
+    ]
+  }
+]
