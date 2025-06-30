@@ -103,7 +103,7 @@ const CHAT_CONTAINER_STYLES = `
     position: fixed;
     bottom: 80px;
     right: 20px;
-    width: 400px;
+    width: 420px;
     height: 600px;
     background: #0f172a url('./texture.png');
     background-size: 200px 200px;
@@ -426,6 +426,8 @@ const CHAT_BODY_STYLES = `
     position: relative;
     word-wrap: break-word;
     max-width: 100%;
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   .message.user .message-content {
@@ -442,27 +444,32 @@ const CHAT_BODY_STYLES = `
   }
 
   .message-content strong {
-    color: #FF5C35;
+    color: #2563eb;
     font-weight: bold;
   }
 
   /* Markdown Elements Styling */
   .md-h1, .md-h2, .md-h3 {
-    color: #FF5C35;
+    color: white;
     margin: 8px 0 4px 0;
     font-weight: bold;
     line-height: 1.3;
   }
 
+  /* Override strong color inside headings to keep them white */
+  .md-h1 strong, .md-h2 strong, .md-h3 strong {
+    color: white;
+  }
+
   .md-h1 { 
     font-size: 1.4em;
-    border-bottom: 2px solid rgba(255, 92, 53, 0.3);
+    border-bottom: 2px solid rgba(37, 99, 235, 0.3);
     padding-bottom: 8px;
   }
   
   .md-h2 { 
     font-size: 1.25em;
-    border-bottom: 1px solid rgba(255, 92, 53, 0.2);
+    border-bottom: 1px solid rgba(37, 99, 235, 0.2);
     padding-bottom: 4px;
   }
   
@@ -473,7 +480,7 @@ const CHAT_BODY_STYLES = `
   .md-hr {
     border: none;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 92, 53, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.5), transparent);
     margin: 16px 0;
   }
 
@@ -487,6 +494,8 @@ const CHAT_BODY_STYLES = `
     font-family: 'Courier New', 'Monaco', monospace;
     font-size: 0.9em;
     line-height: 1.4;
+    max-width: 100%;
+    word-break: break-all;
   }
 
   .md-code-block code {
@@ -496,13 +505,13 @@ const CHAT_BODY_STYLES = `
   }
 
   .md-inline-code {
-    background: rgba(255, 92, 53, 0.15);
-    color: #FF5C35;
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb;
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Courier New', 'Monaco', monospace;
     font-size: 0.9em;
-    border: 1px solid rgba(255, 92, 53, 0.2);
+    border: 1px solid rgba(37, 99, 235, 0.2);
   }
 
   .md-link {
@@ -515,18 +524,25 @@ const CHAT_BODY_STYLES = `
     color: #93c5fd;
   }
 
+  .message-content {
+    counter-reset: list-counter; /* Reset counter for each message */
+  }
+
   .md-list-item, .md-numbered-item {
     margin: 4px 0;
-    padding-left: 8px;
+    padding-left: 20px;
     position: relative;
+    list-style: none; /* Remove default browser bullet points */
+    display: block;
   }
 
   .md-list-item::before {
     content: '•';
-    color: #FF5C35;
+    color: white;
     font-weight: bold;
     position: absolute;
-    left: -12px;
+    left: 8px;
+    top: 0;
   }
 
   .md-numbered-item {
@@ -535,10 +551,12 @@ const CHAT_BODY_STYLES = `
 
   .md-numbered-item::before {
     content: counter(list-counter) '.';
-    color: #FF5C35;
+    color: white;
     font-weight: bold;
     position: absolute;
-    left: -20px;
+    left: 4px;
+    top: 0;
+    min-width: 16px;
   }
 
   .message-text {
@@ -646,6 +664,20 @@ const CHAT_BODY_STYLES = `
     .message-content {
       padding: 10px 12px;
       font-size: 0.95em;
+    }
+
+    /* Adjust list spacing for mobile */
+    .md-list-item, .md-numbered-item {
+      padding-left: 18px;
+      margin: 2px 0;
+    }
+
+    .md-list-item::before {
+      left: 6px;
+    }
+
+    .md-numbered-item::before {
+      left: 2px;
     }
   }
 `;

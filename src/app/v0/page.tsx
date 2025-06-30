@@ -178,7 +178,7 @@ export default async function CegidPulsePage() {
         </div>
       </div>
       <Script
-          src="/script.js"
+          src="/CegidInAppChatBot.js"
           strategy="afterInteractive"
           data-title="Hello world"
         />
