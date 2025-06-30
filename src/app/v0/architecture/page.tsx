@@ -1,3 +1,21 @@
+import { MermaidChart } from "../mermid";
+
+const mermaidCode = `graph TD
+  A[User] -->|Interacts| B(Chatbot)
+  B --> C{Agentic Decision}
+  C -->|Document Use Case| D[Documentation RAG]
+  C -->|Invoice Use Case| E[Invoicing Workflow]
+  C -->|Payroll Use Case| F[Payroll Workflow]
+  D --> G[Return documentation]
+  E --> H[Generate Invoice]
+  F --> I[Register Payroll Event]
+  G --> J[Show Result]
+  H --> J
+  I --> J`;
+
+
+
+
 export default function AgenticArchitecturePage() {
     return (
       <div className="container mx-auto px-6 py-12">
@@ -16,13 +34,21 @@ export default function AgenticArchitecturePage() {
 
         {/* Main Content Cards */}
         <div className="space-y-8 max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold mb-6">Agentic Architecture Flow</h1>
+          
+          {/* Architecture Diagram */}
+          <div className="flex justify-center mb-8">
+            <img 
+              src="/diagram.png" 
+              alt="Agentic Architecture Flow Diagram" 
+              className="max-w-full h-auto rounded-lg shadow-lg"
+            />
+          </div>
+          
           {/* Separation of Triggers */}
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center shadow-lg mr-4">
-                <span className="text-white font-bold text-lg">1</span>
-              </div>
-              <h2 className="text-2xl font-bold text-blue-400">Separation of Triggers</h2>
+              <h2 className="text-2xl font-bold text-white">1. Separation of Triggers</h2>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-slate-700/50 rounded-xl p-6 border border-slate-600/30">
@@ -58,10 +84,7 @@ export default function AgenticArchitecturePage() {
           {/* Routing Layer */}
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center shadow-lg mr-4">
-                <span className="text-white font-bold text-lg">2</span>
-              </div>
-              <h2 className="text-2xl font-bold text-purple-400">Use a Routing Layer Before Agent Groups</h2>
+              <h2 className="text-2xl font-bold text-white">2. Use a Routing Layer Before Agent Groups</h2>
             </div>
             <p className="text-slate-300 mb-6 leading-relaxed">
               Implement a lightweight <strong className="text-white">Intent Router Agent</strong> as a front-layer agent before delegating to heavy workflows. This agent:
@@ -91,10 +114,7 @@ export default function AgenticArchitecturePage() {
           {/* Layering Flows */}
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-lg mr-4">
-                <span className="text-white font-bold text-lg">3</span>
-              </div>
-              <h2 className="text-2xl font-bold text-orange-400">Layering Flows by Complexity</h2>
+              <h2 className="text-2xl font-bold text-white">3. Layering Flows by Complexity</h2>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="bg-gradient-to-b from-green-500/20 to-green-600/10 rounded-xl p-6 border border-green-500/30">
@@ -133,10 +153,7 @@ export default function AgenticArchitecturePage() {
           {/* Modular Agent Groups */}
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-600 flex items-center justify-center shadow-lg mr-4">
-                <span className="text-white font-bold text-lg">4</span>
-              </div>
-              <h2 className="text-2xl font-bold text-cyan-400">Use Modular Agent Groups</h2>
+              <h2 className="text-2xl font-bold text-white">4. Use Modular Agent Groups</h2>
             </div>
             <p className="text-slate-300 leading-relaxed">
               Structure your AG2 workflows by <strong className="text-white">domains</strong> (e.g., Invoicing, HR/Payroll, Documentation) with their own Agent Groups.
@@ -147,10 +164,7 @@ export default function AgenticArchitecturePage() {
           {/* Memory and Context Strategy */}
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
             <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-pink-500 to-pink-600 flex items-center justify-center shadow-lg mr-4">
-                <span className="text-white font-bold text-lg">5</span>
-              </div>
-              <h2 className="text-2xl font-bold text-pink-400">Memory and Context Strategy</h2>
+              <h2 className="text-2xl font-bold text-white">5. Memory and Context Strategy</h2>
             </div>
             <div className="space-y-4">
               <div className="flex items-start bg-slate-700/30 rounded-lg p-4 border-l-4 border-pink-500">
@@ -170,54 +184,6 @@ export default function AgenticArchitecturePage() {
                 <p className="text-slate-300">
                   For RAG, store conversation trace minimally to preserve session but not overload retrieval systems
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Business Units Advice */}
-          <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-600/30 backdrop-blur-sm shadow-xl">
-            <div className="flex items-center mb-6">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg mr-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-indigo-400">How to Advise Your Business Units</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-slate-700/30 rounded-lg p-6 border border-slate-600/30">
-                <div className="flex items-start mb-4">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-4 flex-shrink-0"></div>
-                  <p className="text-slate-300">
-                    Help them classify their use case into RAG, lightweight, or complex workflow
-                  </p>
-                </div>
-                <div className="flex items-start mb-4">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-4 flex-shrink-0"></div>
-                  <p className="text-slate-300">
-                    Advise using a unified chatbot interface while routing intelligently under the hood
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-4 flex-shrink-0"></div>
-                  <p className="text-slate-300">
-                    Propose domain-based modular flows to avoid entanglement between features
-                  </p>
-                </div>
-              </div>
-              <div className="bg-slate-700/30 rounded-lg p-6 border border-slate-600/30">
-                <div className="flex items-start mb-4">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-4 flex-shrink-0"></div>
-                  <p className="text-slate-300">
-                    Implement observability (logs, metrics) to identify heavy flows for future optimization
-                  </p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-4 flex-shrink-0"></div>
-                  <p className="text-slate-300">
-                    Use clear onboarding documentation to let product teams declare their workflow needs precisely
-                  </p>
-                </div>
               </div>
             </div>
           </div>
