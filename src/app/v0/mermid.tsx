@@ -26,7 +26,7 @@ export const MermaidChart: React.FC<MermaidChartProps> = ({ chart }) => {
           if (containerRef.current) {
             containerRef.current.innerHTML = svg;
           }
-        } catch (e) {
+        } catch {
           if (containerRef.current) {
             containerRef.current.innerHTML =
               "<div class='text-red-500'>Invalid Mermaid diagram</div>";

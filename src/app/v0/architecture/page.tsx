@@ -1,20 +1,4 @@
-import { MermaidChart } from "../mermid";
-
-const mermaidCode = `graph TD
-  A[User] -->|Interacts| B(Chatbot)
-  B --> C{Agentic Decision}
-  C -->|Document Use Case| D[Documentation RAG]
-  C -->|Invoice Use Case| E[Invoicing Workflow]
-  C -->|Payroll Use Case| F[Payroll Workflow]
-  D --> G[Return documentation]
-  E --> H[Generate Invoice]
-  F --> I[Register Payroll Event]
-  G --> J[Show Result]
-  H --> J
-  I --> J`;
-
-
-
+import Image from 'next/image';
 
 export default function AgenticArchitecturePage() {
     return (
@@ -38,9 +22,11 @@ export default function AgenticArchitecturePage() {
           
           {/* Architecture Diagram */}
           <div className="flex justify-center mb-8">
-            <img 
+            <Image 
               src="/diagram.png" 
               alt="Agentic Architecture Flow Diagram" 
+              width={800}
+              height={600}
               className="max-w-full h-auto rounded-lg shadow-lg"
             />
           </div>
