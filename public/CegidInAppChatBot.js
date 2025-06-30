@@ -105,7 +105,7 @@ const CHAT_CONTAINER_STYLES = `
     right: 20px;
     width: 420px;
     height: 600px;
-    background: #0f172a url('./texture.png');
+    background: #0f172a url('/texture.png');
     background-size: 200px 200px;
     background-repeat: repeat;
     background-position: 0 0;

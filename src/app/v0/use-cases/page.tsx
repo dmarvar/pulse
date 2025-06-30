@@ -4,7 +4,6 @@
 import { useMemo } from "react";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from "recharts";
 // Import your data as JSON
 import initiativesData from "../../../../public/pulseos.json";
