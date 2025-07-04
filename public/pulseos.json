@@ -961,7 +961,7 @@
       "1"
     ],
     "Unnamed: 9": [
-      "Management involced, team less involved"
+      "Management invoiced, team less involved"
     ],
     "Unnamed: 10": [
       "1"
@@ -1113,14 +1113,15 @@
     ]
   },
   {
-    "BU": "CB",
+    "BU": "SB",
     "Applicacion": "Twin Labs",
     "Name of Client (Solution)": [
-      "Billabex"
+      "Twin Labs Invoices Retrieve"
     ],
     "Owner": [
       "Cedric Avena (Cegid)",
-      "Cedric Avena (Cegid), Quentin Georget, Yassine Chabli (Billabex)"
+      "Hugo Mercier <hugo@twin.so>",
+      "Alessandro Barone <alessandro@twin.so>"
     ],
     "Intergration Owner": [
       "Hong-Thai"
@@ -1129,7 +1130,29 @@
       "external agent"
     ],
     "Pulse OS INT Team client classification criteria": [
-      "Retrieve invoices from source",
+      "Retrieve invoices from source"
+    ],
+    "Unnamed: 7": [
+      "#"
+    ]
+  },
+  {
+    "BU": "SB",
+    "Applicacion": "Billabex",
+    "Name of Client (Solution)": [
+      "Paiement Recovery"
+    ],
+    "Owner": [
+      "Cedric Avena (Cegid)",
+      "Quentin Georget, Yassine Chabli (Billabex)"
+    ],
+    "Intergration Owner": [
+      "Hong-Thai"
+    ],
+    "Agent Implementation Level": [
+      "external agent"
+    ],
+    "Pulse OS INT Team client classification criteria": [
       "Recovery invoices paiement"
     ],
     "Unnamed: 7": [
@@ -1140,7 +1163,7 @@
     "BU": "Talent",
     "Applicacion": "Beam",
     "Owner": [
-      "Tian Jiang (Beam), Floriann, Yann (Cegid)"
+      "Tian Jiang (Beam), Florian, Yann (Cegid)"
     ],
     "Intergration Owner": [
       "Hong-Thai"
