@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/auth';
 
 // Configuration for the proxy
 const PROXY_CONFIG = {
@@ -32,6 +33,20 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
     const { method, url } = request;
     const requestUrl = new URL(url);
     
+    // Extract session and access token for authentication
+    const session = await getSession();
+    if (!session || !session.accessToken) {
+      console.error('Proxy request failed: No valid session or access token found');
+      return NextResponse.json(
+        { 
+          error: 'Authentication required', 
+          message: 'No valid session or access token found. Please sign in again.',
+          timestamp: new Date().toISOString()
+        },
+        { status: 401 }
+      );
+    }
+    
     // Await params as required by Next.js 15+
     const resolvedParams = await params;
     
@@ -54,6 +69,9 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
       }
     });
     
+    // Add authorization header from session
+    proxyHeaders.set('Authorization', `Bearer ${session.accessToken}`);
+    
     // Add custom headers
     Object.entries(PROXY_CONFIG.customHeaders).forEach(([key, value]) => {
       proxyHeaders.set(key, value);
@@ -66,6 +84,12 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
     proxyHeaders.set('X-Forwarded-For', forwardedFor);
     proxyHeaders.set('X-Forwarded-Host', requestUrl.host);
     proxyHeaders.set('X-Forwarded-Proto', requestUrl.protocol.slice(0, -1));
+    
+    // Add user context headers for debugging/logging
+    proxyHeaders.set('X-User-ID', session.userId);
+    
+    // Log the proxied request for debugging
+    console.log(`Proxying ${method} request to: ${targetUrl} for user: ${session.userId}`);
     
     // Prepare the request body for methods that support it
     let body: BodyInit | null = null;
@@ -114,6 +138,18 @@ async function handleProxyRequest(request: NextRequest, { params }: { params: Pr
     
   } catch (error) {
     console.error('Proxy error:', error);
+    
+    // Check if it's an authentication error
+    if (error instanceof Error && error.message === 'Authentication required') {
+      return NextResponse.json(
+        { 
+          error: 'Authentication required',
+          message: 'Please sign in to access this resource',
+          timestamp: new Date().toISOString()
+        },
+        { status: 401 }
+      );
+    }
     
     return NextResponse.json(
       { 
