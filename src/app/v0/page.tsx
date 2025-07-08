@@ -109,14 +109,6 @@ export default function CegidPulsePage() {
             </a>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="mt-16 text-center">
-          <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-600 to-transparent mx-auto mb-6"></div>
-          <p className="text-slate-500 text-sm">
-            © 2024 CEGID PULSE. Transforming enterprise solutions through intelligent automation.
-          </p>
-        </div>
       </div>
   );
 }

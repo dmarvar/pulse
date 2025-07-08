@@ -23,15 +23,30 @@ export default async function V0Layout({ children }: V0LayoutProps) {
   }
 
   return (
-    <div className={`min-h-screen bg-slate-900 text-white ${poppins.className}`}>
+    <div className={`min-h-screen w-full bg-slate-900 text-white ${poppins.className}`}>
       <AppBar 
         session={session} 
         showThemeToggle={true}
         showUserDetails={true}
       />
-      <div className="pt-20">
-        {children}
-      </div>
+      <main className="pt-20 bg-slate-900 w-full">
+        <div className="bg-slate-900">
+          {children}
+        </div>
+      </main>
+      
+      {/* Global Footer */}
+      <footer className="bg-slate-900 py-8">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-600 to-transparent mx-auto mb-6"></div>
+            <p className="text-slate-500 text-sm">
+              © 2024 CEGID PULSE. Transforming enterprise solutions through intelligent automation.
+            </p>
+          </div>
+        </div>
+      </footer>
+      
       <Script
         src="/CegidInAppChatBot.js"
         strategy="afterInteractive"

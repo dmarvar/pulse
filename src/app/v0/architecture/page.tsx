@@ -174,14 +174,6 @@ export default function AgenticArchitecturePage() {
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div className="mt-16 text-center">
-          <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-slate-600 to-transparent mx-auto mb-6"></div>
-          <p className="text-slate-500 text-sm">
-            This architecture ensures scalability, domain isolation, and optimal performance when using AG2 to serve multiple advanced use cases within a single chatbot while preserving a clear developer and user experience.
-          </p>
-        </div>
       </div>
     );
   }
