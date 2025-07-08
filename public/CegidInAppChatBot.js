@@ -353,6 +353,35 @@ const SESSIONS_SIDEBAR_STYLES = `
     font-size: 0.9em;
   }
 
+  .sessions-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+    gap: 15px;
+  }
+
+  .sessions-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .sessions-loading-text {
+    font-size: 0.9em;
+    text-align: center;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
   /* Custom scrollbar for sessions list */
   .sessions-list::-webkit-scrollbar {
     width: 6px;
@@ -1226,6 +1255,17 @@ class MyChatbot extends HTMLElement {
         .replace(/\n/g, '<br>');
     }
 
+    truncateSessionName(name, maxWords = 10) {
+      if (!name) return '';
+      
+      const words = name.trim().split(/\s+/);
+      if (words.length <= maxWords) {
+        return name;
+      }
+      
+      return words.slice(0, maxWords).join(' ') + '...';
+    }
+
     showLoadingIndicator(chatBody) {
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'loading-indicator';
@@ -1246,6 +1286,40 @@ class MyChatbot extends HTMLElement {
 
     removeLoadingIndicator(chatBody) {
       const loadingIndicator = chatBody.querySelector('.loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.remove();
+      }
+    }
+
+    showSessionsLoadingIndicator() {
+      const sessionsList = this.shadowRoot.querySelector('.sessions-list');
+      const sessionsHeader = sessionsList.querySelector('.sessions-header');
+      const endHistory = sessionsList.querySelector('.end-history');
+      
+      // Remove existing session items
+      sessionsList.querySelectorAll('.session-item').forEach(item => item.remove());
+      
+      // Create loading indicator
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'sessions-loading';
+      
+      const spinner = document.createElement('div');
+      spinner.className = 'sessions-loading-spinner';
+      
+      const text = document.createElement('div');
+      text.className = 'sessions-loading-text';
+      text.textContent = 'Chargement des sessions...';
+      
+      loadingDiv.appendChild(spinner);
+      loadingDiv.appendChild(text);
+      
+      // Insert after header and before end history
+      sessionsList.insertBefore(loadingDiv, endHistory);
+    }
+
+    removeSessionsLoadingIndicator() {
+      const sessionsList = this.shadowRoot.querySelector('.sessions-list');
+      const loadingIndicator = sessionsList.querySelector('.sessions-loading');
       if (loadingIndicator) {
         loadingIndicator.remove();
       }
@@ -1323,7 +1397,13 @@ class MyChatbot extends HTMLElement {
         const sessionElement = document.createElement('div');
         sessionElement.className = 'session-item';
         sessionElement.dataset.sessionId = session.id;
-        sessionElement.textContent = session.name;
+        
+        // Truncate session name to 10 words with ellipsis
+        const truncatedName = this.truncateSessionName(session.name, 10);
+        sessionElement.textContent = truncatedName;
+        
+        // Add full name as tooltip for hover
+        sessionElement.title = session.name;
         
         // Add click handler
         sessionElement.addEventListener('click', async () => {
@@ -1348,8 +1428,14 @@ class MyChatbot extends HTMLElement {
 
     async initializeSessions() {
       try {
+        // Show loading indicator
+        this.showSessionsLoadingIndicator();
+        
         // Fetch sessions from API
         await this.fetchSessions();
+        
+        // Remove loading indicator
+        this.removeSessionsLoadingIndicator();
         
         // Update UI with fetched sessions
         this.updateSessionsListUI();
@@ -1392,6 +1478,8 @@ class MyChatbot extends HTMLElement {
         
       } catch (error) {
         console.error('Error initializing sessions:', error);
+        // Remove loading indicator on error
+        this.removeSessionsLoadingIndicator();
         // Show fallback message if API fails
         this.addMessageToUI('Bot', 'Erreur lors du chargement des sessions. Bonjour! 😊 Comment puis-je vous aider?');
       }
