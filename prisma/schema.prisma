@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Application {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  businessUnit String
+  description String?
+  ownerName   String?
+  ownerEmail  String?
+  integrationOwnerName String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  useCases         UseCase[]
+  activities       Activity[]
+  score            ApplicationScore?
+
+  @@map("applications")
+}
+
+model UseCase {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  description   String?
+  applicationId String @db.ObjectId
+
+  // Relationships
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("use_cases")
+}
+
+
+
+model ApplicationScore {
+  id                     String @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId          String @unique @db.ObjectId
+  implementationLevel    String // Basic, Intermediate, Advanced
+  classification         String?
+  apiAvailability        String?
+  teamInvolvement        String?
+  readinessStatus        String // Very ready, Medium readiness, Low readiness
+  technicalScore         Float?
+  businessScore          Float?
+  resourceScore          Float?
+  totalScore             Float?
+  grade                  String // Grade 1, Grade 2, Grade 3
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Relationships
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("application_scores")
+}
+
+model Activity {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  applicationId String   @db.ObjectId
+  title         String
+  description   String?
+  type          String   // CREATED, UPDATED, SCORED, REVIEWED, etc.
+  status        String   @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED
+  createdBy     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+} 

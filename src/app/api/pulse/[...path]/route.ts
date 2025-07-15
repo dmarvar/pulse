@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 // Configuration for the proxy
 const PROXY_CONFIG = {
   // Target endpoint to proxy requests to
-  targetUrl: process.env.PROXY_TARGET_URL || 'http://localhost:8000',
+  targetUrl: process.env.PROXY_TARGET_URL || 'http://localhost:8585',
   // targetUrl: process.env.PROXY_TARGET_URL || 'https://pulseos-inte.cegid.cloud/execution/api/v1',
   
   // Custom headers to add to proxied requests

@@ -38,6 +38,74 @@ The `/pulse` endpoint serves as a critical proxy component in the architecture:
 - **Security**: Credentials and internal URLs are abstracted from client applications
 - **Flexibility**: Easy to modify routing and add middleware without client changes
 
+## Database Schema
+
+The application includes a comprehensive database schema for managing applications, their use cases, scores, and activities. The schema is built using Prisma with MongoDB (designed for Azure Cosmos DB with MongoDB API) and follows a simplified approach with direct field storage for ease of use.
+
+```mermaid
+erDiagram
+    Application {
+        ObjectId id PK
+        string name UK
+        string businessUnit
+        string description
+        string ownerName
+        string ownerEmail
+        string integrationOwnerName
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    UseCase {
+        ObjectId id PK
+        string name
+        string description
+        ObjectId applicationId FK
+    }
+    
+    ApplicationScore {
+        ObjectId id PK
+        ObjectId applicationId FK
+        string implementationLevel
+        string classification
+        string apiAvailability
+        string teamInvolvement
+        string readinessStatus
+        float technicalScore
+        float businessScore
+        float resourceScore
+        float totalScore
+        string grade
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Activity {
+        ObjectId id PK
+        ObjectId applicationId FK
+        string title
+        string description
+        string type
+        string status
+        string createdBy
+        datetime createdAt
+        datetime updatedAt
+    }
+    
+    Application ||--o{ UseCase : "has"
+    Application ||--o| ApplicationScore : "has"
+    Application ||--o{ Activity : "has"
+```
+
+### Key Features of the Schema:
+
+- **Simplified Structure**: Direct field storage for owners and integration owners (no complex relationships)
+- **Comprehensive Scoring**: Detailed scoring system with technical, business, and resource metrics
+- **Activity Tracking**: Complete audit trail for application follow-ups and status changes
+- **Flexible Design**: Easy to extend with additional fields as requirements grow
+
+For detailed setup instructions and API documentation, see [DATABASE_SETUP.md](DATABASE_SETUP.md).
+
 ## Important Security Disclaimer
 
 ⚠️ **For Demonstration Purposes Only**

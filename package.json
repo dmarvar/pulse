@@ -6,9 +6,15 @@
     "dev": "next dev --turbopack -p 8990",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "prisma db push --force-reset && npm run db:seed"
   },
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "jspdf": "^3.0.1",
     "mermaid": "^11.7.0",
     "next": "15.3.1",
@@ -28,7 +34,9 @@
     "@types/xml2js": "^0.4.14",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   },
   "engines": {
