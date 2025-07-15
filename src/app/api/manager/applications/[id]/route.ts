@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { ApplicationsController } from '@/controllers'
 
 // GET /api/applications/[id] - Get a specific application
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const application = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         useCases: true,
         score: true,
@@ -40,9 +42,10 @@ export async function GET(
 // PUT /api/applications/[id] - Update a specific application
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { 
       name, 
@@ -57,7 +60,7 @@ export async function PUT(
 
     // Check if application exists
     const existingApplication = await prisma.application.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingApplication) {
@@ -68,8 +71,8 @@ export async function PUT(
     }
 
     // Update basic application data
-    const updatedApplication = await prisma.application.update({
-      where: { id: params.id },
+    await prisma.application.update({
+      where: { id },
       data: {
         name,
         businessUnit,
@@ -84,14 +87,14 @@ export async function PUT(
     if (useCases) {
       // Delete existing use cases
       await prisma.useCase.deleteMany({
-        where: { applicationId: params.id }
+        where: { applicationId: id }
       })
 
       // Create new use cases
       if (useCases.length > 0) {
         await prisma.useCase.createMany({
-          data: useCases.map((useCase: any) => ({
-            applicationId: params.id,
+          data: useCases.map((useCase: { name: string; description?: string }) => ({
+            applicationId: id,
             name: useCase.name,
             description: useCase.description
           }))
@@ -99,14 +102,10 @@ export async function PUT(
       }
     }
 
-
-
-
-
     // Handle score update
     if (score) {
       await prisma.applicationScore.upsert({
-        where: { applicationId: params.id },
+        where: { applicationId: id },
         update: {
           implementationLevel: score.implementationLevel,
           classification: score.classification,
@@ -120,7 +119,7 @@ export async function PUT(
           grade: score.grade
         },
         create: {
-          applicationId: params.id,
+          applicationId: id,
           implementationLevel: score.implementationLevel || 'Basic',
           classification: score.classification,
           apiAvailability: score.apiAvailability,
@@ -138,7 +137,7 @@ export async function PUT(
     // Create activity for update
     await prisma.activity.create({
       data: {
-        applicationId: params.id,
+        applicationId: id,
         title: 'Application Updated',
         description: `Application "${name || existingApplication.name}" was updated`,
         type: 'UPDATED'
@@ -147,7 +146,7 @@ export async function PUT(
 
     // Fetch the complete updated application
     const completeApplication = await prisma.application.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         useCases: true,
         score: true,
@@ -172,32 +171,23 @@ export async function PUT(
 // DELETE /api/applications/[id] - Delete a specific application
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Check if application exists
-    const existingApplication = await prisma.application.findUnique({
-      where: { id: params.id }
-    })
-
-    if (!existingApplication) {
+    const { id } = await params
+    const result = await ApplicationsController.deleteApplication(id)
+    
+    return NextResponse.json(result, { status: 200 })
+  } catch (error) {
+    console.error('Error deleting application:', error)
+    
+    if (error instanceof Error && error.message === 'Application not found') {
       return NextResponse.json(
         { error: 'Application not found' },
         { status: 404 }
       )
     }
-
-    // Delete application (cascade will handle related records)
-    await prisma.application.delete({
-      where: { id: params.id }
-    })
-
-    return NextResponse.json(
-      { message: 'Application deleted successfully' },
-      { status: 200 }
-    )
-  } catch (error) {
-    console.error('Error deleting application:', error)
+    
     return NextResponse.json(
       { error: 'Failed to delete application' },
       { status: 500 }

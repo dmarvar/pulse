@@ -90,6 +90,7 @@ export class ApplicationsController {
 
     // Transform to Initiative format expected by the use-cases page
     return applications.map(app => ({
+      id: app.id, // Add the application ID for delete functionality
       BU: app.businessUnit,
       Applicacion: app.name,
       "Name of Client (Solution)": app.useCases.map(uc => uc.name),
@@ -242,7 +243,7 @@ export class ApplicationsController {
     }
 
     // Update basic application data
-    const updatedApplication = await prisma.application.update({
+    await prisma.application.update({
       where: { id },
       data: {
         name,

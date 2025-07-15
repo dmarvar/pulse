@@ -1,5 +1,6 @@
 // Define the type for initiative objects based on actual JSON structure
 export interface Initiative {
+  id?: string; // Application ID for API operations
   BU?: string;
   Applicacion?: string;
   "Name of Client (Solution)"?: string[];

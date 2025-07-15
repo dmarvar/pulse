@@ -4,10 +4,11 @@ import { ActivitiesController } from '@/controllers/manager/activities.controlle
 // GET /api/activities/[id] - Get a specific activity
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const activity = await ActivitiesController.getActivityById(params.id)
+    const { id } = await params
+    const activity = await ActivitiesController.getActivityById(id)
     return NextResponse.json(activity)
   } catch (error) {
     console.error('Error fetching activity:', error)
@@ -27,9 +28,10 @@ export async function GET(
 // PUT /api/activities/[id] - Update a specific activity
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { 
       title, 
@@ -38,7 +40,7 @@ export async function PUT(
       status 
     } = body
 
-    const updatedActivity = await ActivitiesController.updateActivity(params.id, {
+    const updatedActivity = await ActivitiesController.updateActivity(id, {
       title,
       description,
       type,
@@ -64,10 +66,11 @@ export async function PUT(
 // DELETE /api/activities/[id] - Delete a specific activity
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const result = await ActivitiesController.deleteActivity(params.id)
+    const { id } = await params
+    const result = await ActivitiesController.deleteActivity(id)
     return NextResponse.json(result, { status: 200 })
   } catch (error) {
     console.error('Error deleting activity:', error)

@@ -37,7 +37,11 @@ export class ActivitiesController {
       offset = 0
     } = filters
 
-    const where: any = {}
+    const where: {
+      applicationId?: string;
+      type?: string;
+      status?: string;
+    } = {}
 
     if (applicationId) {
       where.applicationId = applicationId

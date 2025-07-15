@@ -1,25 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { ApplicationsController } from '@/controllers/manager/applications.controller'
 
 // GET /api/applications - List all applications
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const applications = await prisma.application.findMany({
-      include: {
-        useCases: true,
-        score: true,
-        activities: {
-          orderBy: {
-            createdAt: 'desc'
-          },
-          take: 5 // Latest 5 activities
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
-
+    const { searchParams } = new URL(request.url)
+    const format = searchParams.get('format')
+    
+    // Return data formatted for use-cases if requested
+    if (format === 'use-cases') {
+      const applications = await ApplicationsController.getApplicationsForUseCases()
+      return NextResponse.json(applications)
+    }
+    
+    // Default: return regular application data
+    const applications = await ApplicationsController.getApplications()
     return NextResponse.json(applications)
   } catch (error) {
     console.error('Error fetching applications:', error)
@@ -34,94 +29,20 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { 
-      name, 
-      businessUnit, 
-      description, 
-      ownerName,
-      ownerEmail,
-      integrationOwnerName,
-      useCases = [], 
-      score 
-    } = body
-
-    if (!name || !businessUnit) {
+    
+    const application = await ApplicationsController.createApplication(body)
+    return NextResponse.json(application, { status: 201 })
+  } catch (error) {
+    console.error('Error creating application:', error)
+    
+    // Handle validation errors
+    if (error instanceof Error && error.message.includes('required')) {
       return NextResponse.json(
-        { error: 'Name and business unit are required' },
+        { error: error.message },
         { status: 400 }
       )
     }
-
-    // Create application with related data
-    const application = await prisma.application.create({
-      data: {
-        name,
-        businessUnit,
-        description,
-        ownerName,
-        ownerEmail,
-        integrationOwnerName,
-        useCases: {
-          create: useCases.map((useCase: any) => ({
-            name: useCase.name,
-            description: useCase.description
-          }))
-        },
-        activities: {
-          create: {
-            title: 'Application Created',
-            description: `Application "${name}" was created`,
-            type: 'CREATED'
-          }
-        }
-      },
-      include: {
-        useCases: true,
-        score: true,
-        activities: true
-      }
-    })
-
-
-
-
-
-    // Handle score if provided
-    if (score) {
-      await prisma.applicationScore.create({
-        data: {
-          applicationId: application.id,
-          implementationLevel: score.implementationLevel || 'Basic',
-          classification: score.classification,
-          apiAvailability: score.apiAvailability,
-          teamInvolvement: score.teamInvolvement,
-          readinessStatus: score.readinessStatus || 'Low readiness',
-          technicalScore: score.technicalScore,
-          businessScore: score.businessScore,
-          resourceScore: score.resourceScore,
-          totalScore: score.totalScore,
-          grade: score.grade || 'Grade 3'
-        }
-      })
-    }
-
-    // Fetch the complete application with all relations
-    const completeApplication = await prisma.application.findUnique({
-      where: { id: application.id },
-      include: {
-        useCases: true,
-        score: true,
-        activities: {
-          orderBy: {
-            createdAt: 'desc'
-          }
-        }
-      }
-    })
-
-    return NextResponse.json(completeApplication, { status: 201 })
-  } catch (error) {
-    console.error('Error creating application:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create application' },
       { status: 500 }
