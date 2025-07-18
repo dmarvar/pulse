@@ -5,10 +5,11 @@ import { useState, useRef, useEffect } from 'react';
 interface ActionsMenuProps {
   onEdit?: () => void;
   onDelete?: () => void;
+  onAddActivity?: () => void;
   disabled?: boolean;
 }
 
-export function ActionsMenu({ onEdit, onDelete, disabled = false }: ActionsMenuProps) {
+export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false }: ActionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -50,8 +51,22 @@ export function ActionsMenu({ onEdit, onDelete, disabled = false }: ActionsMenuP
       </button>
 
       {isOpen && !disabled && (
-        <div className="absolute right-0 top-8 z-50 w-32 rounded-md bg-slate-800 shadow-lg ring-1 ring-slate-600 ring-opacity-50">
+        <div className="absolute right-0 top-8 z-50 w-40 rounded-md bg-slate-800 shadow-lg ring-1 ring-slate-600 ring-opacity-50">
           <div className="py-1">
+            {onAddActivity && (
+              <button
+                onClick={() => {
+                  onAddActivity();
+                  setIsOpen(false);
+                }}
+                className="flex items-center w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-150"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Activity
+              </button>
+            )}
             {onEdit && (
               <button
                 onClick={() => {

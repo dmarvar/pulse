@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { type Initiative, getFirstValue, getTotalScore, getGradeColor } from "@/lib/use-cases/data-processing";
 import { ActionsMenu } from "./ActionsMenu";
 import { CreateInitiativeForm } from "./CreateInitiativeForm";
+import { CreateActivityForm } from "./CreateActivityForm";
 
 interface InitiativesTableProps {
   initiatives: Initiative[];
@@ -15,6 +16,15 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editingInitiative, setEditingInitiative] = useState<Initiative | null>(null);
+  const [activityFormData, setActivityFormData] = useState<{
+    isOpen: boolean;
+    applicationId: string;
+    applicationName: string;
+  }>({
+    isOpen: false,
+    applicationId: '',
+    applicationName: '',
+  });
 
   const handleEdit = (initiative: Initiative) => {
     setEditingInitiative(initiative);
@@ -69,6 +79,37 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleAddActivity = (initiative: Initiative) => {
+    if (!initiative.id) {
+      setError('Cannot add activity: Application ID not found');
+      return;
+    }
+    
+    setActivityFormData({
+      isOpen: true,
+      applicationId: initiative.id,
+      applicationName: initiative.Applicacion || 'Unknown Application',
+    });
+  };
+
+  const handleActivitySuccess = () => {
+    // Optionally refresh the data to show updated activity counts
+    onRefreshData?.();
+    setActivityFormData({
+      isOpen: false,
+      applicationId: '',
+      applicationName: '',
+    });
+  };
+
+  const handleCloseActivityForm = () => {
+    setActivityFormData({
+      isOpen: false,
+      applicationId: '',
+      applicationName: '',
+    });
   };
 
   return (
@@ -146,6 +187,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                   </td>
                   <td className="px-3 py-2">
                     <ActionsMenu
+                      onAddActivity={() => handleAddActivity(row)}
                       onEdit={() => handleEdit(row)}
                       onDelete={() => handleDelete(row)}
                       disabled={deletingId === row.id}
@@ -179,6 +221,34 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                 onClose={handleCloseEdit} 
                 onSuccess={handleEditSuccess}
                 initiative={editingInitiative}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Activity Modal */}
+      {activityFormData.isOpen && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-600/30 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-white">Add Activity</h2>
+                <button
+                  onClick={handleCloseActivityForm}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <CreateActivityForm 
+                applicationId={activityFormData.applicationId}
+                applicationName={activityFormData.applicationName}
+                onClose={handleCloseActivityForm} 
+                onSuccess={handleActivitySuccess}
               />
             </div>
           </div>

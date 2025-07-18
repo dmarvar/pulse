@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { processInitiativesData, type Initiative } from "@/lib/use-cases/data-processing";
 import { PieChartComponent, BusinessUnitPieChart } from "@/components/use-cases/charts";
-import { CreateInitiativeButton, InitiativesTable } from "@/components/use-cases";
+import { CreateInitiativeButton, InitiativesTable, ActivitiesTable } from "@/components/use-cases";
 
 // Grade-specific colors for consistency with priority levels
 const GRADE_COLORS: Record<string, string> = {
@@ -136,6 +136,15 @@ export default function PulseOS() {
 
           {/* DATA TABLE */}
           <InitiativesTable initiatives={initiatives} onRefreshData={fetchInitiatives} />
+
+          {/* ACTIVITIES SECTION */}
+          <div className="mt-8">
+            <ActivitiesTable 
+              title="Recent Activities"
+              showFilters={true}
+              maxHeight="600px"
+            />
+          </div>
         </>
       )}
     </main>
