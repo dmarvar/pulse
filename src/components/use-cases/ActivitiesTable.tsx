@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ACTIVITY_TYPE_LABELS } from '@/lib/constants/activity-types';
 
 interface Activity {
@@ -19,6 +19,18 @@ interface Activity {
   };
 }
 
+interface ApplicationData {
+  id: string;
+  name: string;
+  businessUnit: string;
+  description?: string;
+  ownerName?: string;
+  ownerEmail?: string;
+  integrationOwnerName?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface ActivitiesTableProps {
   applicationId?: string;
   title?: string;
@@ -35,22 +47,41 @@ export function ActivitiesTable({
   refreshTrigger 
 }: ActivitiesTableProps) {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [applications, setApplications] = useState<Array<{id: string, name: string, businessUnit: string}>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState({
+    applicationId: applicationId || '',
     type: '',
     status: '',
     limit: 50,
   });
 
-  const fetchActivities = async () => {
+  const fetchApplications = async () => {
+    try {
+      const response = await fetch('/api/manager/applications');
+      if (!response.ok) {
+        throw new Error('Failed to fetch applications');
+      }
+      const data: ApplicationData[] = await response.json();
+      setApplications(data.map((app) => ({
+        id: app.id,
+        name: app.name,
+        businessUnit: app.businessUnit
+      })));
+    } catch (err) {
+      console.error('Error fetching applications:', err);
+    }
+  };
+
+  const fetchActivities = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
       
       const params = new URLSearchParams();
-      if (applicationId) {
-        params.set('applicationId', applicationId);
+      if (filters.applicationId) {
+        params.set('applicationId', filters.applicationId);
       }
       if (filters.type) {
         params.set('type', filters.type);
@@ -72,11 +103,21 @@ export function ActivitiesTable({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
 
   useEffect(() => {
     fetchActivities();
-  }, [applicationId, filters, refreshTrigger]);
+  }, [fetchActivities, refreshTrigger]);
+
+  useEffect(() => {
+    if (applicationId) {
+      setFilters(prev => ({ ...prev, applicationId }));
+    }
+  }, [applicationId]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -136,6 +177,24 @@ export function ActivitiesTable({
       {/* Filters */}
       {showFilters && (
         <div className="mb-6 flex flex-wrap gap-4">
+          {!applicationId && (
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1">Application</label>
+              <select
+                value={filters.applicationId}
+                onChange={(e) => setFilters(prev => ({ ...prev, applicationId: e.target.value }))}
+                className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All Applications</option>
+                {applications.map(app => (
+                  <option key={app.id} value={app.id}>
+                    {app.name} ({app.businessUnit})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          
           <div>
             <label className="block text-xs font-medium text-slate-400 mb-1">Type</label>
             <select
@@ -207,7 +266,7 @@ export function ActivitiesTable({
           </div>
           <p className="text-slate-400">No activities found</p>
           <p className="text-slate-500 text-sm mt-1">
-            {applicationId ? 'No activities for this application' : 'Try adjusting the filters or create a new activity'}
+            {filters.applicationId ? 'No activities for this application' : 'Try adjusting the filters or create a new activity'}
           </p>
         </div>
       ) : (
@@ -218,7 +277,7 @@ export function ActivitiesTable({
                 <th className="px-3 py-3 text-left text-slate-300 font-medium">Type</th>
                 <th className="px-3 py-3 text-left text-slate-300 font-medium">Title</th>
                 <th className="px-3 py-3 text-left text-slate-300 font-medium">Description</th>
-                {!applicationId && (
+                {!filters.applicationId && (
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Application</th>
                 )}
                 <th className="px-3 py-3 text-left text-slate-300 font-medium">Status</th>
@@ -244,7 +303,7 @@ export function ActivitiesTable({
                       {activity.description || '-'}
                     </div>
                   </td>
-                  {!applicationId && (
+                  {!filters.applicationId && (
                     <td className="px-3 py-4 text-slate-300">
                       <div>
                         <div className="font-medium">{activity.application.name}</div>
