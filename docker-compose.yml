@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Next.js Application (Production)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pulse-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - pulse-network
+
+  # Development service
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pulse-app-dev
+    restart: unless-stopped
+    ports:
+      - "8990:8990"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+      - PROXY_TARGET_URL=http://host.docker.internal:8585
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - pulse-network
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+
+networks:
+  pulse-network:
+    driver: bridge 
