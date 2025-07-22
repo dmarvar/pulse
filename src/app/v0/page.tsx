@@ -92,7 +92,7 @@ export default function CegidPulsePage() {
                     </svg>
                   </div>
                   <h3 className="text-xl font-bold ml-4 text-white group-hover:text-green-400 transition-colors">
-                    Use Cases Dashboard
+                    Integration Management
                   </h3>
                 </div>
                 <p className="text-slate-300 leading-relaxed">
