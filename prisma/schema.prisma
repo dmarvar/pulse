@@ -71,7 +71,7 @@ model Activity {
   title         String
   description   String?
   type          String   // CREATED, UPDATED, SCORED, REVIEWED, etc.
-  status        String   @default("ACTIVE") // ACTIVE, COMPLETED, CANCELLED
+  status        String   @default("COMPLETED") // ACTIVE, COMPLETED, CANCELLED
   executionDate DateTime? // When the activity actually happened, defaults to creation time in application code
   createdBy     String?
   createdAt     DateTime @default(now())

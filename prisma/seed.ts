@@ -92,6 +92,7 @@ async function main() {
           title: 'Application Imported',
           description: `Application "${application.name}" was imported from legacy data`,
           type: 'IMPORTED',
+          status: 'COMPLETED',
           executionDate: new Date().toISOString()
         }
       })

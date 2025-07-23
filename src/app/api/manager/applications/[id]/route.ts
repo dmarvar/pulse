@@ -141,6 +141,7 @@ export async function PUT(
         title: 'Application Updated',
         description: `Application "${name || existingApplication.name}" was updated`,
         type: 'UPDATED',
+        status: 'COMPLETED',
         executionDate: new Date().toISOString()
       }
     })

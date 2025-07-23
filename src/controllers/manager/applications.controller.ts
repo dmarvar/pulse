@@ -163,6 +163,7 @@ export class ApplicationsController {
             title: 'Application Created',
             description: `Application "${name}" was created`,
             type: 'CREATED',
+            status: 'COMPLETED',
             executionDate: new Date().toISOString()
           }
         }
@@ -350,6 +351,7 @@ export class ApplicationsController {
         title: 'Application Updated',
         description: `Application "${name || existingApplication.name}" was updated`,
         type: 'UPDATED',
+        status: 'COMPLETED',
         executionDate: new Date().toISOString()
       }
     })
