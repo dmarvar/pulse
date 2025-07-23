@@ -162,7 +162,8 @@ export class ApplicationsController {
           create: {
             title: 'Application Created',
             description: `Application "${name}" was created`,
-            type: 'CREATED'
+            type: 'CREATED',
+            executionDate: new Date().toISOString()
           }
         }
       },
@@ -348,7 +349,8 @@ export class ApplicationsController {
         applicationId: id,
         title: 'Application Updated',
         description: `Application "${name || existingApplication.name}" was updated`,
-        type: 'UPDATED'
+        type: 'UPDATED',
+        executionDate: new Date().toISOString()
       }
     })
 

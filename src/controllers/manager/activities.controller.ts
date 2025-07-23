@@ -142,17 +142,24 @@ export class ActivitiesController {
       createdBy
     }
 
-    // Only include executionDate if it's provided and valid
+    // Handle executionDate: if provided and valid, use it; otherwise, set to current date
     if (executionDate && executionDate.trim() !== '') {
       try {
         const date = new Date(executionDate);
         if (!isNaN(date.getTime())) {
           createData.executionDate = date.toISOString();
+        } else {
+          // If invalid date provided, use current date
+          createData.executionDate = new Date().toISOString();
         }
       } catch {
         console.warn('Invalid executionDate provided:', executionDate);
-        // Don't include executionDate if it's invalid
+        // If invalid date provided, use current date
+        createData.executionDate = new Date().toISOString();
       }
+    } else {
+      // If no executionDate provided, use current date
+      createData.executionDate = new Date().toISOString();
     }
 
     const activity = await prisma.activity.create({

@@ -11,9 +11,44 @@ interface ActionsMenuProps {
 
 export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false }: ActionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<'bottom' | 'top'>('bottom');
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Close menu when clicking outside
+  // Calculate menu position to prevent overflow
+  const calculateMenuPosition = () => {
+    if (!buttonRef.current) return 'bottom';
+    
+    const buttonRect = buttonRef.current.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const menuHeight = 120; // Approximate height of the menu
+    
+    // Check if menu would overflow below
+    const spaceBelow = viewportHeight - buttonRect.bottom;
+    const spaceAbove = buttonRect.top;
+    
+    // If there's not enough space below but enough space above, position above
+    if (spaceBelow < menuHeight && spaceAbove > menuHeight) {
+      return 'top';
+    }
+    
+    // Also check if we're near the bottom of a scrollable container
+    const scrollContainer = buttonRef.current.closest('.overflow-y-auto, .overflow-auto');
+    if (scrollContainer) {
+      const containerRect = scrollContainer.getBoundingClientRect();
+      const containerBottom = containerRect.bottom;
+      const buttonBottom = buttonRect.bottom;
+      
+      // If button is near the bottom of its scrollable container, position above
+      if (buttonBottom > containerBottom - menuHeight) {
+        return 'top';
+      }
+    }
+    
+    return 'bottom';
+  };
+
+  // Close menu when clicking outside and handle window resize
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -21,16 +56,37 @@ export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false 
       }
     }
 
+    function handleResize() {
+      if (isOpen) {
+        setMenuPosition(calculateMenuPosition());
+      }
+    }
+
     document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('resize', handleResize);
+    
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isOpen]);
+
+  const handleToggleMenu = () => {
+    if (disabled) return;
+    
+    if (!isOpen) {
+      // Calculate position before opening
+      setMenuPosition(calculateMenuPosition());
+    }
+    
+    setIsOpen(!isOpen);
+  };
 
   return (
     <div className="relative" ref={menuRef}>
       <button
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        ref={buttonRef}
+        onClick={handleToggleMenu}
         disabled={disabled}
         className={`p-2 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 ${
           disabled 
@@ -51,7 +107,11 @@ export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false 
       </button>
 
       {isOpen && !disabled && (
-        <div className="absolute right-0 top-8 z-50 w-40 rounded-md bg-slate-800 shadow-lg ring-1 ring-slate-600 ring-opacity-50">
+        <div 
+          className={`absolute right-0 z-50 w-40 rounded-md bg-slate-800 shadow-lg ring-1 ring-slate-600 ring-opacity-50 ${
+            menuPosition === 'top' ? 'bottom-8' : 'top-8'
+          }`}
+        >
           <div className="py-1">
             {onAddActivity && (
               <button

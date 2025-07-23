@@ -140,7 +140,8 @@ export async function PUT(
         applicationId: id,
         title: 'Application Updated',
         description: `Application "${name || existingApplication.name}" was updated`,
-        type: 'UPDATED'
+        type: 'UPDATED',
+        executionDate: new Date().toISOString()
       }
     })
 

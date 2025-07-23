@@ -91,7 +91,8 @@ async function main() {
           applicationId: application.id,
           title: 'Application Imported',
           description: `Application "${application.name}" was imported from legacy data`,
-          type: 'IMPORTED'
+          type: 'IMPORTED',
+          executionDate: new Date().toISOString()
         }
       })
 
