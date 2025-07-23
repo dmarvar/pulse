@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { ACTIVITY_TYPE_LABELS } from '@/lib/constants/activity-types';
-import { ActionsMenu, UpdateActivityForm } from './index';
+import { ActionsMenu, ActivityForm } from './index';
 
 interface Activity {
   id: string;
@@ -10,6 +10,7 @@ interface Activity {
   description?: string;
   type: string;
   status: string;
+  executionDate?: string;
   createdBy?: string;
   createdAt: string;
   updatedAt: string;
@@ -331,6 +332,7 @@ export function ActivitiesTable({
                     <th className="px-3 py-3 text-left text-slate-300 font-medium">Application</th>
                   )}
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Status</th>
+                  <th className="px-3 py-3 text-left text-slate-300 font-medium">Execution Date</th>
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Created</th>
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Actions</th>
                 </tr>
@@ -366,6 +368,13 @@ export function ActivitiesTable({
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getStatusColor(activity.status)}`}>
                         {activity.status}
                       </span>
+                    </td>
+                    <td className="px-3 py-4 text-slate-400">
+                      {activity.executionDate ? (
+                        <div>{formatDate(activity.executionDate)}</div>
+                      ) : (
+                        <div className="text-slate-500 italic">Not set</div>
+                      )}
                     </td>
                     <td className="px-3 py-4 text-slate-400">
                       <div>{formatDate(activity.createdAt)}</div>
@@ -406,7 +415,8 @@ export function ActivitiesTable({
                 </button>
               </div>
               
-              <UpdateActivityForm 
+              <ActivityForm 
+                mode="update"
                 activity={selectedActivity}
                 onClose={() => setShowUpdateModal(false)} 
                 onSuccess={handleSuccess} 

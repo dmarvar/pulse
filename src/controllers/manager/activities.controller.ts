@@ -15,6 +15,7 @@ export interface CreateActivityData {
   type: string
   status?: string
   createdBy?: string
+  executionDate?: string
 }
 
 export interface UpdateActivityData {
@@ -22,6 +23,7 @@ export interface UpdateActivityData {
   description?: string
   type?: string
   status?: string
+  executionDate?: string
 }
 
 export class ActivitiesController {
@@ -55,31 +57,43 @@ export class ActivitiesController {
       where.status = status
     }
 
-    const activities = await prisma.activity.findMany({
-      where,
-      include: {
-        application: {
-          select: {
-            id: true,
-            name: true,
-            businessUnit: true
+    try {
+      const activities = await prisma.activity.findMany({
+        where,
+        include: {
+          application: {
+            select: {
+              id: true,
+              name: true,
+              businessUnit: true
+            }
           }
-        }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: limit,
-      skip: offset
-    })
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: limit,
+        skip: offset
+      })
 
-    const total = await prisma.activity.count({ where })
+      // Transform activities to handle null values gracefully
+      const transformedActivities = activities.map(activity => ({
+        ...activity,
+        executionDate: activity.executionDate || null,
+        createdBy: activity.createdBy || null
+      }))
 
-    return {
-      activities,
-      total,
-      limit,
-      offset
+      const total = await prisma.activity.count({ where })
+
+      return {
+        activities: transformedActivities,
+        total,
+        limit,
+        offset
+      }
+    } catch (error) {
+      console.error('Error fetching activities:', error)
+      throw new Error('Failed to fetch activities from database')
     }
   }
 
@@ -93,7 +107,8 @@ export class ActivitiesController {
       description, 
       type, 
       status = 'ACTIVE',
-      createdBy 
+      createdBy,
+      executionDate 
     } = data
 
     if (!applicationId || !title || !type) {
@@ -109,15 +124,39 @@ export class ActivitiesController {
       throw new Error('Application not found')
     }
 
+    // Prepare create data, handling executionDate properly
+    const createData: {
+      applicationId: string;
+      title: string;
+      description?: string;
+      type: string;
+      status: string;
+      createdBy?: string;
+      executionDate?: string;
+    } = {
+      applicationId,
+      title,
+      description,
+      type,
+      status,
+      createdBy
+    }
+
+    // Only include executionDate if it's provided and valid
+    if (executionDate && executionDate.trim() !== '') {
+      try {
+        const date = new Date(executionDate);
+        if (!isNaN(date.getTime())) {
+          createData.executionDate = date.toISOString();
+        }
+      } catch {
+        console.warn('Invalid executionDate provided:', executionDate);
+        // Don't include executionDate if it's invalid
+      }
+    }
+
     const activity = await prisma.activity.create({
-      data: {
-        applicationId,
-        title,
-        description,
-        type,
-        status,
-        createdBy
-      },
+      data: createData,
       include: {
         application: {
           select: {
@@ -129,38 +168,53 @@ export class ActivitiesController {
       }
     })
 
-    return activity
+    // Transform activity to handle null values gracefully
+    return {
+      ...activity,
+      executionDate: activity.executionDate || null,
+      createdBy: activity.createdBy || null
+    }
   }
 
   /**
    * Get a specific activity by ID
    */
   static async getActivityById(id: string) {
-    const activity = await prisma.activity.findUnique({
-      where: { id },
-      include: {
-        application: {
-          select: {
-            id: true,
-            name: true,
-            businessUnit: true
+    try {
+      const activity = await prisma.activity.findUnique({
+        where: { id },
+        include: {
+          application: {
+            select: {
+              id: true,
+              name: true,
+              businessUnit: true
+            }
           }
         }
+      })
+
+      if (!activity) {
+        throw new Error('Activity not found')
       }
-    })
 
-    if (!activity) {
-      throw new Error('Activity not found')
+      // Transform activity to handle null values gracefully
+      return {
+        ...activity,
+        executionDate: activity.executionDate || null,
+        createdBy: activity.createdBy || null
+      }
+    } catch (error) {
+      console.error('Error fetching activity by ID:', error)
+      throw new Error('Failed to fetch activity from database')
     }
-
-    return activity
   }
 
   /**
    * Update a specific activity
    */
   static async updateActivity(id: string, data: UpdateActivityData) {
-    const { title, description, type, status } = data
+    const { title, description, type, status, executionDate } = data
 
     // Check if activity exists
     const existingActivity = await prisma.activity.findUnique({
@@ -171,14 +225,39 @@ export class ActivitiesController {
       throw new Error('Activity not found')
     }
 
+    // Prepare update data, handling executionDate properly
+    const updateData: {
+      title?: string;
+      description?: string;
+      type?: string;
+      status?: string;
+      executionDate?: string | null;
+    } = {
+      title,
+      description,
+      type,
+      status
+    }
+
+    // Only include executionDate if it's provided and valid
+    if (executionDate && executionDate.trim() !== '') {
+      try {
+        const date = new Date(executionDate);
+        if (!isNaN(date.getTime())) {
+          updateData.executionDate = date.toISOString();
+        }
+      } catch {
+        console.warn('Invalid executionDate provided:', executionDate);
+        // Don't update executionDate if it's invalid
+      }
+    } else if (executionDate === null || executionDate === undefined) {
+      // Allow setting to null if explicitly provided
+      updateData.executionDate = null;
+    }
+
     const updatedActivity = await prisma.activity.update({
       where: { id },
-      data: {
-        title,
-        description,
-        type,
-        status
-      },
+      data: updateData,
       include: {
         application: {
           select: {
@@ -190,7 +269,12 @@ export class ActivitiesController {
       }
     })
 
-    return updatedActivity
+    // Transform activity to handle null values gracefully
+    return {
+      ...updatedActivity,
+      executionDate: updatedActivity.executionDate || null,
+      createdBy: updatedActivity.createdBy || null
+    }
   }
 
   /**

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { type Initiative, getFirstValue, getTotalScore, getGradeColor } from "@/lib/use-cases/data-processing";
 import { ActionsMenu } from "./ActionsMenu";
 import { CreateInitiativeForm } from "./CreateInitiativeForm";
-import { CreateActivityForm } from "./CreateActivityForm";
+import { ActivityForm } from "./ActivityForm";
 
 interface InitiativesTableProps {
   initiatives: Initiative[];
@@ -244,7 +244,8 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                 </button>
               </div>
               
-              <CreateActivityForm 
+              <ActivityForm 
+                mode="create"
                 applicationId={activityFormData.applicationId}
                 applicationName={activityFormData.applicationName}
                 onClose={handleCloseActivityForm} 

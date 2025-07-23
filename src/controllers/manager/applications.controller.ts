@@ -55,23 +55,38 @@ export class ApplicationsController {
    * Get all applications with related data
    */
   static async getApplications() {
-    const applications = await prisma.application.findMany({
-      include: {
-        useCases: true,
-        score: true,
-        activities: {
-          orderBy: {
-            createdAt: 'desc'
-          },
-          take: 5 // Latest 5 activities
+    try {
+      const applications = await prisma.application.findMany({
+        include: {
+          useCases: true,
+          score: true,
+          activities: {
+            orderBy: {
+              createdAt: 'desc'
+            },
+            take: 5 // Latest 5 activities
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
         }
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
+      })
 
-    return applications
+      // Transform applications to handle null values in activities gracefully
+      const transformedApplications = applications.map(app => ({
+        ...app,
+        activities: app.activities.map(activity => ({
+          ...activity,
+          executionDate: activity.executionDate || null,
+          createdBy: activity.createdBy || null
+        }))
+      }))
+
+      return transformedApplications
+    } catch (error) {
+      console.error('Error fetching applications:', error)
+      throw new Error('Failed to fetch applications from database')
+    }
   }
 
   /**
@@ -191,31 +206,52 @@ export class ApplicationsController {
       }
     })
 
-    return completeApplication
+    // Transform application to handle null values in activities gracefully
+    return {
+      ...completeApplication,
+      activities: completeApplication?.activities.map(activity => ({
+        ...activity,
+        executionDate: activity.executionDate || null,
+        createdBy: activity.createdBy || null
+      })) || []
+    }
   }
 
   /**
    * Get a specific application by ID
    */
   static async getApplicationById(id: string) {
-    const application = await prisma.application.findUnique({
-      where: { id },
-      include: {
-        useCases: true,
-        score: true,
-        activities: {
-          orderBy: {
-            createdAt: 'desc'
+    try {
+      const application = await prisma.application.findUnique({
+        where: { id },
+        include: {
+          useCases: true,
+          score: true,
+          activities: {
+            orderBy: {
+              createdAt: 'desc'
+            }
           }
         }
+      })
+
+      if (!application) {
+        throw new Error('Application not found')
       }
-    })
 
-    if (!application) {
-      throw new Error('Application not found')
+      // Transform application to handle null values in activities gracefully
+      return {
+        ...application,
+        activities: application.activities.map(activity => ({
+          ...activity,
+          executionDate: activity.executionDate || null,
+          createdBy: activity.createdBy || null
+        }))
+      }
+    } catch (error) {
+      console.error('Error fetching application by ID:', error)
+      throw new Error('Failed to fetch application from database')
     }
-
-    return application
   }
 
   /**
@@ -330,7 +366,15 @@ export class ApplicationsController {
       }
     })
 
-    return completeApplication
+    // Transform application to handle null values in activities gracefully
+    return {
+      ...completeApplication,
+      activities: completeApplication?.activities.map(activity => ({
+        ...activity,
+        executionDate: activity.executionDate || null,
+        createdBy: activity.createdBy || null
+      })) || []
+    }
   }
 
   /**

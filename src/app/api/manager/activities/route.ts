@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
       description, 
       type, 
       status = 'ACTIVE',
-      createdBy 
+      createdBy,
+      executionDate 
     } = body
 
     const activity = await ActivitiesController.createActivity({
@@ -48,7 +49,8 @@ export async function POST(request: NextRequest) {
       description,
       type,
       status,
-      createdBy
+      createdBy,
+      executionDate
     })
 
     return NextResponse.json(activity, { status: 201 })

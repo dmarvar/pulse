@@ -37,14 +37,16 @@ export async function PUT(
       title, 
       description, 
       type, 
-      status 
+      status,
+      executionDate 
     } = body
 
     const updatedActivity = await ActivitiesController.updateActivity(id, {
       title,
       description,
       type,
-      status
+      status,
+      executionDate
     })
 
     return NextResponse.json(updatedActivity)

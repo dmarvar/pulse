@@ -1,58 +1,126 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ACTIVITY_TYPES, ACTIVITY_TYPE_LABELS } from '@/lib/constants/activity-types';
 
-type CreateActivityFormData = {
+type ActivityFormData = {
   title: string;
   description?: string;
   type: string;
   status: 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+  executionDate?: string;
 };
 
-interface CreateActivityFormProps {
-  applicationId: string;
-  applicationName: string;
+interface Activity {
+  id: string;
+  title: string;
+  description?: string;
+  type: string;
+  status: string;
+  executionDate?: string;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+  application: {
+    id: string;
+    name: string;
+    businessUnit: string;
+  };
+}
+
+interface ActivityFormProps {
+  mode: 'create' | 'update';
+  applicationId?: string;
+  applicationName?: string;
+  activity?: Activity;
   onClose: () => void;
   onSuccess?: () => void;
 }
 
-export function CreateActivityForm({ applicationId, applicationName, onClose, onSuccess }: CreateActivityFormProps) {
+export function ActivityForm({ mode, applicationId, applicationName, activity, onClose, onSuccess }: ActivityFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string>('');
+
+  // Get current user info from session (only for create mode)
+  useEffect(() => {
+    if (mode === 'create') {
+      const fetchUserInfo = async () => {
+        try {
+          const response = await fetch('/api/auth/session');
+          const data = await response.json();
+          if (data.authenticated && data.user?.name) {
+            setUserName(data.user.name);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user info:', error);
+        }
+      };
+
+      fetchUserInfo();
+    }
+  }, [mode]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateActivityFormData>({
+    reset,
+  } = useForm<ActivityFormData>({
     defaultValues: {
-      status: 'ACTIVE',
-      type: ACTIVITY_TYPES.NOTE,
+      title: activity?.title || '',
+      description: activity?.description || '',
+      status: (activity?.status as 'ACTIVE' | 'COMPLETED' | 'CANCELLED') || 'ACTIVE',
+      type: activity?.type || ACTIVITY_TYPES.NOTE,
+      executionDate: activity?.executionDate ? new Date(activity.executionDate).toISOString().split('T')[0] : '',
     },
   });
 
-  const onSubmit = async (data: CreateActivityFormData) => {
+  // Reset form when activity changes (for update mode)
+  useEffect(() => {
+    if (mode === 'update' && activity) {
+      reset({
+        title: activity.title,
+        description: activity.description || '',
+        status: activity.status as 'ACTIVE' | 'COMPLETED' | 'CANCELLED',
+        type: activity.type,
+        executionDate: activity.executionDate ? new Date(activity.executionDate).toISOString().split('T')[0] : '',
+      });
+    }
+  }, [activity, reset, mode]);
+
+  const onSubmit = async (data: ActivityFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const response = await fetch('/api/manager/activities', {
-        method: 'POST',
+      const url = mode === 'create' 
+        ? '/api/manager/activities'
+        : `/api/manager/activities/${activity!.id}`;
+      
+      const method = mode === 'create' ? 'POST' : 'PUT';
+      
+      const requestBody = mode === 'create' 
+        ? {
+            ...data,
+            applicationId,
+            createdBy: userName || 'Unknown User',
+            executionDate: data.executionDate ? new Date(data.executionDate).toISOString() : undefined,
+          }
+        : data;
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...data,
-          applicationId,
-          createdBy: 'current-user', // You can get this from your auth system
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create activity');
+        throw new Error(errorData.error || `Failed to ${mode} activity`);
       }
 
       onSuccess?.();
@@ -74,6 +142,10 @@ export function CreateActivityForm({ applicationId, applicationName, onClose, on
     ACTIVITY_TYPES.EMAIL,
   ];
 
+  const displayName = mode === 'create' ? applicationName : activity?.application.name;
+  const submitText = mode === 'create' ? 'Create Activity' : 'Update Activity';
+  const submittingText = mode === 'create' ? 'Creating...' : 'Updating...';
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {submitError && (
@@ -84,7 +156,7 @@ export function CreateActivityForm({ applicationId, applicationName, onClose, on
 
       <div className="mb-4 p-3 bg-slate-700/50 rounded-lg">
         <p className="text-sm text-slate-300">
-          Adding activity for: <span className="font-medium text-white">{applicationName}</span>
+          {mode === 'create' ? 'Adding' : 'Updating'} activity for: <span className="font-medium text-white">{displayName}</span>
         </p>
       </div>
 
@@ -139,6 +211,21 @@ export function CreateActivityForm({ applicationId, applicationName, onClose, on
 
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
+            Execution Date
+          </label>
+          <input
+            {...register('executionDate')}
+            type="date"
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:contrast-100"
+            disabled={isSubmitting}
+          />
+          <p className="mt-1 text-xs text-slate-400">
+            Leave empty to use current date
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             Status
           </label>
           <select
@@ -170,7 +257,7 @@ export function CreateActivityForm({ applicationId, applicationName, onClose, on
           {isSubmitting && (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           )}
-          {isSubmitting ? 'Creating...' : 'Create Activity'}
+          {isSubmitting ? submittingText : submitText}
         </button>
       </div>
     </form>
