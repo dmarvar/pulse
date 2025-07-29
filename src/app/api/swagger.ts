@@ -34,6 +34,10 @@ export const getApiDocs = () => {
                 name: 'proxy',
                 description: 'Pulse proxy endpoints',
             },
+            {
+                name: 'xrpu',
+                description: 'XRPU API endpoints',
+            },
         ],
         paths: {
             '/api/auth/signin': {
@@ -248,6 +252,135 @@ export const getApiDocs = () => {
                     },
                 },
             },
+            '/api/xrpu/clients': {
+                get: {
+                    tags: ['xrpu'],
+                    summary: 'Get XRPU clients list',
+                    description: 'Retrieves a list of XRPU clients with pagination support',
+                    parameters: [
+                        {
+                            name: 'page',
+                            in: 'query',
+                            schema: { type: 'integer', default: 1 },
+                            description: 'Page number for pagination',
+                        },
+                        {
+                            name: 'limit',
+                            in: 'query',
+                            schema: { type: 'integer', default: 25 },
+                            description: 'Number of records per page',
+                        },
+                        {
+                            name: 'search',
+                            in: 'query',
+                            schema: { type: 'string' },
+                            description: 'Search term to filter clients',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'Successful operation',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/XRPUClientsResponse',
+                                    },
+                                },
+                            },
+                        },
+                        '500': {
+                            description: 'Server error',
+                        },
+                    },
+                },
+            },
+            '/api/xrpu/clients/{id}': {
+                get: {
+                    tags: ['xrpu'],
+                    summary: 'Get XRPU client by ID',
+                    description: 'Retrieves detailed information for a specific XRPU client',
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'string' },
+                            description: 'Client ID',
+                        },
+                    ],
+                    responses: {
+                        '200': {
+                            description: 'Successful operation',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/XRPUClient',
+                                    },
+                                },
+                            },
+                        },
+                        '404': {
+                            description: 'Client not found',
+                        },
+                        '500': {
+                            description: 'Server error',
+                        },
+                    },
+                },
+            },
+            '/api/xrpu/clients/{id}/banks': {
+                post: {
+                    tags: ['xrpu'],
+                    summary: 'Update client banking information',
+                    description: 'Updates the banking information for a specific XRPU client',
+                    parameters: [
+                        {
+                            name: 'id',
+                            in: 'path',
+                            required: true,
+                            schema: { type: 'string' },
+                            description: 'Client ID',
+                        },
+                    ],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    type: 'object',
+                                    properties: {
+                                        bankName: { type: 'string' },
+                                        accountNumber: { type: 'string' },
+                                        routingNumber: { type: 'string' },
+                                        accountType: { type: 'string' },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    responses: {
+                        '200': {
+                            description: 'Banking information updated successfully',
+                            content: {
+                                'application/json': {
+                                    schema: {
+                                        $ref: '#/components/schemas/BankingUpdateResponse',
+                                    },
+                                },
+                            },
+                        },
+                        '400': {
+                            description: 'Bad request - Invalid banking information',
+                        },
+                        '404': {
+                            description: 'Client not found',
+                        },
+                        '500': {
+                            description: 'Server error',
+                        },
+                    },
+                },
+            },
         },
         components: {
             schemas: {
@@ -401,6 +534,58 @@ export const getApiDocs = () => {
                             },
                         },
                         logo: { type: 'string' },
+                    },
+                },
+                XRPUClient: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string' },
+                        companyName: { type: 'string' },
+                        contactName: { type: 'string' },
+                        contactTitle: { type: 'string' },
+                        address: { type: 'string' },
+                        city: { type: 'string' },
+                        region: { type: 'string' },
+                        postalCode: { type: 'string' },
+                        country: { type: 'string' },
+                        phone: { type: 'string' },
+                        email: { type: 'string' },
+                        taxId: { type: 'string' },
+                        accountNumber: { type: 'string' },
+                        creditLimit: { type: 'number' },
+                        notes: { type: 'string' },
+                        createdAt: { type: 'string', format: 'date-time' },
+                        updatedAt: { type: 'string', format: 'date-time' },
+                    },
+                },
+                XRPUClientsResponse: {
+                    type: 'object',
+                    properties: {
+                        status: { type: 'string', example: 'success' },
+                        pagination: {
+                            type: 'object',
+                            properties: {
+                                total: { type: 'integer' },
+                                page: { type: 'integer' },
+                                limit: { type: 'integer' },
+                                totalPages: { type: 'integer' },
+                                hasNextPage: { type: 'boolean' },
+                                hasPrevPage: { type: 'boolean' },
+                            },
+                        },
+                        data: {
+                            type: 'array',
+                            items: { $ref: '#/components/schemas/XRPUClient' },
+                        },
+                    },
+                },
+                BankingUpdateResponse: {
+                    type: 'object',
+                    properties: {
+                        success: { type: 'boolean' },
+                        message: { type: 'string' },
+                        timestamp: { type: 'string', format: 'date-time' },
+                        clientId: { type: 'string' },
                     },
                 },
             },
