@@ -86,8 +86,48 @@ const generateClients = (): Client[] => {
         updatedAt: new Date().toISOString(),
     });
 
-    // Generate 97 more fake clients
-    for (let i = 4; i <= 100; i++) {
+    clients.push({
+        id: '4',
+        companyName: 'ASSOCIATION LE BONHEUR D\'UN SOURIRE ROUGE',
+        contactName: 'Marie Dubois',
+        contactTitle: 'Présidente',
+        address: '15 Rue de la Joie',
+        city: 'Paris',
+        region: 'Île-de-France',
+        postalCode: '75001',
+        country: 'France',
+        phone: '+33-1-42-97-48-16',
+        email: 'contact@bonheursourire-rouge.fr',
+        taxId: 'FR12345678901',
+        accountNumber: 'BSR-001',
+        creditLimit: 250000,
+        notes: 'Association caritative française dédiée aux enfants défavorisés. Projets éducatifs et sociaux.',
+        createdAt: new Date(2021, 5, 15).toISOString(),
+        updatedAt: new Date().toISOString(),
+    });
+
+    clients.push({
+        id: '5',
+        companyName: 'ASSOCIATION LE BONHEUR D\'UN SOURIRE BLUE',
+        contactName: 'Jean-Pierre Martin',
+        contactTitle: 'Directeur Général',
+        address: '28 Avenue des Arts',
+        city: 'Lyon',
+        region: 'Auvergne-Rhône-Alpes',
+        postalCode: '69001',
+        country: 'France',
+        phone: '+33-4-78-28-35-42',
+        email: 'info@bonheursourire-blue.fr',
+        taxId: 'FR98765432109',
+        accountNumber: 'BSB-001',
+        creditLimit: 300000,
+        notes: 'Association à but non lucratif spécialisée dans l\'aide aux personnes âgées et l\'accompagnement social.',
+        createdAt: new Date(2022, 2, 10).toISOString(),
+        updatedAt: new Date().toISOString(),
+    });
+
+    // Generate 95 more fake clients
+    for (let i = 6; i <= 100; i++) {
         const randomMonth = Math.floor(Math.random() * 12);
         const randomDay = Math.floor(Math.random() * 28) + 1;
         const randomYear = 2020 + Math.floor(Math.random() * 4);
