@@ -88,7 +88,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
 
   // Filter and sort initiatives
   const filteredAndSortedInitiatives = useMemo(() => {
-    let filtered = initiatives.filter(initiative => {
+    const filtered = initiatives.filter(initiative => {
       const searchLower = filters.search.toLowerCase();
       const matchesSearch = !filters.search || 
         (initiative.BU?.toLowerCase().includes(searchLower) ||
