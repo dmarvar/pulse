@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { type Initiative, getFirstValue, getTotalScore, getGradeColor } from "@/lib/use-cases/data-processing";
 import { ActionsMenu } from "./ActionsMenu";
 import { CreateInitiativeForm } from "./CreateInitiativeForm";
@@ -9,6 +9,19 @@ import { ActivityForm } from "./ActivityForm";
 interface InitiativesTableProps {
   initiatives: Initiative[];
   onRefreshData?: () => void;
+}
+
+type SortField = 'BU' | 'Applicacion' | 'Owner' | 'Intergration Owner' | 'Agent Implementation Level' | 'Unnamed: 13' | 'Unnamed: 11' | 'Unnamed: 12';
+type SortDirection = 'asc' | 'desc';
+
+interface FilterState {
+  search: string;
+  buFilter: string;
+  ownerFilter: string;
+  gradeFilter: string;
+  readinessFilter: string;
+  levelFilter: string;
+  integrationOwnerFilter: string;
 }
 
 export function InitiativesTable({ initiatives: initialInitiatives, onRefreshData }: InitiativesTableProps) {
@@ -25,6 +38,138 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
     applicationId: '',
     applicationName: '',
   });
+
+  // Filter and sort state
+  const [filters, setFilters] = useState<FilterState>({
+    search: '',
+    buFilter: '',
+    ownerFilter: '',
+    gradeFilter: '',
+    readinessFilter: '',
+    levelFilter: '',
+    integrationOwnerFilter: '',
+  });
+  const [sortField, setSortField] = useState<SortField>('Applicacion');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  // Extract unique values for filter dropdowns
+  const uniqueValues = useMemo(() => {
+    const buSet = new Set<string>();
+    const ownerSet = new Set<string>();
+    const gradeSet = new Set<string>();
+    const readinessSet = new Set<string>();
+    const levelSet = new Set<string>();
+    const integrationOwnerSet = new Set<string>();
+
+    initiatives.forEach(initiative => {
+      if (initiative.BU) buSet.add(initiative.BU);
+      if (initiative.Owner) {
+        initiative.Owner.forEach(owner => ownerSet.add(owner));
+      }
+      const grade = getFirstValue(initiative["Unnamed: 12"]);
+      if (grade) gradeSet.add(grade);
+      const readiness = getFirstValue(initiative["Unnamed: 13"]);
+      if (readiness) readinessSet.add(readiness);
+      const level = getFirstValue(initiative["Agent Implementation Level"]);
+      if (level) levelSet.add(level);
+      const integrationOwner = getFirstValue(initiative["Intergration Owner"]);
+      if (integrationOwner) integrationOwnerSet.add(integrationOwner);
+    });
+
+    return {
+      businessUnits: Array.from(buSet).sort(),
+      owners: Array.from(ownerSet).sort(),
+      grades: Array.from(gradeSet).sort(),
+      readiness: Array.from(readinessSet).sort(),
+      levels: Array.from(levelSet).sort(),
+      integrationOwners: Array.from(integrationOwnerSet).sort(),
+    };
+  }, [initiatives]);
+
+  // Filter and sort initiatives
+  const filteredAndSortedInitiatives = useMemo(() => {
+    let filtered = initiatives.filter(initiative => {
+      const searchLower = filters.search.toLowerCase();
+      const matchesSearch = !filters.search || 
+        (initiative.BU?.toLowerCase().includes(searchLower) ||
+         initiative.Applicacion?.toLowerCase().includes(searchLower) ||
+         initiative.Owner?.some(owner => owner.toLowerCase().includes(searchLower)) ||
+         getFirstValue(initiative["Intergration Owner"])?.toLowerCase().includes(searchLower) ||
+         getFirstValue(initiative["Agent Implementation Level"])?.toLowerCase().includes(searchLower) ||
+         getFirstValue(initiative["Unnamed: 13"])?.toLowerCase().includes(searchLower) ||
+         getFirstValue(initiative["Unnamed: 12"])?.toLowerCase().includes(searchLower));
+
+      const matchesBU = !filters.buFilter || initiative.BU === filters.buFilter;
+      const matchesOwner = !filters.ownerFilter || 
+        (initiative.Owner && initiative.Owner.includes(filters.ownerFilter));
+      const matchesGrade = !filters.gradeFilter || 
+        getFirstValue(initiative["Unnamed: 12"]) === filters.gradeFilter;
+      const matchesReadiness = !filters.readinessFilter || 
+        getFirstValue(initiative["Unnamed: 13"]) === filters.readinessFilter;
+      const matchesLevel = !filters.levelFilter || 
+        getFirstValue(initiative["Agent Implementation Level"]) === filters.levelFilter;
+      const matchesIntegrationOwner = !filters.integrationOwnerFilter || 
+        getFirstValue(initiative["Intergration Owner"]) === filters.integrationOwnerFilter;
+
+      return matchesSearch && matchesBU && matchesOwner && matchesGrade && 
+             matchesReadiness && matchesLevel && matchesIntegrationOwner;
+    });
+
+    // Sort initiatives
+    filtered.sort((a, b) => {
+      let aValue: string | number;
+      let bValue: string | number;
+
+      if (sortField === 'Unnamed: 11') {
+        aValue = getTotalScore(a) || 0;
+        bValue = getTotalScore(b) || 0;
+      } else {
+        aValue = getFirstValue(a[sortField]) || '';
+        bValue = getFirstValue(b[sortField]) || '';
+      }
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return filtered;
+  }, [initiatives, filters, sortField, sortDirection]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const handleFilterChange = (filterKey: keyof FilterState, value: string) => {
+    setFilters(prev => ({ ...prev, [filterKey]: value }));
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      search: '',
+      buFilter: '',
+      ownerFilter: '',
+      gradeFilter: '',
+      readinessFilter: '',
+      levelFilter: '',
+      integrationOwnerFilter: '',
+    });
+  };
+
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) return '↕️';
+    return sortDirection === 'asc' ? '↑' : '↓';
+  };
 
   const handleEdit = (initiative: Initiative) => {
     setEditingInitiative(initiative);
@@ -115,7 +260,12 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
   return (
     <>
       <div className="bg-slate-800/50 rounded-2xl shadow-lg p-6 mt-6 border border-slate-600/30 backdrop-blur-sm">
-        <h2 className="font-semibold mb-2 text-blue-400">All Initiatives</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="font-semibold text-blue-400">All Initiatives</h2>
+          <div className="text-sm text-slate-400">
+            Showing {filteredAndSortedInitiatives.length} of {initiatives.length} initiatives
+          </div>
+        </div>
         
         {/* Error Display */}
         {error && (
@@ -129,24 +279,180 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
             </button>
           </div>
         )}
+
+        {/* Filters Section */}
+        <div className="mb-6 space-y-4">
+          {/* Search Bar */}
+          <div className="flex items-center space-x-4">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Search initiatives..."
+                value={filters.search}
+                onChange={(e) => handleFilterChange('search', e.target.value)}
+                className="w-full px-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              onClick={clearAllFilters}
+              className="px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors"
+            >
+              Clear Filters
+            </button>
+          </div>
+
+          {/* Filter Dropdowns */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <select
+              value={filters.buFilter}
+              onChange={(e) => handleFilterChange('buFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Business Units</option>
+              {uniqueValues.businessUnits.map(bu => (
+                <option key={bu} value={bu}>{bu}</option>
+              ))}
+            </select>
+
+            <select
+              value={filters.ownerFilter}
+              onChange={(e) => handleFilterChange('ownerFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Owners</option>
+              {uniqueValues.owners.map(owner => (
+                <option key={owner} value={owner}>{owner}</option>
+              ))}
+            </select>
+
+            <select
+              value={filters.gradeFilter}
+              onChange={(e) => handleFilterChange('gradeFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Grades</option>
+              {uniqueValues.grades.map(grade => (
+                <option key={grade} value={grade}>{grade}</option>
+              ))}
+            </select>
+
+            <select
+              value={filters.readinessFilter}
+              onChange={(e) => handleFilterChange('readinessFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Readiness</option>
+              {uniqueValues.readiness.map(readiness => (
+                <option key={readiness} value={readiness}>{readiness}</option>
+              ))}
+            </select>
+
+            <select
+              value={filters.levelFilter}
+              onChange={(e) => handleFilterChange('levelFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Levels</option>
+              {uniqueValues.levels.map(level => (
+                <option key={level} value={level}>{level}</option>
+              ))}
+            </select>
+
+            <select
+              value={filters.integrationOwnerFilter}
+              onChange={(e) => handleFilterChange('integrationOwnerFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All Integration Owners</option>
+              {uniqueValues.integrationOwners.map(owner => (
+                <option key={owner} value={owner}>{owner}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse text-sm">
             <thead>
               <tr>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">BU</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Application</th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('BU')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>BU</span>
+                    <span className="text-xs">{getSortIcon('BU')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Applicacion')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Application</span>
+                    <span className="text-xs">{getSortIcon('Applicacion')}</span>
+                  </div>
+                </th>
                 <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Use Cases</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Owner</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Integration Owner</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Level</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Readiness</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Total Score</th>
-                <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Grade</th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Owner')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Owner</span>
+                    <span className="text-xs">{getSortIcon('Owner')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Intergration Owner')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Integration Owner</span>
+                    <span className="text-xs">{getSortIcon('Intergration Owner')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Agent Implementation Level')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Level</span>
+                    <span className="text-xs">{getSortIcon('Agent Implementation Level')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Unnamed: 13')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Readiness</span>
+                    <span className="text-xs">{getSortIcon('Unnamed: 13')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Unnamed: 11')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Total Score</span>
+                    <span className="text-xs">{getSortIcon('Unnamed: 11')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('Unnamed: 12')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Grade</span>
+                    <span className="text-xs">{getSortIcon('Unnamed: 12')}</span>
+                  </div>
+                </th>
                 <th className="px-3 py-2 border-b border-slate-600 text-slate-300">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {initiatives.map((row, i) => (
+              {filteredAndSortedInitiatives.map((row, i) => (
                 <tr 
                   key={row.id || i} 
                   className={`hover:bg-slate-700/50 ${deletingId === row.id ? 'opacity-50' : ''}`}
