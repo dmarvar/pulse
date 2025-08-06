@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { type Initiative, getFirstValue, getTotalScore, getGradeColor, getStateColor } from "@/lib/use-cases/data-processing";
 import { ActionsMenu } from "./ActionsMenu";
 import { CreateInitiativeForm } from "./CreateInitiativeForm";
@@ -82,6 +82,11 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
   });
   const [sortField, setSortField] = useState<SortField>('Applicacion');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    setInitiatives(initialInitiatives);
+  }, [initialInitiatives]);
 
   // Extract unique values for filter dropdowns
   const uniqueValues = useMemo(() => {

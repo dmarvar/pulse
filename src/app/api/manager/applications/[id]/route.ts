@@ -54,6 +54,7 @@ export async function PUT(
       ownerName,
       ownerEmail,
       integrationOwnerName,
+      state,
       useCases, 
       score 
     } = body
@@ -79,7 +80,8 @@ export async function PUT(
         description,
         ownerName,
         ownerEmail,
-        integrationOwnerName
+        integrationOwnerName,
+        state
       }
     })
 
