@@ -11,6 +11,34 @@ interface InitiativesTableProps {
   onRefreshData?: () => void;
 }
 
+// Add a new type for complete application data
+interface CompleteApplication {
+  id: string;
+  name: string;
+  businessUnit: string;
+  description?: string;
+  ownerName?: string;
+  ownerEmail?: string;
+  integrationOwnerName?: string;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
+  useCases: Array<{ id: string; name: string; description?: string }>;
+  score?: {
+    id: string;
+    implementationLevel: string;
+    classification?: string;
+    apiAvailability?: string;
+    teamInvolvement?: string;
+    readinessStatus: string;
+    technicalScore?: number;
+    businessScore?: number;
+    resourceScore?: number;
+    totalScore?: number;
+    grade: string;
+  };
+}
+
 type SortField = 'BU' | 'Applicacion' | 'Owner' | 'Intergration Owner' | 'Agent Implementation Level' | 'Unnamed: 13' | 'Unnamed: 11' | 'Unnamed: 12' | 'state';
 type SortDirection = 'asc' | 'desc';
 
@@ -30,6 +58,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [editingInitiative, setEditingInitiative] = useState<Initiative | null>(null);
+  const [completeApplication, setCompleteApplication] = useState<CompleteApplication | null>(null);
   const [activityFormData, setActivityFormData] = useState<{
     isOpen: boolean;
     applicationId: string;
@@ -183,12 +212,31 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
     return sortDirection === 'asc' ? '↑' : '↓';
   };
 
-  const handleEdit = (initiative: Initiative) => {
-    setEditingInitiative(initiative);
+  const handleEdit = async (initiative: Initiative) => {
+    if (!initiative.id) {
+      setError('Cannot edit: Application ID not found');
+      return;
+    }
+
+    try {
+      // Fetch the complete application data from the database
+      const response = await fetch(`/api/manager/applications/${initiative.id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch application data');
+      }
+      
+      const applicationData: CompleteApplication = await response.json();
+      setCompleteApplication(applicationData);
+      setEditingInitiative(initiative);
+    } catch (err) {
+      console.error('Error fetching application data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to fetch application data');
+    }
   };
 
   const handleCloseEdit = () => {
     setEditingInitiative(null);
+    setCompleteApplication(null);
   };
 
   const handleEditSuccess = () => {
@@ -564,6 +612,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                 onClose={handleCloseEdit} 
                 onSuccess={handleEditSuccess}
                 initiative={editingInitiative}
+                completeApplication={completeApplication || undefined}
               />
             </div>
           </div>

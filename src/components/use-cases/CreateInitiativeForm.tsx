@@ -33,6 +33,30 @@ interface CreateInitiativeFormProps {
   onClose: () => void;
   onSuccess?: () => void;
   initiative?: Initiative; // Optional: if provided, form will be in edit mode
+  completeApplication?: {
+    id: string;
+    name: string;
+    businessUnit: string;
+    description?: string;
+    ownerName?: string;
+    ownerEmail?: string;
+    integrationOwnerName?: string;
+    state: string;
+    useCases: Array<{ id: string; name: string; description?: string }>;
+    score?: {
+      id: string;
+      implementationLevel: string;
+      classification?: string;
+      apiAvailability?: string;
+      teamInvolvement?: string;
+      readinessStatus: string;
+      technicalScore?: number;
+      businessScore?: number;
+      resourceScore?: number;
+      totalScore?: number;
+      grade: string;
+    };
+  }; // Optional: complete application data for edit mode
 }
 
 // Helper function to convert Initiative back to form data
@@ -55,13 +79,36 @@ const initiativeToFormData = (initiative: Initiative): Partial<CreateInitiativeF
   };
 };
 
-export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateInitiativeFormProps) {
+// Helper function to convert complete application data to form data
+const completeApplicationToFormData = (application: NonNullable<CreateInitiativeFormProps['completeApplication']>): Partial<CreateInitiativeFormData> => {
+  return {
+    name: application.name || '',
+    businessUnit: application.businessUnit || '',
+    description: application.description || '',
+    ownerName: application.ownerName || '',
+    ownerEmail: application.ownerEmail || '',
+    integrationOwnerName: application.integrationOwnerName || '',
+    state: (application.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled') || 'OnBoarding',
+    implementationLevel: (application.score?.implementationLevel as 'Basic' | 'Intermediate' | 'Advanced') || 'Basic',
+    classification: application.score?.classification || '',
+    apiAvailability: application.score?.apiAvailability || '',
+    teamInvolvement: application.score?.teamInvolvement || '',
+    readinessStatus: (application.score?.readinessStatus as 'Very ready' | 'Medium readiness' | 'Low readiness') || 'Medium readiness',
+    technicalScore: application.score?.technicalScore || undefined,
+    businessScore: application.score?.businessScore || undefined,
+    resourceScore: application.score?.resourceScore || undefined,
+    grade: (application.score?.grade as 'Grade 1' | 'Grade 2' | 'Grade 3') || 'Grade 2',
+    useCases: application.useCases.map(uc => uc.name) || [''],
+  };
+};
+
+export function CreateInitiativeForm({ onClose, onSuccess, initiative, completeApplication }: CreateInitiativeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const isEditMode = !!initiative;
+  const isEditMode = !!(initiative || completeApplication);
 
   const defaultValues = isEditMode 
-    ? initiativeToFormData(initiative)
+    ? (completeApplication ? completeApplicationToFormData(completeApplication) : (initiative ? initiativeToFormData(initiative) : {}))
     : {
         state: 'OnBoarding' as const,
         implementationLevel: 'Basic' as const,
@@ -81,13 +128,15 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateI
     defaultValues,
   });
 
-  // Reset form when initiative changes (for edit mode)
+  // Reset form when initiative or completeApplication changes (for edit mode)
   useEffect(() => {
-    if (isEditMode && initiative) {
-      const formData = initiativeToFormData(initiative);
+    if (isEditMode) {
+      const formData = completeApplication 
+        ? completeApplicationToFormData(completeApplication)
+        : (initiative ? initiativeToFormData(initiative) : {});
       reset(formData);
     }
-  }, [initiative, isEditMode, reset]);
+  }, [initiative, completeApplication, isEditMode, reset]);
 
   const useCases = watch('useCases');
 
@@ -135,7 +184,7 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateI
 
       // Choose endpoint and method based on mode
       const url = isEditMode 
-        ? `/api/manager/applications/${initiative.id}`
+        ? `/api/manager/applications/${completeApplication?.id || initiative?.id}`
         : '/api/manager/applications';
       const method = isEditMode ? 'PUT' : 'POST';
 
