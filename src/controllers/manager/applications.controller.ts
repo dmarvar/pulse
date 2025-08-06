@@ -7,6 +7,7 @@ export interface CreateApplicationData {
   ownerName?: string
   ownerEmail?: string
   integrationOwnerName?: string
+  state?: string
   useCases?: Array<{
     name: string
     description?: string
@@ -32,6 +33,7 @@ export interface UpdateApplicationData {
   ownerName?: string
   ownerEmail?: string
   integrationOwnerName?: string
+  state?: string
   useCases?: Array<{
     name: string
     description?: string
@@ -121,6 +123,7 @@ export class ApplicationsController {
       "Unnamed: 11": app.score?.totalScore ? [app.score.totalScore.toString()] : [],
       "Unnamed: 12": app.score?.grade ? [app.score.grade] : [],
       "Unnamed: 13": app.score?.readinessStatus ? [app.score.readinessStatus] : [],
+      state: app.state,
     }))
   }
 
@@ -135,6 +138,7 @@ export class ApplicationsController {
       ownerName,
       ownerEmail,
       integrationOwnerName,
+      state,
       useCases = [], 
       score 
     } = data
@@ -152,6 +156,7 @@ export class ApplicationsController {
         ownerName,
         ownerEmail,
         integrationOwnerName,
+        state,
         useCases: {
           create: useCases.map((useCase) => ({
             name: useCase.name,
@@ -267,6 +272,7 @@ export class ApplicationsController {
       ownerName,
       ownerEmail,
       integrationOwnerName,
+      state,
       useCases, 
       score 
     } = data
@@ -289,7 +295,8 @@ export class ApplicationsController {
         description,
         ownerName,
         ownerEmail,
-        integrationOwnerName
+        integrationOwnerName,
+        state
       }
     })
 

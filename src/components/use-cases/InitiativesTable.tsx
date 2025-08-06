@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { type Initiative, getFirstValue, getTotalScore, getGradeColor } from "@/lib/use-cases/data-processing";
+import { type Initiative, getFirstValue, getTotalScore, getGradeColor, getStateColor } from "@/lib/use-cases/data-processing";
 import { ActionsMenu } from "./ActionsMenu";
 import { CreateInitiativeForm } from "./CreateInitiativeForm";
 import { ActivityForm } from "./ActivityForm";
@@ -11,7 +11,7 @@ interface InitiativesTableProps {
   onRefreshData?: () => void;
 }
 
-type SortField = 'BU' | 'Applicacion' | 'Owner' | 'Intergration Owner' | 'Agent Implementation Level' | 'Unnamed: 13' | 'Unnamed: 11' | 'Unnamed: 12';
+type SortField = 'BU' | 'Applicacion' | 'Owner' | 'Intergration Owner' | 'Agent Implementation Level' | 'Unnamed: 13' | 'Unnamed: 11' | 'Unnamed: 12' | 'state';
 type SortDirection = 'asc' | 'desc';
 
 interface FilterState {
@@ -22,6 +22,7 @@ interface FilterState {
   readinessFilter: string;
   levelFilter: string;
   integrationOwnerFilter: string;
+  stateFilter: string;
 }
 
 export function InitiativesTable({ initiatives: initialInitiatives, onRefreshData }: InitiativesTableProps) {
@@ -48,6 +49,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
     readinessFilter: '',
     levelFilter: '',
     integrationOwnerFilter: '',
+    stateFilter: '',
   });
   const [sortField, setSortField] = useState<SortField>('Applicacion');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -60,6 +62,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
     const readinessSet = new Set<string>();
     const levelSet = new Set<string>();
     const integrationOwnerSet = new Set<string>();
+    const stateSet = new Set<string>();
 
     initiatives.forEach(initiative => {
       if (initiative.BU) buSet.add(initiative.BU);
@@ -74,6 +77,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
       if (level) levelSet.add(level);
       const integrationOwner = getFirstValue(initiative["Intergration Owner"]);
       if (integrationOwner) integrationOwnerSet.add(integrationOwner);
+      if (initiative.state) stateSet.add(initiative.state);
     });
 
     return {
@@ -83,6 +87,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
       readiness: Array.from(readinessSet).sort(),
       levels: Array.from(levelSet).sort(),
       integrationOwners: Array.from(integrationOwnerSet).sort(),
+      states: Array.from(stateSet).sort(),
     };
   }, [initiatives]);
 
@@ -97,7 +102,8 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
          getFirstValue(initiative["Intergration Owner"])?.toLowerCase().includes(searchLower) ||
          getFirstValue(initiative["Agent Implementation Level"])?.toLowerCase().includes(searchLower) ||
          getFirstValue(initiative["Unnamed: 13"])?.toLowerCase().includes(searchLower) ||
-         getFirstValue(initiative["Unnamed: 12"])?.toLowerCase().includes(searchLower));
+         getFirstValue(initiative["Unnamed: 12"])?.toLowerCase().includes(searchLower) ||
+         initiative.state?.toLowerCase().includes(searchLower));
 
       const matchesBU = !filters.buFilter || initiative.BU === filters.buFilter;
       const matchesOwner = !filters.ownerFilter || 
@@ -110,9 +116,11 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
         getFirstValue(initiative["Agent Implementation Level"]) === filters.levelFilter;
       const matchesIntegrationOwner = !filters.integrationOwnerFilter || 
         getFirstValue(initiative["Intergration Owner"]) === filters.integrationOwnerFilter;
+      const matchesState = !filters.stateFilter || 
+        initiative.state === filters.stateFilter;
 
       return matchesSearch && matchesBU && matchesOwner && matchesGrade && 
-             matchesReadiness && matchesLevel && matchesIntegrationOwner;
+             matchesReadiness && matchesLevel && matchesIntegrationOwner && matchesState;
     });
 
     // Sort initiatives
@@ -123,6 +131,9 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
       if (sortField === 'Unnamed: 11') {
         aValue = getTotalScore(a) || 0;
         bValue = getTotalScore(b) || 0;
+      } else if (sortField === 'state') {
+        aValue = a.state || '';
+        bValue = b.state || '';
       } else {
         aValue = getFirstValue(a[sortField]) || '';
         bValue = getFirstValue(b[sortField]) || '';
@@ -163,6 +174,7 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
       readinessFilter: '',
       levelFilter: '',
       integrationOwnerFilter: '',
+      stateFilter: '',
     });
   };
 
@@ -368,6 +380,17 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                 <option key={owner} value={owner}>{owner}</option>
               ))}
             </select>
+
+            <select
+              value={filters.stateFilter}
+              onChange={(e) => handleFilterChange('stateFilter', e.target.value)}
+              className="px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">All States</option>
+              {uniqueValues.states.map(state => (
+                <option key={state} value={state}>{state}</option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -410,6 +433,15 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                   <div className="flex items-center space-x-1">
                     <span>Integration Owner</span>
                     <span className="text-xs">{getSortIcon('Intergration Owner')}</span>
+                  </div>
+                </th>
+                <th 
+                  className="px-3 py-2 border-b border-slate-600 text-slate-300 cursor-pointer hover:bg-slate-700/50 transition-colors"
+                  onClick={() => handleSort('state')}
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>State</span>
+                    <span className="text-xs">{getSortIcon('state')}</span>
                   </div>
                 </th>
                 <th 
@@ -483,6 +515,11 @@ export function InitiativesTable({ initiatives: initialInitiatives, onRefreshDat
                     ) : "-"}
                   </td>
                   <td className="px-3 py-2 text-slate-300 whitespace-nowrap">{getFirstValue(row["Intergration Owner"])}</td>
+                  <td className="px-3 py-2">
+                    <span className={`px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap ${getStateColor(row.state || '')}`}>
+                      {row.state || "-"}
+                    </span>
+                  </td>
                   <td className="px-3 py-2 text-slate-300 whitespace-nowrap">{getFirstValue(row["Agent Implementation Level"])}</td>
                   <td className="px-3 py-2 text-slate-300 whitespace-nowrap">{getFirstValue(row["Unnamed: 13"])}</td>
                   <td className="px-3 py-2 text-slate-300 whitespace-nowrap">{getTotalScore(row) || "-"}</td>

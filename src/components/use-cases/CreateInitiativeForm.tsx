@@ -12,6 +12,7 @@ type CreateInitiativeFormData = {
   ownerName?: string;
   ownerEmail?: string;
   integrationOwnerName?: string;
+  state: 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled';
   
   // ApplicationScore fields
   implementationLevel: 'Basic' | 'Intermediate' | 'Advanced';
@@ -43,6 +44,7 @@ const initiativeToFormData = (initiative: Initiative): Partial<CreateInitiativeF
     ownerName: getFirstValue(initiative.Owner),
     ownerEmail: undefined, // Not available in Initiative format
     integrationOwnerName: getFirstValue(initiative["Intergration Owner"]),
+    state: (initiative.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled') || 'OnBoarding',
     implementationLevel: (getFirstValue(initiative["Agent Implementation Level"]) as 'Basic' | 'Intermediate' | 'Advanced') || 'Basic',
     classification: getFirstValue(initiative["Pulse OS INT Team client classification criteria"]),
     apiAvailability: getFirstValue(initiative["Unnamed: 6"]),
@@ -61,6 +63,7 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateI
   const defaultValues = isEditMode 
     ? initiativeToFormData(initiative)
     : {
+        state: 'OnBoarding' as const,
         implementationLevel: 'Basic' as const,
         readinessStatus: 'Medium readiness' as const,
         grade: 'Grade 2' as const,
@@ -102,6 +105,7 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateI
         ownerName: data.ownerName,
         ownerEmail: data.ownerEmail,
         integrationOwnerName: data.integrationOwnerName,
+        state: data.state,
         
         // Transform use cases from string[] to proper format
         useCases: data.useCases
@@ -277,6 +281,25 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative }: CreateI
               disabled={isSubmitting}
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            State *
+          </label>
+          <select
+            {...register('state', { required: 'State is required' })}
+            className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            disabled={isSubmitting}
+          >
+            <option value="OnBoarding">OnBoarding</option>
+            <option value="Integration">Integration</option>
+            <option value="Production">Production</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          {errors.state && (
+            <p className="mt-1 text-sm text-red-400">{errors.state.message}</p>
+          )}
         </div>
       </div>
 

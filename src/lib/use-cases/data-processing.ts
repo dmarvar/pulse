@@ -16,6 +16,7 @@ export interface Initiative {
   "Unnamed: 11"?: string[];
   "Unnamed: 12"?: string[];
   "Unnamed: 13"?: string[];
+  state?: string;
 }
 
 export interface ChartData {
@@ -63,6 +64,22 @@ export const getGradeColor = (grade: string): string => {
     case "Grade 2":
       return "text-yellow-400 bg-yellow-500/10 border border-yellow-500/20";
     case "Grade 3":
+      return "text-red-400 bg-red-500/10 border border-red-500/20";
+    default:
+      return "text-slate-300";
+  }
+};
+
+// Helper function to get color for state
+export const getStateColor = (state: string): string => {
+  switch (state) {
+    case "OnBoarding":
+      return "text-blue-400 bg-blue-500/10 border border-blue-500/20";
+    case "Integration":
+      return "text-yellow-400 bg-yellow-500/10 border border-yellow-500/20";
+    case "Production":
+      return "text-green-400 bg-green-500/10 border border-green-500/20";
+    case "Cancelled":
       return "text-red-400 bg-red-500/10 border border-red-500/20";
     default:
       return "text-slate-300";

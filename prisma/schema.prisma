@@ -18,6 +18,7 @@ model Application {
   ownerName   String?
   ownerEmail  String?
   integrationOwnerName String?
+  state       String   @default("OnBoarding") // OnBoarding, Integration, Production, Cancelled
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
