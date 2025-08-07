@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { processInitiativesData, type Initiative } from "@/lib/use-cases/data-processing";
 import { PieChartComponent, BusinessUnitPieChart } from "@/components/use-cases/charts";
-import { CreateInitiativeButton, InitiativesTable, ActivitiesTable, TabComponent, type Tab } from "@/components/use-cases";
+import { CreateInitiativeButton, InitiativesTable, ActivitiesTable, TabComponent, type Tab, FeatureRequestsTable, CreateFeatureRequestButton } from "@/components/use-cases";
 
 // Grade-specific colors for consistency with priority levels
 const GRADE_COLORS: Record<string, string> = {
@@ -132,6 +132,22 @@ export default function PulseOS() {
     </div>
   );
 
+  // Feature Requests Tab Content
+  const FeatureRequestsContent = () => (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-white">Feature Requests Management</h2>
+        <CreateFeatureRequestButton onRefreshData={fetchInitiatives} />
+      </div>
+      <FeatureRequestsTable 
+        title="Feature Requests"
+        showFilters={true}
+        maxHeight="600px"
+        onRefreshData={fetchInitiatives}
+      />
+    </div>
+  );
+
   // Define tabs
   const tabs: Tab[] = [
     {
@@ -151,6 +167,12 @@ export default function PulseOS() {
       label: 'Activities',
       icon: '📝',
       content: <ActivitiesContent />
+    },
+    {
+      id: 'feature-requests',
+      label: 'Feature Requests',
+      icon: '🚀',
+      content: <FeatureRequestsContent />
     }
   ];
 

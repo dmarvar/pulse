@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { ACTIVITY_TYPES, ACTIVITY_TYPE_LABELS } from '@/lib/constants/activity-types';
+import { FeatureRequestSelector } from './FeatureRequestSelector';
 
 type ActivityFormData = {
   title: string;
@@ -27,6 +28,14 @@ interface Activity {
     name: string;
     businessUnit: string;
   };
+  featureRequests?: Array<{
+    featureRequest: {
+      id: string;
+      title: string;
+      priority: string;
+      status: string;
+    };
+  }>;
 }
 
 interface ActivityFormProps {
@@ -42,6 +51,7 @@ export function ActivityForm({ mode, applicationId, applicationName, activity, o
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [userName, setUserName] = useState<string>('');
+  const [selectedFeatureRequests, setSelectedFeatureRequests] = useState<string[]>([]);
 
   // Get current user info from session (only for create mode)
   useEffect(() => {
@@ -87,6 +97,11 @@ export function ActivityForm({ mode, applicationId, applicationName, activity, o
         type: activity.type,
         executionDate: activity.executionDate ? new Date(activity.executionDate).toISOString().split('T')[0] : '',
       });
+      
+      // Set selected feature requests for update mode
+      if (activity.featureRequests) {
+        setSelectedFeatureRequests(activity.featureRequests.map(fr => fr.featureRequest.id));
+      }
     }
   }, [activity, reset, mode]);
 
@@ -121,6 +136,30 @@ export function ActivityForm({ mode, applicationId, applicationName, activity, o
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to ${mode} activity`);
+      }
+
+      // For create mode, link selected feature requests after activity creation
+      if (mode === 'create' && selectedFeatureRequests.length > 0) {
+        const createdActivity = await response.json();
+        
+        // Link all selected feature requests to the new activity
+        for (const featureRequestId of selectedFeatureRequests) {
+          try {
+            await fetch('/api/manager/feature-requests/link', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                activityId: createdActivity.id,
+                featureRequestId
+              }),
+            });
+          } catch (linkError) {
+            console.error('Failed to link feature request:', linkError);
+            // Don't fail the entire operation if linking fails
+          }
+        }
       }
 
       onSuccess?.();
@@ -237,6 +276,25 @@ export function ActivityForm({ mode, applicationId, applicationName, activity, o
             <option value="COMPLETED">Completed</option>
             <option value="CANCELLED">Cancelled</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Feature Requests
+          </label>
+          <FeatureRequestSelector
+            activityId={mode === 'update' ? activity?.id : undefined}
+            selectedFeatureRequests={selectedFeatureRequests}
+            onSelectionChange={setSelectedFeatureRequests}
+            className="mb-2"
+            disabled={isSubmitting}
+          />
+          <p className="text-xs text-slate-400">
+            {mode === 'create' 
+              ? 'Select feature requests to link after activity creation'
+              : 'Select feature requests to link to this activity'
+            }
+          </p>
         </div>
       </div>
 

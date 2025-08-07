@@ -2,14 +2,21 @@
 
 import { useState, useRef, useEffect } from 'react';
 
+interface ActionItem {
+  label: string;
+  onClick: () => void | Promise<void>;
+  className?: string;
+}
+
 interface ActionsMenuProps {
   onEdit?: () => void;
   onDelete?: () => void;
   onAddActivity?: () => void;
+  items?: ActionItem[];
   disabled?: boolean;
 }
 
-export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false }: ActionsMenuProps) {
+export function ActionsMenu({ onEdit, onDelete, onAddActivity, items, disabled = false }: ActionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState<'bottom' | 'top'>('bottom');
   const menuRef = useRef<HTMLDivElement>(null);
@@ -82,6 +89,41 @@ export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false 
     setIsOpen(!isOpen);
   };
 
+  // Generate menu items based on props
+  const getMenuItems = (): ActionItem[] => {
+    if (items) {
+      return items;
+    }
+
+    const menuItems: ActionItem[] = [];
+    
+    if (onAddActivity) {
+      menuItems.push({
+        label: 'Add Activity',
+        onClick: onAddActivity
+      });
+    }
+    
+    if (onEdit) {
+      menuItems.push({
+        label: 'Edit',
+        onClick: onEdit
+      });
+    }
+    
+    if (onDelete) {
+      menuItems.push({
+        label: 'Delete',
+        onClick: onDelete,
+        className: 'text-red-600 hover:text-red-700'
+      });
+    }
+    
+    return menuItems;
+  };
+
+  const menuItems = getMenuItems();
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -106,55 +148,42 @@ export function ActionsMenu({ onEdit, onDelete, onAddActivity, disabled = false 
         </svg>
       </button>
 
-      {isOpen && !disabled && (
+      {isOpen && !disabled && menuItems.length > 0 && (
         <div 
           className={`absolute right-0 z-50 w-40 rounded-md bg-slate-800 shadow-lg ring-1 ring-slate-600 ring-opacity-50 ${
             menuPosition === 'top' ? 'bottom-8' : 'top-8'
           }`}
         >
           <div className="py-1">
-            {onAddActivity && (
+            {menuItems.map((item, index) => (
               <button
+                key={index}
                 onClick={() => {
-                  onAddActivity();
+                  item.onClick();
                   setIsOpen(false);
                 }}
-                className="flex items-center w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-150"
+                className={`flex items-center w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-150 ${
+                  item.className || ''
+                }`}
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Add Activity
+                {item.label === 'Add Activity' && (
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                )}
+                {item.label === 'Edit' && (
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                )}
+                {item.label === 'Delete' && (
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                )}
+                {item.label}
               </button>
-            )}
-            {onEdit && (
-              <button
-                onClick={() => {
-                  onEdit();
-                  setIsOpen(false);
-                }}
-                className="flex items-center w-full px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors duration-150"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Edit
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={() => {
-                  onDelete();
-                  setIsOpen(false);
-                }}
-                className="flex items-center w-full px-3 py-2 text-sm text-slate-300 hover:bg-red-600 hover:text-white transition-colors duration-150"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Delete
-              </button>
-            )}
+            ))}
           </div>
         </div>
       )}

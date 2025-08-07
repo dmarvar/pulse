@@ -19,6 +19,14 @@ interface Activity {
     name: string;
     businessUnit: string;
   };
+  featureRequests?: Array<{
+    featureRequest: {
+      id: string;
+      title: string;
+      priority: string;
+      status: string;
+    };
+  }>;
 }
 
 interface ApplicationData {
@@ -332,6 +340,7 @@ export function ActivitiesTable({
                     <th className="px-3 py-3 text-left text-slate-300 font-medium">Application</th>
                   )}
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Status</th>
+                  <th className="px-3 py-3 text-left text-slate-300 font-medium">Feature Requests</th>
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Execution Date</th>
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Created</th>
                   <th className="px-3 py-3 text-left text-slate-300 font-medium">Actions</th>
@@ -368,6 +377,52 @@ export function ActivitiesTable({
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${getStatusColor(activity.status)}`}>
                         {activity.status}
                       </span>
+                    </td>
+                    <td className="px-3 py-4">
+                      <div className="space-y-2">
+                        <div>
+                          <span className="text-sm font-medium text-white">
+                            {activity.featureRequests?.length || 0} linked
+                          </span>
+                        </div>
+                        
+                        {activity.featureRequests && activity.featureRequests.length > 0 && (
+                          <div className="space-y-2">
+                            {activity.featureRequests.slice(0, 2).map((link, index) => (
+                              <div key={index} className="bg-slate-700/50 border border-slate-600/30 rounded-lg p-2">
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-xs font-medium text-white truncate">
+                                    {link.featureRequest.title}
+                                  </span>
+                                  <div className="flex items-center space-x-1">
+                                    <span className={`inline-flex px-1.5 py-0.5 text-xs font-medium rounded-full border ${
+                                      link.featureRequest.priority === 'LOW' ? 'bg-gray-200 text-gray-800 border-gray-300' :
+                                      link.featureRequest.priority === 'MEDIUM' ? 'bg-yellow-200 text-yellow-800 border-yellow-300' :
+                                      link.featureRequest.priority === 'HIGH' ? 'bg-orange-200 text-orange-800 border-orange-300' :
+                                      'bg-red-200 text-red-800 border-red-300'
+                                    }`}>
+                                      {link.featureRequest.priority}
+                                    </span>
+                                    <span className={`inline-flex px-1.5 py-0.5 text-xs font-medium rounded-full border ${
+                                      link.featureRequest.status === 'PENDING' ? 'bg-gray-200 text-gray-800 border-gray-300' :
+                                      link.featureRequest.status === 'IN_PROGRESS' ? 'bg-blue-200 text-blue-800 border-blue-300' :
+                                      link.featureRequest.status === 'COMPLETED' ? 'bg-green-200 text-green-800 border-green-300' :
+                                      'bg-red-200 text-red-800 border-red-300'
+                                    }`}>
+                                      {link.featureRequest.status}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {activity.featureRequests.length > 2 && (
+                              <div className="text-xs text-slate-400 text-center py-1">
+                                +{activity.featureRequests.length - 2} more feature requests
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-4 text-slate-400">
                       {activity.executionDate ? (

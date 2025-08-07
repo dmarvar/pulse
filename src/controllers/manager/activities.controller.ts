@@ -67,6 +67,18 @@ export class ActivitiesController {
               name: true,
               businessUnit: true
             }
+          },
+          featureRequests: {
+            include: {
+              featureRequest: {
+                select: {
+                  id: true,
+                  title: true,
+                  priority: true,
+                  status: true
+                }
+              }
+            }
           }
         },
         orderBy: {
@@ -171,6 +183,18 @@ export class ActivitiesController {
             name: true,
             businessUnit: true
           }
+        },
+        featureRequests: {
+          include: {
+            featureRequest: {
+              select: {
+                id: true,
+                title: true,
+                priority: true,
+                status: true
+              }
+            }
+          }
         }
       }
     })
@@ -196,6 +220,18 @@ export class ActivitiesController {
               id: true,
               name: true,
               businessUnit: true
+            }
+          },
+          featureRequests: {
+            include: {
+              featureRequest: {
+                select: {
+                  id: true,
+                  title: true,
+                  priority: true,
+                  status: true
+                }
+              }
             }
           }
         }
@@ -271,6 +307,18 @@ export class ActivitiesController {
             id: true,
             name: true,
             businessUnit: true
+          }
+        },
+        featureRequests: {
+          include: {
+            featureRequest: {
+              select: {
+                id: true,
+                title: true,
+                priority: true,
+                status: true
+              }
+            }
           }
         }
       }

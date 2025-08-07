@@ -80,6 +80,38 @@ model Activity {
 
   // Relationships
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  featureRequests ActivityFeatureRequest[]
 
   @@map("activities")
+}
+
+model FeatureRequest {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, REJECTED
+  category    String?  // UI/UX, Backend, Integration, Performance, etc.
+  requestedBy String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  activities ActivityFeatureRequest[]
+
+  @@map("feature_requests")
+}
+
+model ActivityFeatureRequest {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  activityId      String @db.ObjectId
+  featureRequestId String @db.ObjectId
+  createdAt       DateTime @default(now())
+
+  // Relationships
+  activity       Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  featureRequest FeatureRequest @relation(fields: [featureRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, featureRequestId])
+  @@map("activity_feature_requests")
 } 
