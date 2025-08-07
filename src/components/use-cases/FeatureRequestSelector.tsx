@@ -135,6 +135,7 @@ export function FeatureRequestSelector({
   return (
     <div className={`relative ${className}`}>
       <button
+        type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         className={`w-full bg-slate-700 border-2 border-slate-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 flex items-center justify-between transition-all duration-200 ${

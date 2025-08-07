@@ -13,8 +13,7 @@ export function CreateFeatureRequestForm({ onSuccess, onCancel }: CreateFeatureR
     description: '',
     priority: 'MEDIUM',
     status: 'PENDING',
-    category: '',
-    requestedBy: ''
+    category: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,8 +49,7 @@ export function CreateFeatureRequestForm({ onSuccess, onCancel }: CreateFeatureR
         description: '',
         priority: 'MEDIUM',
         status: 'PENDING',
-        category: '',
-        requestedBy: ''
+        category: ''
       });
 
       onSuccess?.();
@@ -154,32 +152,17 @@ export function CreateFeatureRequestForm({ onSuccess, onCancel }: CreateFeatureR
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Category
-                </label>
-                <input
-                  type="text"
-                  value={formData.category}
-                  onChange={(e) => handleInputChange('category', e.target.value)}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g., UI/UX, Backend, Integration"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Requested By
-                </label>
-                <input
-                  type="text"
-                  value={formData.requestedBy}
-                  onChange={(e) => handleInputChange('requestedBy', e.target.value)}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Name of the person requesting"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Category
+              </label>
+              <input
+                type="text"
+                value={formData.category}
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., UI/UX, Backend, Integration"
+              />
             </div>
 
             <div className="flex justify-end space-x-4 pt-6 border-t border-slate-600/30">

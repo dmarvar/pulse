@@ -92,7 +92,6 @@ model FeatureRequest {
   priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
   status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, REJECTED
   category    String?  // UI/UX, Backend, Integration, Performance, etc.
-  requestedBy String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
