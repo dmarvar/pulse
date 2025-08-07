@@ -14,7 +14,6 @@ export interface CreateFeatureRequestData {
   priority?: string
   status?: string
   category?: string
-  requestedBy?: string
 }
 
 export interface UpdateFeatureRequestData {
@@ -23,7 +22,6 @@ export interface UpdateFeatureRequestData {
   priority?: string
   status?: string
   category?: string
-  requestedBy?: string
 }
 
 export interface LinkFeatureRequestToActivityData {
@@ -112,8 +110,7 @@ export class FeatureRequestsController {
       description, 
       priority = 'MEDIUM',
       status = 'PENDING',
-      category,
-      requestedBy
+      category
     } = data
 
     if (!title) {
@@ -126,8 +123,7 @@ export class FeatureRequestsController {
         description,
         priority,
         status,
-        category,
-        requestedBy
+        category
       },
       include: {
         activities: {
@@ -192,7 +188,7 @@ export class FeatureRequestsController {
    * Update a specific feature request
    */
   static async updateFeatureRequest(id: string, data: UpdateFeatureRequestData) {
-    const { title, description, priority, status, category, requestedBy } = data
+    const { title, description, priority, status, category } = data
 
     // Check if feature request exists
     const existingFeatureRequest = await prisma.featureRequest.findUnique({
@@ -210,8 +206,7 @@ export class FeatureRequestsController {
         description,
         priority,
         status,
-        category,
-        requestedBy
+        category
       },
       include: {
         activities: {
