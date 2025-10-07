@@ -12,7 +12,7 @@ type CreateInitiativeFormData = {
   ownerName?: string;
   ownerEmail?: string;
   integrationOwnerName?: string;
-  state: 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled';
+  state: 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled' | 'Standby';
   
   // ApplicationScore fields
   implementationLevel: 'Basic' | 'Intermediate' | 'Advanced';
@@ -68,7 +68,7 @@ const initiativeToFormData = (initiative: Initiative): Partial<CreateInitiativeF
     ownerName: getFirstValue(initiative.Owner),
     ownerEmail: undefined, // Not available in Initiative format
     integrationOwnerName: getFirstValue(initiative["Intergration Owner"]),
-    state: (initiative.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled') || 'OnBoarding',
+    state: (initiative.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled' | 'Standby') || 'OnBoarding',
     implementationLevel: (getFirstValue(initiative["Agent Implementation Level"]) as 'Basic' | 'Intermediate' | 'Advanced') || 'Basic',
     classification: getFirstValue(initiative["Pulse OS INT Team client classification criteria"]),
     apiAvailability: getFirstValue(initiative["Unnamed: 6"]),
@@ -88,7 +88,7 @@ const completeApplicationToFormData = (application: NonNullable<CreateInitiative
     ownerName: application.ownerName || '',
     ownerEmail: application.ownerEmail || '',
     integrationOwnerName: application.integrationOwnerName || '',
-    state: (application.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled') || 'OnBoarding',
+    state: (application.state as 'OnBoarding' | 'Integration' | 'Production' | 'Cancelled' | 'Standby') || 'OnBoarding',
     implementationLevel: (application.score?.implementationLevel as 'Basic' | 'Intermediate' | 'Advanced') || 'Basic',
     classification: application.score?.classification || '',
     apiAvailability: application.score?.apiAvailability || '',
@@ -345,6 +345,7 @@ export function CreateInitiativeForm({ onClose, onSuccess, initiative, completeA
             <option value="Integration">Integration</option>
             <option value="Production">Production</option>
             <option value="Cancelled">Cancelled</option>
+            <option value="Standby">Standby</option>
           </select>
           {errors.state && (
             <p className="mt-1 text-sm text-red-400">{errors.state.message}</p>
