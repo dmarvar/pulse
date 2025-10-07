@@ -81,6 +81,8 @@ export const getStateColor = (state: string): string => {
       return "text-green-400 bg-green-500/10 border border-green-500/20";
     case "Cancelled":
       return "text-red-400 bg-red-500/10 border border-red-500/20";
+    case "Standby":
+      return "text-gray-400 bg-gray-500/10 border border-gray-500/20";
     default:
       return "text-slate-300";
   }
